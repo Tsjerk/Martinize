@@ -1,8 +1,78 @@
-##############################
-## 2 # COMMAND LINE PARSING ##  -> @CMD <-
-##############################
-import sys, logging, os, inspect
+# INSert membrANE
+# A simple, versatile tool for building coarse-grained simulation systems
+# Copyright (C) 2017  Tsjerk A. Wassenaar and contributors
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+import sys
+import os
+import logging
+import inspect
+
+import simopt
+from simopt import MULTI, MA
+
 import DOC
+
+#from . import core
+#from .converters import vector, box3d, molspec
+
+
+# Option list
+OPTIONS = simopt.Options([
+    #  level opt  attribute      type        num     default    flags    description
+        """
+    Input/output related options
+    """,
+    (0, "-f",        "input",         str,    1,          None,    MA, "Input GRO or PDB file"),
+    (0, "-o",        "outtop",         str,   1, "martini.top",     0, "Output topology (TOP)"),
+    (0, "-x",        "outstruc",       str,   1,          None,     0, "Output coarse grained structure (PDB)"),
+    (0, "-n",        "index",          str,   1,          None,     0, "Output index file with CG (and multiscale) beads.")),
+    (1, "-nmap",     "mapping",        str,   1,          None,     0, "Output index file containing per bead mapping.")),
+    (0, "-v",        "verbose",        bool,  0,         False,     0, "Verbose. Be load and noisy.")),
+    (1, "-ss",       "secstruc",       str,   1,          None,     0, "Secondary structure (File or string)")),
+    (1, "-ssc",      "sscutoff",       float, 1,           0.5,     0, "Cutoff fraction for ss in case of ambiguity (default: 0.5).")),
+    (0, "-dssp",     "dsspexe",        str,   1,          None,     0, "DSSP executable for determining structure")),
+#    ("-pymol",  "pymolexe",  str,                      1,     None, "PyMOL executable for determining structure")),
+    (0, "-collagen", "collagen",       bool,  0,         False,     0, "Use collagen parameters")),
+    (1, "-his",      "sethischarge",   bool,  0,         False,     0, "Interactively set the charge of each His-residue.")),
+    (0, "-nt",       "neutraltermini", bool,  0,         False,     0, "Set neutral termini (charged is default)")),
+    (1, "-cb",       "chargedbreaks",  bool,  0,         False,     0, "Set charges at chain breaks (neutral is default)")),
+    (0, "-cys",      "cystines",       str,   1,          None, MULTI, "Disulphide bond (+)")),
+    (1, "-link",     "links",          str,   1,          None, MULTI, "Link (+)")),
+    (1, "-merge",    "merges",         str,   1,          None, MULTI, "Merge chains: e.g. -merge A,B,C (+)")),
+    (0, "-name",     "name",           str,   1,          None,     0, "Moleculetype name")),
+    (1, "-p",        "posre",          str,   1,        'None',     0, "Output position restraints (None/All/Backbone) (default: None)")),
+    (1, "-pf",       "posrefc",        float, 1,          1000,     0, "Position restraints force constant (default: 1000 kJ/mol/nm^2)")),
+    (1, "-ed",       "extdih",         bool,  0,         False,     0, "Use dihedrals for extended regions rather than elastic bonds)")),
+    (1, "-sep",      "separate",       bool,  0,         False,     0, "Write separate topologies for identical chains.")),
+    (0, "-ff",       "forcefield",     str,   1,   'martini22',     0, "Which forcefield to use: "+' ,'.join(n for n in forcefields)))
+# Fij = Fc exp( -a (rij - lo)**p )
+    (1, "-elastic",  "elastic",        bool,  0,         False,     0, "Write elastic bonds")),
+    (1, "-ef",       "elastic_fc",     float, 1,           500,     0, "Elastic bond force constant Fc")),
+    (1, "-el",       "ellowerbound",   float, 1,             0,     0, "Elastic bond lower cutoff: F = Fc if rij < lo")),
+    (1, "-eu",       "elupperbound",   float, 1,          0.90,     0, "Elastic bond upper cutoff: F = 0  if rij > up")),
+    (1, "-ea",       "eldecay",        float, 1,             0,     0, "Elastic bond decay factor a")),
+    (1, "-ep",       "elpower",        float, 1,             1,     0, "Elastic bond decay power p")),
+    (1, "-em",       "elminforce",     float, 1,             0,     0, "Remove elastic bonds with force constant lower than this")),
+    (1, "-eb",       "elbeads",        str,   1,          'BB',     0, "Comma separated list of bead names for elastic bonds")),
+#    ("-hetatm", "hetatm",  bool,                     0,    False, "Include HETATM records from PDB file (Use with care!)")),
+    (1, "-multi",    "multi",          str,   1,          None, MULTI, "Chain to be set up for multiscaling (+)")),
+])
+
+
 
 
 def str2atom(a):
