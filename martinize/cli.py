@@ -16,6 +16,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+from __future__ import absolute_import
+
 import sys
 import os
 import logging
@@ -24,10 +26,10 @@ import inspect
 import simopt
 from simopt import MULTI, MA
 
-import DOC
-
 from . import core
 from . import martinize
+from . import DOC
+
 #from .converters import vector, box3d, molspec
 
 
@@ -274,8 +276,8 @@ def option_parser(args, options, lists, version=0):
 
 def main(argv):
     ## TEMPORARY ---
-    # Exception to be defined in insane
-    class InsaneBuildException(BaseException): pass
+    # Exception to be defined in martinize
+    class MartinizeException(BaseException): pass
     ## <---
 
     ## OPTIONS
@@ -294,8 +296,8 @@ def main(argv):
 
     ## WORK
     try:
-        system = core.insane(**options)
-    except InsaneBuildException as e:
+        system = core.martinize(**options)
+    except MartinizeException as e:
         print(e)
         return 2
 
@@ -317,6 +319,3 @@ def main(argv):
 def cli():
     sys.exit(main(sys.argv))
 
-
-if __name__ == "__main__":
-    cli()
