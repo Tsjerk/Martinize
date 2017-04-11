@@ -1,0 +1,14 @@
+:: -h
+Print help and exit
+
+:: --help
+Print help and exit
+
+:: -f 1ubq.pdb
+Convert atomistic PDB structure from ubiquitin to martini
+? which version
+
+
+
+
+
