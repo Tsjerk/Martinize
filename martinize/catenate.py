@@ -15,7 +15,7 @@ def cat():
         print '%s. %s'%(i,ff)
     forcefields = [forcefields[i] for i in input("Which ones should be included? (enter comma seperate string):")]
  
-    files_in = 'martinize.py '+'_ff.py '.join(forcefields)+'_ff.py DOC.py CMD.py FUNC.py MAP.py SS.py ELN.py IO.py TOP.py MAIN.py '
+    files_in = 'martinize.py '+'_ff.py '.join(forcefields)+'_ff.py DOC.py cli.py FUNC.py MAP.py SS.py ELN.py IO.py TOP.py MAIN.py '
     pattern1 = re.compile(files_in.replace('.py ','|')[:-1])
     pattern2 = re.compile(files_in.replace('.py ','\.|')[:-1])
     file_out = open(file_name,'w')
