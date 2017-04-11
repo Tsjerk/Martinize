@@ -27,7 +27,6 @@ import simopt
 from simopt import MULTI, MA
 
 from . import core
-from . import martinize
 from . import DOC
 
 #from .converters import vector, box3d, molspec
