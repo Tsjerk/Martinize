@@ -1,5 +1,5 @@
-# INSert membrANE
-# A simple, versatile tool for building coarse-grained simulation systems
+# MARTINIZE
+# A simple, versatile tool for coarse-graining molecular systems
 # Copyright (C) 2017  Tsjerk A. Wassenaar and contributors
 #
 # This program is free software; you can redistribute it and/or
