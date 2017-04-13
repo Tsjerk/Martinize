@@ -2,7 +2,7 @@
 ## 8 # STRUCTURE I/O ##  -> @IO <-
 #######################
 import logging, math, random, sys
-import MAP, SS, FUNC
+import mapping, secstruc, functions
 
 #----+---------+
 ## A | PDB I/O |
@@ -19,14 +19,14 @@ def pdbBoxString(box):
     u, v, w  = box[0:3], box[3:6], box[6:9]
 
     # Box vector lengths
-    nu, nv, nw = [math.sqrt(FUNC.norm2(i)) for i in (u, v, w)]
+    nu, nv, nw = [math.sqrt(functions.norm2(i)) for i in (u, v, w)]
 
     # Box vector angles
-    alpha = nv*nw == 0 and 90 or math.acos(FUNC.cos_angle(v, w))/d2r
-    beta  = nu*nw == 0 and 90 or math.acos(FUNC.cos_angle(u, w))/d2r
-    gamma = nu*nv == 0 and 90 or math.acos(FUNC.cos_angle(u, v))/d2r
+    alpha = nv*nw == 0 and 90 or math.acos(functions.cos_angle(v, w))/d2r
+    beta  = nu*nw == 0 and 90 or math.acos(functions.cos_angle(u, w))/d2r
+    gamma = nu*nv == 0 and 90 or math.acos(functions.cos_angle(u, v))/d2r
 
-    return pdbBoxLine % (10*FUNC.norm(u), 10*FUNC.norm(v), 10*FUNC.norm(w), alpha, beta, gamma)
+    return pdbBoxLine % (10*functions.norm(u), 10*functions.norm(v), 10*functions.norm(w), alpha, beta, gamma)
 
 
 def pdbAtom(a):
@@ -256,7 +256,7 @@ def residues(atomList):
 
 
 def residueDistance2(r1, r2):
-    return min([FUNC.distance2(i, j) for i in r1 for j in r2])
+    return min([functions.distance2(i, j) for i in r1 for j in r2])
 
 
 def breaks(residuelist, selection=("N", "CA", "C"), cutoff=2.5):
@@ -275,14 +275,14 @@ def contacts(atoms, cutoff=5):
     rla = range(len(atoms))
     crd = [atom[4:] for atom in atoms]
     return [(i, j) for i in rla[:-1] for j in rla[i+1:]
-            if FUNC.distance2(crd[i], crd[j]) < cutoff]
+            if functions.distance2(crd[i], crd[j]) < cutoff]
 
 
 def add_dummy(beads, dist=0.11, n=2):
     # Generate a random vector in a sphere of -1 to +1, to add to the bead position
     v    = [random.random()*2.-1, random.random()*2.-1, random.random()*2.-1]
     # Calculated the length of the vector and divide by the final distance of the dummy bead
-    norm_v = FUNC.norm(v)/dist
+    norm_v = functions.norm(v)/dist
     # Resize the vector
     vn   = [i/norm_v for i in v]
     # m sets the direction of the added vector, currently only works when adding one or two beads.
@@ -358,7 +358,7 @@ def check_merge(chains, m_list=[], l_list=[], ss_cutoff=0):
             # Check this pair of chains
             for cysA in chains[i]["CYS"]:
                 for cysB in chains[j]["CYS"]:
-                    d2 = FUNC.distance2(cysA["SG"][4:7], cysB["SG"][4:7])
+                    d2 = functions.distance2(cysA["SG"][4:7], cysB["SG"][4:7])
                     if d2 <= ss_cutoff:
                         logging.info("Found SS contact linking chains %d and %d (%f nm)" % (i+1, j+1, math.sqrt(d2)/10))
                         pairs.append((i, j))
@@ -412,7 +412,7 @@ class Chain:
         self.sequence   = [residue[0][1] for residue in residuelist]
         # *NOTE*: Check for unknown residues and remove them if requested
         #         before proceeding.
-        self.seq        = "".join([MAP.AA321.get(i, "X") for i in self.sequence])
+        self.seq        = "".join([mapping.AA321.get(i, "X") for i in self.sequence])
         self.ss         = ""
         self.ssclass    = ""
         self.sstypes    = ""
@@ -560,7 +560,7 @@ class Chain:
         chains = []
         chainStart = 0
         for i in range(len(self.sequence)-1):
-            if MAP.residueTypes.get(self.sequence[i], "Unknown") != MAP.residueTypes.get(self.sequence[i+1], "Unknown"):
+            if mapping.residueTypes.get(self.sequence[i], "Unknown") != mapping.residueTypes.get(self.sequence[i+1], "Unknown"):
                 # Use the __getslice__ method to take a part of the chain.
                 chains.append(self[chainStart:i+1])
                 chainStart = i+1
@@ -584,7 +584,7 @@ class Chain:
         else:
             self.ss = ss
         # Infer the Martini backbone secondary structure types
-        self.ssclass, self.sstypes = SS.ssClassification(self.ss, source)
+        self.ssclass, self.sstypes = secstruc.ssClassification(self.ss, source)
 
     def dss(self, method=None, executable=None):
         # The method should take a list of atoms and return a
@@ -592,7 +592,7 @@ class Chain:
         if self.type() == "Protein":
             if method:
                 atomlist = [atom for residue in self.residues for atom in residue]
-                self.set_ss(SS.ssDetermination[method](self, atomlist, executable), source=method)
+                self.set_ss(secstruc.ssDetermination[method](self, atomlist, executable), source=method)
             else:
                 self.set_ss(len(self)*"C")
         else:
@@ -604,7 +604,7 @@ class Chain:
             self._type = other
         elif not self._type and len(self):
             # Determine the type of chain
-            self._type     = set([MAP.residueTypes.get(i, "Unknown") for i in set(self.sequence)])
+            self._type     = set([mapping.residueTypes.get(i, "Unknown") for i in set(self.sequence)])
             self._type     = len(self._type) > 1 and "Mixed" or list(self._type)[0]
         return self._type
 
@@ -644,7 +644,7 @@ class Chain:
             residue = [(atom[0], resname)+atom[2:] for atom in residue]
             if residue[0][1] in ("SOL", "HOH", "TIP"):
                 continue
-            if not residue[0][1] in MAP.CoarseGrained.mapping.keys():
+            if not residue[0][1] in mapping.CoarseGrained.mapping.keys():
                 logging.warning("Skipped unknown residue %s\n" % residue[0][1])
                 continue
             # Get the mapping for this residue
@@ -654,8 +654,8 @@ class Chain:
             # is inferred from the sequence. So this is the best place to raise
             # an error
             try:
-                beads, ids = MAP.map(residue, ca2bb=self.options['ForceField'].ca2bb)
-                beads      = zip(MAP.CoarseGrained.names[residue[0][1]], beads, ids)
+                beads, ids = mapping.map(residue, ca2bb=self.options['ForceField'].ca2bb)
+                beads      = zip(mapping.CoarseGrained.names[residue[0][1]], beads, ids)
                 if residue[0][1] in self.options['ForceField'].polar:
                     beads = add_dummy(beads, dist=0.14, n=2)
                 elif residue[0][1] in self.options['ForceField'].charged:
@@ -668,7 +668,7 @@ class Chain:
 
             for name, (x, y, z), ids in beads:
                 # Add the bead with coordinates and secondary structure id to the list
-                self._cg.append((name, residue[0][1][:3], residue[0][2], residue[0][3], x, y, z, SS.ss2num[rss]))
+                self._cg.append((name, residue[0][1][:3], residue[0][2], residue[0][3], x, y, z, secstruc.ss2num[rss]))
                 # Add the ids to the list, after converting them to indices to the list of atoms
                 self.mapping.append([atid+i for i in ids])
 
@@ -691,7 +691,7 @@ class Chain:
         bb = [i+1 for i, j in zip(range(len(cg)), cg) if j[0] == "BB"]
         bb = zip(bb, bb[1:]+[len(bb)])
         # Set the backbone CONECTs (check whether the distance is consistent with binding)
-        conect = [(i, j) for i, j in bb[:-1] if FUNC.distance2(cg[i-1][4:7], cg[j-1][4:7]) < 14]
+        conect = [(i, j) for i, j in bb[:-1] if functions.distance2(cg[i-1][4:7], cg[j-1][4:7]) < 14]
         # Now add CONECTs for sidechains
         for i, j in bb:
             nsc = j-i-1

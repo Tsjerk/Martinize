@@ -16,7 +16,7 @@
 class martini22p:
     ff = True
     def __init__(self):
-        import SS,FUNC,IO 
+        import secstruc,functions,IO 
 
         # parameters are defined here for the following (protein) forcefields:
         self.name = 'martini22p'
@@ -53,12 +53,12 @@ class martini22p:
         
         ###############################################################################################
         ## BEADS ##                                                                         #                 
-        #                              F     E     H     1     2     3     T     S     C    # SS one letter   
-        self.bbdef    =    FUNC.spl(" N0   Nda    N0    Nd    Na   Nda   Nda    P5    P5")  # Default beads   #@#
+        #                              F     E     H     1     2     3     T     S     C    # secstruc one letter   
+        self.bbdef    =    functions.spl(" N0   Nda    N0    Nd    Na   Nda   Nda    P5    P5")  # Default beads   #@#
         self.bbtyp    = {                                                                   #                 #@#
-                    "ALA": FUNC.spl(" C5    N0    C5    N0    N0    N0    N0    P4    P4"), # ALA specific    #@#
-                    "PRO": FUNC.spl(" C5    N0    C5    N0    Na    N0    N0    P4    P4"), # PRO specific    #@#
-                    "HYP": FUNC.spl(" C5    N0    C5    N0    N0    N0    N0    P4    P4")  # HYP specific    #@#
+                    "ALA": functions.spl(" C5    N0    C5    N0    N0    N0    N0    P4    P4"), # ALA specific    #@#
+                    "PRO": functions.spl(" C5    N0    C5    N0    Na    N0    N0    P4    P4"), # PRO specific    #@#
+                    "HYP": functions.spl(" C5    N0    C5    N0    N0    N0    N0    P4    P4")  # HYP specific    #@#
         }                                                                                   #                 #@#
         ## BONDS ##                                                                         #                 
         self.bbldef   =             (.365, .350, .310, .310, .310, .310, .350, .350, .350)  # BB bond lengths #@#
@@ -110,26 +110,26 @@ class martini22p:
         self.sidechains = {
           #RES#   BEADS                       BONDS                                                                   ANGLES                      DIHEDRALS        V-SITES
           #                                   BB-SC          SC-SC                                                    BB-SC-SC  SC-SC-SC
-          "TRP": [FUNC.spl("SC4 SNd SC5 SC5"),[(0.300,5000)]+[(0.270,None) for i in range(5)],                    [(210,50),(90,50),(90,50)], [(0,50),(0,200)]],
-          "TYR": [FUNC.spl("SC4 SC4 SP1"),    [(0.320,5000), (0.270,None), (0.270,None),(0.270,None)],            [(150,50),(150,50)],        [(0,50)]],
-          "PHE": [FUNC.spl("SC5 SC5 SC5"),    [(0.310,7500), (0.270,None), (0.270,None),(0.270,None)],            [(150,50),(150,50)],        [(0,50)]],
-          "HIS": [FUNC.spl("SC4 SP1 SP1"),    [(0.320,7500), (0.270,None), (0.270,None),(0.270,None)],            [(150,50),(150,50)],        [(0,50)]],
-          "HIH": [FUNC.spl("SC4 SP1 SQd D"),  [(0.320,7500), (0.270,None), (0.270,None),(0.270,None),(0.11,None)],[(150,50),(150,50)],        [(0,50)]],
-          "GLN": [FUNC.spl("Nda D D"),        [(0.400,5000), (0.280,None)],                                       [],                         [],              [(0.5,)]],
-          "ASN": [FUNC.spl("Nda D D"),        [(0.320,5000), (0.280,None)],                                       [],                         [],              [(0.5,)]],
-          "SER": [FUNC.spl("N0 D D"),         [(0.250,7500), (0.280,None)],                                       [],                         [],              [(0.5,)]],
-          "THR": [FUNC.spl("N0 D D"),         [(0.260,9000), (0.280,None)],                                       [],                         [],              [(0.5,)]],
-          "ARG": [FUNC.spl("N0 Qd D"),        [(0.330,5000), (0.340,5000), (0.110,None)],                         [(180,25)]],
-          "LYS": [FUNC.spl("C3 Qd D"),        [(0.330,5000), (0.280,5000), (0.110,None)],                         [(180,25)]],
-          "ASP": [FUNC.spl("Qa D"),           [(0.320,7500), (0.110,None)]],
-          "GLU": [FUNC.spl("Qa D"),           [(0.400,5000), (0.110,None)]],
-          "CYS": [FUNC.spl("C5"),             [(0.310,7500)]],
-          "ILE": [FUNC.spl("C1"),             [(0.310,None)]],
-          "LEU": [FUNC.spl("C1"),             [(0.330,7500)]],
-          "MET": [FUNC.spl("C5"),             [(0.400,2500)]],
-          "PRO": [FUNC.spl("C3"),             [(0.300,7500)]],
-          "HYP": [FUNC.spl("P1"),             [(0.300,7500)]],
-          "VAL": [FUNC.spl("C2"),             [(0.265,None)]],
+          "TRP": [functions.spl("SC4 SNd SC5 SC5"),[(0.300,5000)]+[(0.270,None) for i in range(5)],                    [(210,50),(90,50),(90,50)], [(0,50),(0,200)]],
+          "TYR": [functions.spl("SC4 SC4 SP1"),    [(0.320,5000), (0.270,None), (0.270,None),(0.270,None)],            [(150,50),(150,50)],        [(0,50)]],
+          "PHE": [functions.spl("SC5 SC5 SC5"),    [(0.310,7500), (0.270,None), (0.270,None),(0.270,None)],            [(150,50),(150,50)],        [(0,50)]],
+          "HIS": [functions.spl("SC4 SP1 SP1"),    [(0.320,7500), (0.270,None), (0.270,None),(0.270,None)],            [(150,50),(150,50)],        [(0,50)]],
+          "HIH": [functions.spl("SC4 SP1 SQd D"),  [(0.320,7500), (0.270,None), (0.270,None),(0.270,None),(0.11,None)],[(150,50),(150,50)],        [(0,50)]],
+          "GLN": [functions.spl("Nda D D"),        [(0.400,5000), (0.280,None)],                                       [],                         [],              [(0.5,)]],
+          "ASN": [functions.spl("Nda D D"),        [(0.320,5000), (0.280,None)],                                       [],                         [],              [(0.5,)]],
+          "SER": [functions.spl("N0 D D"),         [(0.250,7500), (0.280,None)],                                       [],                         [],              [(0.5,)]],
+          "THR": [functions.spl("N0 D D"),         [(0.260,9000), (0.280,None)],                                       [],                         [],              [(0.5,)]],
+          "ARG": [functions.spl("N0 Qd D"),        [(0.330,5000), (0.340,5000), (0.110,None)],                         [(180,25)]],
+          "LYS": [functions.spl("C3 Qd D"),        [(0.330,5000), (0.280,5000), (0.110,None)],                         [(180,25)]],
+          "ASP": [functions.spl("Qa D"),           [(0.320,7500), (0.110,None)]],
+          "GLU": [functions.spl("Qa D"),           [(0.400,5000), (0.110,None)]],
+          "CYS": [functions.spl("C5"),             [(0.310,7500)]],
+          "ILE": [functions.spl("C1"),             [(0.310,None)]],
+          "LEU": [functions.spl("C1"),             [(0.330,7500)]],
+          "MET": [functions.spl("C5"),             [(0.400,2500)]],
+          "PRO": [functions.spl("C3"),             [(0.300,7500)]],
+          "HYP": [functions.spl("P1"),             [(0.300,7500)]],
+          "VAL": [functions.spl("C2"),             [(0.265,None)]],
           "ALA": [],
           "GLY": [],
           }
@@ -144,7 +144,7 @@ class martini22p:
 
         # If masses or charged diverge from standard (45/72 and -/+1) they are defined here.
         self.mass_charge = {
-        #RES   MASS               CHARGE
+        #RES   MAsecstruc               CHARGE
         "GLN":[[0,36,36],         [0,0.42,-0.42]], 
         "ASN":[[0,36,36],         [0,0.46,-0.46]], 
         "SER":[[0,36,36],         [0,0.40,-0.40]],
@@ -206,28 +206,28 @@ class martini22p:
         
         ## BACKBONE BEAD TYPE ##                                                                    
         # Dictionary of default bead types (*D)                                                     
-        self.bbBeadDictD  = FUNC.hash(SS.bbss,self.bbdef)                                                             
+        self.bbBeadDictD  = functions.hash(secstruc.bbss,self.bbdef)                                                             
         # Dictionary of dictionaries of types for specific residues (*S)                            
-        self.bbBeadDictS  = dict([(i,FUNC.hash(SS.bbss,self.bbtyp[i])) for i in self.bbtyp.keys()])                        
+        self.bbBeadDictS  = dict([(i,functions.hash(secstruc.bbss,self.bbtyp[i])) for i in self.bbtyp.keys()])                        
         
         ## BB BOND TYPE ##                                                                          
         # Dictionary of default abond types (*D)                                                    
-        self.bbBondDictD = FUNC.hash(SS.bbss,zip(self.bbldef,self.bbkb))                                                   
+        self.bbBondDictD = functions.hash(secstruc.bbss,zip(self.bbldef,self.bbkb))                                                   
         # Dictionary of dictionaries for specific types (*S)                                        
-        self.bbBondDictS = dict([(i,FUNC.hash(SS.bbss,zip(self.bbltyp[i],self.bbkbtyp[i]))) for i in self.bbltyp.keys()])       
+        self.bbBondDictS = dict([(i,functions.hash(secstruc.bbss,zip(self.bbltyp[i],self.bbkbtyp[i]))) for i in self.bbltyp.keys()])       
         # This is tricky to read, but it gives the right bondlength/force constant
         
         ## BBB ANGLE TYPE ##                                                                        
         # Dictionary of default angle types (*D)                                                    
-        self.bbAngleDictD = FUNC.hash(SS.bbss,zip(self.bbadef,self.bbka))                                                  
+        self.bbAngleDictD = functions.hash(secstruc.bbss,zip(self.bbadef,self.bbka))                                                  
         # Dictionary of dictionaries for specific types (*S)                                        
-        self.bbAngleDictS = dict([(i,FUNC.hash(SS.bbss,zip(self.bbatyp[i],self.bbkatyp[i]))) for i in self.bbatyp.keys()])      
+        self.bbAngleDictS = dict([(i,functions.hash(secstruc.bbss,zip(self.bbatyp[i],self.bbkatyp[i]))) for i in self.bbatyp.keys()])      
                     
         ## BBBB DIHEDRAL TYPE ##                                                                    
         # Dictionary of default dihedral types (*D)                                                 
-        self.bbDihedDictD = FUNC.hash(SS.bbss,zip(self.bbddef,self.bbkd,self.bbdmul))                                           
+        self.bbDihedDictD = functions.hash(secstruc.bbss,zip(self.bbddef,self.bbkd,self.bbdmul))                                           
         # Dictionary of dictionaries for specific types (*S)                                        
-        self.bbDihedDictS = dict([(i,FUNC.hash(SS.bbss,zip(self.bbdtyp[i],self.bbkdtyp[i]))) for i in self.bbdtyp.keys()])      
+        self.bbDihedDictS = dict([(i,functions.hash(secstruc.bbss,zip(self.bbdtyp[i],self.bbkdtyp[i]))) for i in self.bbdtyp.keys()])      
         
     # The following function returns the backbone bead for a given residue and                   
     # secondary structure type.                                                                 

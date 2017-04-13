@@ -27,7 +27,6 @@ import simopt
 from simopt import MULTI, MA
 
 from . import core
-from . import DOC
 
 #from .converters import vector, box3d, molspec
 
@@ -114,33 +113,21 @@ def update_options(options):
                 # We add the directory where the script resides and a possible "ForceFields" directory to the search path
                 # realpath() will make your script run, even if you symlink it :)
                 cmd_folder = os.path.realpath(os.path.dirname(inspect.getfile(inspect.currentframe())))
+                print(cmd_folder)
                 if cmd_folder not in sys.path:
                     sys.path.insert(0, cmd_folder)
                 # use this if you want to include modules from a subfolder
                 cmd_subfolder = os.path.realpath(os.path.dirname(inspect.getfile(inspect.currentframe()))) + "/ForceFields"
+                print(cmd_subfolder)
                 if cmd_subfolder not in sys.path:
                      sys.path.insert(0, cmd_subfolder)
                 _tmp = __import__(options['forcefield'].lower()+"_ff")
+                print(_tmp)
                 options['ForceField'] = getattr(_tmp, options['forcefield'].lower())()
             except:
                 logging.error("Forcefield '%s' can not be loaded." % (options['forcefield']))
                 sys.exit()
         
-    #    if os.path.exists(options['-ff'].value.lower()+'_ff.py'):
-    #        _tmp = __import__(options['-ff'].value.lower()+"_ff")
-    #        options['ForceField'] = getattr(_tmp, options['-ff'].value.lower())()
-    #    elif os.path.exists('ForceFields/'+options['-ff'].value.lower()+'_ff.py'):
-    #        _tmp = __import__("ForceFields."+options['-ff'].value.lower()+'_ff',fromlist="ForceFields")
-    #        options['ForceField'] = getattr(_tmp, options['-ff'].value.lower())()
-    #    elif options['-ff'].value.lower() in globals():
-    #        options['ForceField'] = globals()[options['-ff'].value.lower()]()
-    #    else:
-    #        logging.error("Forcefield '%s' can not be found."%(options['-ff']))
-    #        sys.exit()
-    #except:
-    #    logging.error("Forcefield '%s' can not be loaded."%(options['-ff']))
-    #    sys.exit()
-
     # Process the raw options from the command line
     # Boolean options are set to more intuitive variables
     options['RetainHETATM']        = False  # options['-hetatm']

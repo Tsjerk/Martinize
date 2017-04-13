@@ -2,7 +2,7 @@
 ## 8 # MAIN #  -> @MAIN <-
 #############
 import sys, logging, random, math, os, re
-import IO, TOP, DOC, ELN, FUNC, MAP
+import IO, topology, quotes, elastic, functions, mapping
 
 
 def main(options):
@@ -231,14 +231,14 @@ def main(options):
         for i_count, i in enumerate(IO.residues(atoms)):
             if i[0][1] in ("SOL", "HOH", "TIP"):
                 continue
-            if not i[0][1] in MAP.CoarseGrained.mapping.keys():
+            if not i[0][1] in mapping.CoarseGrained.mapping.keys():
                 continue
             nra = 0
             names = [j[0] for j in i]
             # This gives out a list of atoms in residue, each tuple has other
             # stuff in it that's needed elsewhere so we just take the last
             # element which is the atom index (in that residue)
-            for j_count, j in enumerate(MAP.mapIndex(i)):
+            for j_count, j in enumerate(mapping.mapIndex(i)):
                 outNDX.write('[ Bead %i of residue %i ]\n' % (j_count+1, i_count+1))
                 line = ''
                 for k in j:
@@ -314,7 +314,7 @@ def main(options):
                 for j in rlc[i+1:]:
                     # Checking the minimum distance over all frames
                     # But we could also take the maximum, or the mean
-                    d2 = min([FUNC.distance2(a, b) for a, b in zip(cyscoord[i], cyscoord[j])])
+                    d2 = min([functions.distance2(a, b) for a, b in zip(cyscoord[i], cyscoord[j])])
                     if d2 <= options['CystineMaxDist2']:
                         a, b = cysteines[i], cysteines[j]
                         options['cglinks'].append((("SC1", "CYS", a[2], a[3]), ("SC1", "CYS", b[2], b[3]), bl, kb))
@@ -352,9 +352,9 @@ def main(options):
                 moleculeTypes[mol] = name
 
                 # Write the molecule type topology
-                top = TOP.Topology(mol[0], options=options, name=name)
+                top = topology.Topology(mol[0], options=options, name=name)
                 for m in mol[1:]:
-                    top += TOP.Topology(m, options=options)
+                    top += topology.Topology(m, options=options)
 
                 # Have to add the connections, like the connecting network
                 # Gather coordinates
@@ -370,7 +370,7 @@ def main(options):
                     atomB = atomB in mcg and mcg.index(atomB)+1
                     if atomA and atomB:
                         cat = (forceconst is None) and "Constraint" or "Link"
-                        top.bonds.append(TOP.Bond(
+                        top.bonds.append(topology.Bond(
                             (atomA, atomB),
                             options    = options,
                             type       = 1,
@@ -384,12 +384,12 @@ def main(options):
                 # coordinates for the merged chains are available.
                 if options['elastic']:
                     rubberType = options['ForceField'].EBondType
-                    rubberList = ELN.rubberBands(
+                    rubberList = elastic.rubberBands(
                         [(i[0], j) for i, j in zip(top.atoms, coords) if i[4] in options['eleads']],
                         options['ellower'], options['elupper'],
                         options['eldecay'], options['ElasticDecayPower'],
                         options['elastic_fc'], options['elminforce'])
-                    top.bonds.extend([TOP.Bond(i, options=options, type=rubberType, category="Rubber band") for i in rubberList])
+                    top.bonds.extend([topology.Bond(i, options=options, type=rubberType, category="Rubber band") for i in rubberList])
 
                 # Write out the MoleculeType topology
                 destination = options["outtop"] and open(moleculeTypes[mol]+".itp", 'w') or sys.stdout
@@ -451,5 +451,5 @@ Martini system from %s
 
     # The following lines are always printed (if no errors occur).
     print "\n\tThere you are. One MARTINI. Shaken, not stirred.\n"
-    Q = DOC.martiniq.pop(random.randint(0, len(DOC.martiniq)-1))
+    Q = quotes.martiniq.pop(random.randint(0, len(quotes.martiniq)-1))
     print "\n", Q[1], "\n%80s" % ("--"+Q[0]), "\n"

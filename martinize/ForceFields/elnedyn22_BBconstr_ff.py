@@ -10,7 +10,7 @@ class elnedyn22:
     '''
     ff = True
     def __init__(self):
-        import SS,FUNC,IO 
+        import secstruc,functions,IO 
 
         # parameters are defined here for the following (protein) forcefields:
         self.name = 'elnedyn22'
@@ -47,12 +47,12 @@ class elnedyn22:
         
         ###############################################################################################
         ## BEADS ##                                                                          #                 
-        #                               F     E     H     1     2     3     T     S     C    # SS one letter   
-        self.bbdef    =     FUNC.spl(" N0   Nda    N0    Nd    Na   Nda   Nda    P5    P5")  # Default beads   #@#
+        #                               F     E     H     1     2     3     T     S     C    # secstruc one letter   
+        self.bbdef    =     functions.spl(" N0   Nda    N0    Nd    Na   Nda   Nda    P5    P5")  # Default beads   #@#
         self.bbtyp    = {                                                                    #                 #@#
-                     "ALA": FUNC.spl(" C5    N0    C5    N0    N0    N0    N0    P4    P4"), # ALA specific    #@#
-                     "PRO": FUNC.spl(" C5    N0    C5    N0    Na    N0    N0    P4    P4"), # PRO specific    #@#
-                     "HYP": FUNC.spl(" C5    N0    C5    N0    N0    N0    N0    P4    P4")  # HYP specific    #@#
+                     "ALA": functions.spl(" C5    N0    C5    N0    N0    N0    N0    P4    P4"), # ALA specific    #@#
+                     "PRO": functions.spl(" C5    N0    C5    N0    Na    N0    N0    P4    P4"), # PRO specific    #@#
+                     "HYP": functions.spl(" C5    N0    C5    N0    N0    N0    N0    P4    P4")  # HYP specific    #@#
         }                                                                                    #                 #@#
         ## BONDS ##                                                                          #                 
         self.bbldef   =             (.365, .350, .350, .350, .350, .350, .350, .350, .350)   # BB bond lengths #@#
@@ -104,25 +104,25 @@ class elnedyn22:
         # In the elnedyn2, TRP has an extra, cross-ring constraint
         self.sidechains = {
         #RES#   BEADS                      BONDS                                                                    ANGLES                          DIHEDRALS
-        'TRP': [FUNC.spl("SC4 SNd SC5 SC5"), [(0.255,73000), (0.220,None), (0.250,None), (0.280,None), (0.255,None), (0.35454,None)], [(142,30), (143,20), (104,50)], [(180,200)]],
-        'TYR': [FUNC.spl("SC4 SC4 SP1"),     [(0.335, 6000), (0.335,6000), (0.240,None), (0.310,None), (0.310,None)], [(70,100), (130, 50)]],
-        'PHE': [FUNC.spl("SC5 SC5 SC5"),     [(0.340, 7500), (0.340,7500), (0.240,None), (0.240,None), (0.240,None)], [(70,100), (125,100)]],
-        'HIS': [FUNC.spl("SC4 SP1 SP1"),     [(0.195,94000), (0.193,None), (0.295,None), (0.216,None)],               [(135,100),(115, 50)]],
-        'HIH': [FUNC.spl("SC4 SP1 SQd"),     [(0.195,94000), (0.193,None), (0.295,None), (0.216,None)],               [(135,100),(115, 50)]],
-        'ARG': [FUNC.spl("N0 Qd"),           [(0.250,12500), (0.350,6200)],                                           [(150,15)]],
-        'LYS': [FUNC.spl("C3 Qd"),           [(0.250,12500), (0.300,9700)],                                           [(150,20)]],
-        'CYS': [FUNC.spl("C5"),              [(0.240, None)]],
-        'ASP': [FUNC.spl("Qa"),              [(0.255, None)]],
-        'GLU': [FUNC.spl("Qa"),              [(0.310, 2500)]],
-        'ILE': [FUNC.spl("AC1"),              [(0.225,13250)]],
-        'LEU': [FUNC.spl("AC1"),              [(0.265, None)]],
-        'MET': [FUNC.spl("C5"),              [(0.310, 2800)]],
-        'ASN': [FUNC.spl("P5"),              [(0.250, None)]],
-        'PRO': [FUNC.spl("C3"),              [(0.190, None)]],
-        'GLN': [FUNC.spl("P4"),              [(0.300, 2400)]],
-        'SER': [FUNC.spl("P1"),              [(0.195, None)]],
-        'THR': [FUNC.spl("P1"),              [(0.195, None)]],
-        'VAL': [FUNC.spl("AC2"),              [(0.200, None)]],
+        'TRP': [functions.spl("SC4 SNd SC5 SC5"), [(0.255,73000), (0.220,None), (0.250,None), (0.280,None), (0.255,None), (0.35454,None)], [(142,30), (143,20), (104,50)], [(180,200)]],
+        'TYR': [functions.spl("SC4 SC4 SP1"),     [(0.335, 6000), (0.335,6000), (0.240,None), (0.310,None), (0.310,None)], [(70,100), (130, 50)]],
+        'PHE': [functions.spl("SC5 SC5 SC5"),     [(0.340, 7500), (0.340,7500), (0.240,None), (0.240,None), (0.240,None)], [(70,100), (125,100)]],
+        'HIS': [functions.spl("SC4 SP1 SP1"),     [(0.195,94000), (0.193,None), (0.295,None), (0.216,None)],               [(135,100),(115, 50)]],
+        'HIH': [functions.spl("SC4 SP1 SQd"),     [(0.195,94000), (0.193,None), (0.295,None), (0.216,None)],               [(135,100),(115, 50)]],
+        'ARG': [functions.spl("N0 Qd"),           [(0.250,12500), (0.350,6200)],                                           [(150,15)]],
+        'LYS': [functions.spl("C3 Qd"),           [(0.250,12500), (0.300,9700)],                                           [(150,20)]],
+        'CYS': [functions.spl("C5"),              [(0.240, None)]],
+        'ASP': [functions.spl("Qa"),              [(0.255, None)]],
+        'GLU': [functions.spl("Qa"),              [(0.310, 2500)]],
+        'ILE': [functions.spl("AC1"),              [(0.225,13250)]],
+        'LEU': [functions.spl("AC1"),              [(0.265, None)]],
+        'MET': [functions.spl("C5"),              [(0.310, 2800)]],
+        'ASN': [functions.spl("P5"),              [(0.250, None)]],
+        'PRO': [functions.spl("C3"),              [(0.190, None)]],
+        'GLN': [functions.spl("P4"),              [(0.300, 2400)]],
+        'SER': [functions.spl("P1"),              [(0.195, None)]],
+        'THR': [functions.spl("P1"),              [(0.195, None)]],
+        'VAL': [functions.spl("AC2"),              [(0.200, None)]],
         'GLY': [],
         'ALA': [],
         }
@@ -137,7 +137,7 @@ class elnedyn22:
 
         # If masses or charged diverge from standard (45/72 and -/+1) they are defined here.
         self.mass_charge = {
-        #RES   MASS               CHARGE
+        #RES   MAsecstruc               CHARGE
         }
 
         # Defines the connectivity between between beads
@@ -193,28 +193,28 @@ class elnedyn22:
         
         ## BACKBONE BEAD TYPE ##                                                                    
         # Dictionary of default bead types (*D)                                                     
-        self.bbBeadDictD  = FUNC.hash(SS.bbss,self.bbdef)                                                             
+        self.bbBeadDictD  = functions.hash(secstruc.bbss,self.bbdef)                                                             
         # Dictionary of dictionaries of types for specific residues (*S)                            
-        self.bbBeadDictS  = dict([(i,FUNC.hash(SS.bbss,self.bbtyp[i])) for i in self.bbtyp.keys()])                        
+        self.bbBeadDictS  = dict([(i,functions.hash(secstruc.bbss,self.bbtyp[i])) for i in self.bbtyp.keys()])                        
          
         ## BB BOND TYPE ##                                                                          
         # Dictionary of default abond types (*D)                                                    
-        self.bbBondDictD = FUNC.hash(SS.bbss,zip(self.bbldef,self.bbkb))                                                   
+        self.bbBondDictD = functions.hash(secstruc.bbss,zip(self.bbldef,self.bbkb))                                                   
         # Dictionary of dictionaries for specific types (*S)                                        
-        self.bbBondDictS = dict([(i,FUNC.hash(SS.bbss,zip(self.bbltyp[i],self.bbkbtyp[i]))) for i in self.bbltyp.keys()])       
+        self.bbBondDictS = dict([(i,functions.hash(secstruc.bbss,zip(self.bbltyp[i],self.bbkbtyp[i]))) for i in self.bbltyp.keys()])       
         # This is tricky to read, but it gives the right bondlength/force constant
 
         ## BBB ANGLE TYPE ##                                                                        
         # Dictionary of default angle types (*D)                                                    
-        self.bbAngleDictD = FUNC.hash(SS.bbss,zip(self.bbadef,self.bbka))                                                  
+        self.bbAngleDictD = functions.hash(secstruc.bbss,zip(self.bbadef,self.bbka))                                                  
         # Dictionary of dictionaries for specific types (*S)                                        
-        self.bbAngleDictS = dict([(i,FUNC.hash(SS.bbss,zip(self.bbatyp[i],self.bbkatyp[i]))) for i in self.bbatyp.keys()])      
+        self.bbAngleDictS = dict([(i,functions.hash(secstruc.bbss,zip(self.bbatyp[i],self.bbkatyp[i]))) for i in self.bbatyp.keys()])      
        
         ## BBBB DIHEDRAL TYPE ##                                                                    
         # Dictionary of default dihedral types (*D)                                                 
-        self.bbDihedDictD = FUNC.hash(SS.bbss,zip(self.bbddef,self.bbkd,self.bbdmul))                                           
+        self.bbDihedDictD = functions.hash(secstruc.bbss,zip(self.bbddef,self.bbkd,self.bbdmul))                                           
         # Dictionary of dictionaries for specific types (*S)                                        
-        self.bbDihedDictS = dict([(i,FUNC.hash(SS.bbss,zip(self.bbdtyp[i],self.bbkdtyp[i]))) for i in self.bbdtyp.keys()])      
+        self.bbDihedDictS = dict([(i,functions.hash(secstruc.bbss,zip(self.bbdtyp[i],self.bbkdtyp[i]))) for i in self.bbdtyp.keys()])      
 
     # The following function returns the backbone bead for a given residue and                   
     # secondary structure type.                                                                 
@@ -228,16 +228,16 @@ class elnedyn22:
     
     # For Elnedyn we need something else to get the bond length (much simpler due to Ca position BB's)
     def bbGetBond(self,r,ca,ss):
-        import FUNC 
+        import functions 
         import math
         # The 150000 forceconstant gave an error message, turning to constraints would be better.
-        return ( math.sqrt(FUNC.distance2(ca[0],ca[1]))/10., None )
+        return ( math.sqrt(functions.distance2(ca[0],ca[1]))/10., None )
     
     def bbGetAngle(self,r,ca,ss):
-        import FUNC,IO 
+        import functions,IO 
         import math
         # Elnedyn takes angles from structure, with fc=40
-        return (math.acos(FUNC.cos_angle([i-j for i,j in zip(ca[0],ca[1])],[i-j for i,j in zip(ca[2],ca[1])]))/IO.d2r, 40)
+        return (math.acos(functions.cos_angle([i-j for i,j in zip(ca[0],ca[1])],[i-j for i,j in zip(ca[2],ca[1])]))/IO.d2r, 40)
 
     def messages(self):
         '''Prints any force-field specific logging messages.'''

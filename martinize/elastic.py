@@ -2,7 +2,7 @@
 ## 7 # ELASTIC NETWORK ##  -> @ELN <-
 #########################
 import math
-import FUNC
+import functions
 
 ## ELASTIC NETWORK ##
 
@@ -25,7 +25,7 @@ def rubberBands(atomList, lowerBound, upperBound, decayFactor, decayPower, force
         bi, xi = atomList.pop(0)
         for bj, xj in atomList[2:]:
             # Mind the nm/A conversion -- This has to be standardized! Global use of nm?
-            d2 = FUNC.distance2(xi, xj)/100
+            d2 = functions.distance2(xi, xj)/100
 
             if d2 < u2:
                 dij  = math.sqrt(d2)

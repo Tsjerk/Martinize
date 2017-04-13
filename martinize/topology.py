@@ -1,8 +1,10 @@
 ##################
 ## 7 # TOPOLOGY ##  -> @TOP <-
 ##################
-import IO, FUNC, MAP
+import IO, functions
 import logging, math
+
+import mapping as mapper
 
 
 # This is a generic class for Topology Bonded Type definitions
@@ -59,7 +61,7 @@ class Bonded:
         # For exclusions, no type is defined, which equals -1
         if self.type != -1: s.append(" %5d " % self.type)
         # Print integers and floats in proper format and neglect None terms
-        s.extend([FUNC.formatString(i) for i in self.parameters if i is not None])
+        s.extend([functions.formatString(i) for i in self.parameters if i is not None])
         if self.comments:
             s.append(';')
             if type(self.comments) == str:
@@ -288,7 +290,7 @@ class Topology:
         if self.sequence:
             out += [
                 '; Sequence:',
-                '; ' + ''.join([MAP.AA321.get(AA) for AA in self.sequence]),
+                '; ' + ''.join([mapper.AA321.get(AA) for AA in self.sequence]),
                 '; Secondary Structure:',
                 '; ' + self.secstruc,
                 ]
@@ -653,7 +655,7 @@ class Topology:
 
             # All residue atoms
             counter = 0  # Counts over beads
-            for atype, aname in zip([bbb] + list(scatoms), MAP.CoarseGrained.residue_bead_names):
+            for atype, aname in zip([bbb] + list(scatoms), mapper.CoarseGrained.residue_bead_names):
                 if self.multiscale:
                     atype, aname = "v" + atype, "v" + aname
                 # If mass or charge diverse, we adopt it here.
@@ -908,7 +910,7 @@ class Topology:
                 counter = 0  # Counts over beads
                 # Need to tweak this to get all the backbone beads to the list with the side chain
                 bbbset = [bb3[count], bb3[count+1], bb3[count+2]]
-                for atype, aname in zip(bbbset+list(scatoms), MAP.CoarseGrained.residue_bead_names_dna):
+                for atype, aname in zip(bbbset+list(scatoms), mapper.CoarseGrained.residue_bead_names_dna):
                     if self.multiscale:
                         atype, aname = "v"+atype, "v"+aname
                     self.atoms.append((atid, atype, resi, resname, aname, atid,

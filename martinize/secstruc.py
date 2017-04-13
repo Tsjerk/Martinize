@@ -3,7 +3,7 @@
 #############################
 import logging, os, sys
 import subprocess as subp
-import FUNC, IO
+import functions, IO
 
 #----+--------------------------------------+
 ## A | SECONDARY STRUCTURE TYPE DEFINITIONS |
@@ -28,7 +28,7 @@ ss_names = {
 }
 
 bbss = ss_names.keys()
-bbss = FUNC.spl("  F     E     H     1     2     3     T     S     C")  # SS one letter
+bbss = functions.spl("  F     E     H     1     2     3     T     S     C")  # SS one letter
 
 
 # The following dictionary contains secondary structure types as assigned by
@@ -62,10 +62,10 @@ cgss     =   list("FHHHEETSCC")              # Corresponding CG secondary struct
 # Patterns can be added to the dictionaries. This only makes sense
 # if for each key in patterns there is a matching key in pattypes.
 patterns = {
-    "H": FUNC.pat(".H. .HH. .HHH. .HHHH. .HHHHH. .HHHHHH. .HHHHHHH. .HHHH HHHH.")                #@#
+    "H": functions.pat(".H. .HH. .HHH. .HHHH. .HHHHH. .HHHHHH. .HHHHHHH. .HHHH HHHH.")                #@#
 }
 pattypes = {
-    "H": FUNC.pat(".3. .33. .333. .3333. .13332. .113322. .1113222. .1111 2222.")                #@#
+    "H": functions.pat(".3. .33. .333. .3333. .13332. .113322. .1113222. .1111 2222.")                #@#
 }
 
 
@@ -80,7 +80,7 @@ ssnum  = (13,  4,  2,  2,  2,  2,  6, 22,  0)                                   
 
 # Dictionary returning a number for a given type of secondary structure
 # This can be used for setting the b-factor field for coloring
-ss2num = FUNC.hash(bbss, ssnum)
+ss2num = functions.hash(bbss, ssnum)
 
 
 # List of programs for which secondary structure definitions can be processed
@@ -88,7 +88,7 @@ programs = ssdefs.keys()
 
 
 # Dictionaries mapping ss types to the CG ss types
-ssd = dict([(i, FUNC.hash(ssdefs[i], cgss)) for i in programs])
+ssd = dict([(i, functions.hash(ssdefs[i], cgss)) for i in programs])
 
 
 # From the secondary structure dictionaries we create translation tables
