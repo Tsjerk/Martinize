@@ -5,8 +5,15 @@ Print help and exit
 Print help and exit
 
 :: -f 1ubq.pdb
-Convert atomistic PDB structure from ubiquitin to martini
-? which version
+Convert atomistic PDB structure from ubiquitin to martini22
+
+:: -f 3csy.pdb
+Convert atomistic PDB structure with 16 chains of which 10 unique,
+with intra-chain disulphide bridges.
+
+:: -f 2qwo.pdb
+Convert atomistic PDB structure with two chains and one
+inter-chain disulphide bridge, merging chains.
 
 
 
