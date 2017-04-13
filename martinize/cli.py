@@ -38,7 +38,8 @@ OPTIONS = simopt.Options([
         """
     Input/output related options
     """,
-    (0, "-f",        "input",         str,    1,          None,    MA, "Input GRO or PDB file"),
+    (0, "-v",        "verbose",        str,   1,          None,     0, "Verbosity level"),
+    (0, "-f",        "input",          str,   1,          None,     0, "Input GRO or PDB file"),
     (0, "-o",        "outtop",         str,   1, "martini.top",     0, "Output topology (TOP)"),
     (0, "-x",        "outstruc",       str,   1,          None,     0, "Output coarse grained structure (PDB)"),
     (0, "-n",        "index",          str,   1,          None,     0, "Output index file with CG (and multiscale) beads."),
@@ -56,7 +57,7 @@ OPTIONS = simopt.Options([
     (1, "-link",     "links",          str,   1,          None, MULTI, "Link (+)"),
     (1, "-merge",    "merges",         str,   1,          None, MULTI, "Merge chains: e.g. -merge A,B,C (+)"),
     (0, "-name",     "name",           str,   1,          None,     0, "Moleculetype name"),
-    (1, "-p",        "posre",          str,   1,        'None',     0, "Output position restraints (None/All/Backbone) (default: None)"),
+    (1, "-p",        "posres",         str,   1,        'None',     0, "Output position restraints (None/All/Backbone) (default: None)"),
     (1, "-pf",       "posrefc",        float, 1,          1000,     0, "Position restraints force constant (default: 1000 kJ/mol/nm^2)"),
     (1, "-ed",       "extdih",         bool,  0,         False,     0, "Use dihedrals for extended regions rather than elastic bonds)"),
     (1, "-sep",      "separate",       bool,  0,         False,     0, "Write separate topologies for identical chains."),
@@ -94,44 +95,20 @@ def str2atom(a):
     return (a[3], a[1], int(a[2]), a[0])
 
 
-def option_parser(args, options, lists, version=0):
+def update_options(options):
 
-    # Check whether there is a request for help
-    if '-h' in args or '--help' in args:
-        DOC.help()
-
-    # Convert the option list to a dictionary, discarding all comments
-    options = dict([i for i in options if not type(i) == str])
-
-    # This information we would like to print to some files,
-    # so let's put it in our information class
-    options['Version']             = version
-    options['Arguments']           = args[:]
-
-    while args:
-        ar = args.pop(0)
-        options[ar].setvalue([args.pop(0) for i in range(options[ar].num)])
-
-    ## LOGGING ##
-    # Set the log level and communicate which options are set and what is happening
-    # If 'Verbose' is set, change the logger level
-    logLevel = options["-v"] and logging.DEBUG or logging.INFO
-    logging.basicConfig(format='%(levelname)-7s    %(message)s', level=logLevel)
-
-    logging.info('MARTINIZE, script version %s'%version)
-    logging.info('If you use this script please cite:')
-    logging.info('de Jong et al., J. Chem. Theory Comput., 2013, DOI:10.1021/ct300646g')
+    options["Version"] = ""
 
     # To make the program flexible, the forcefield parameters are defined
     # for multiple forcefield. We first check for a FF file in the current directory.
     # Next we check for the FF in globals (for catenated scripts). 
     # Next we check in at the location of the script and the subdiretory FF.
     try:
-        options['ForceField'] = globals()[options['-ff'].value.lower()]()
+        options['ForceField'] = globals()[options['forcefield'].lower()]()
     except KeyError:
         try:
-            _tmp = __import__(options['-ff'].value.lower()+"_ff")
-            options['ForceField'] = getattr(_tmp, options['-ff'].value.lower())()
+            _tmp = __import__(options['forcefield'].lower()+"_ff")
+            options['ForceField'] = getattr(_tmp, options['forcefield'].lower())()
         except ImportError:
             try:
                 # We add the directory where the script resides and a possible "ForceFields" directory to the search path
@@ -143,10 +120,10 @@ def option_parser(args, options, lists, version=0):
                 cmd_subfolder = os.path.realpath(os.path.dirname(inspect.getfile(inspect.currentframe()))) + "/ForceFields"
                 if cmd_subfolder not in sys.path:
                      sys.path.insert(0, cmd_subfolder)
-                _tmp = __import__(options['-ff'].value.lower()+"_ff")
-                options['ForceField'] = getattr(_tmp, options['-ff'].value.lower())()
+                _tmp = __import__(options['forcefield'].lower()+"_ff")
+                options['ForceField'] = getattr(_tmp, options['forcefield'].lower())()
             except:
-                logging.error("Forcefield '%s' can not be loaded." % (options['-ff']))
+                logging.error("Forcefield '%s' can not be loaded." % (options['forcefield']))
                 sys.exit()
         
     #    if os.path.exists(options['-ff'].value.lower()+'_ff.py'):
@@ -166,42 +143,29 @@ def option_parser(args, options, lists, version=0):
 
     # Process the raw options from the command line
     # Boolean options are set to more intuitive variables
-    options['Collagen']            = options['-collagen']
-    options['chHIS']               = options['-his']
-    options['ChargesAtBreaks']     = options['-cb']
-    options['NeutralTermini']      = options['-nt']
-    options['ExtendedDihedrals']   = options['-ed']
     options['RetainHETATM']        = False  # options['-hetatm']
-    options['SeparateTop']         = options['-sep']
     options['MixedChains']         = False  # options['-mixed']
-    options['ElasticNetwork']      = options['-elastic']
 
-    # Parsing of some other options into variables
-    options['ElasticMaximumForce'] = options['-ef'].value
-    options['ElasticMinimumForce'] = options['-em'].value
-    options['ElasticLowerBound']   = options['-el'].value
-    options['ElasticUpperBound']   = options['-eu'].value
-    options['ElasticDecayFactor']  = options['-ea'].value
-    options['ElasticDecayPower']   = options['-ep'].value
-    options['ElasticBeads']        = options['-eb'].value.split(',')
-    options['PosResForce']         = options['-pf'].value
+    options['elbeads'] = options['elbeads'].split(',')
 
-    options['PosRes']              = [i.lower() for i in options['-p'].value.split(",")]
-    if "none"     in options['PosRes']: options['PosRes'] = []
-    if "backbone" in options['PosRes']: options['PosRes'].append("BB")
+    options['posres'] = [i.lower() for i in options['posres'].split(",")]
+    if "backbone" in options['posres']: 
+        options['posres'].append("BB")
+    if "none" in options['posres']: 
+        options['posres'] = []
 
     if options['ForceField'].ElasticNetwork:
         # Some forcefields, like elnedyn, always use an elatic network.
         # This is set in the forcefield file, with the parameter ElasticNetwork.
-        options['ElasticNetwork'] = True
+        options['elastic'] = True
 
     # Merges, links and cystines
-    options['mergeList'] = "all" in lists['merges'] and ["all"] or [i.split(",") for i in lists['merges']]
+    options['merges'] = "all" in options['merges'] and ["all"] or [i.split(",") for i in options['merges']]
 
     # Process links
     linkList   = []
     linkListCG = []
-    for i in lists['links']:
+    for i in options['links']:
         ln     = i.split(",")
         a, b   = str2atom(ln[0]), str2atom(ln[1])
         if len(ln) > 3:  # Bond with given length and force constant
@@ -220,7 +184,7 @@ def option_parser(args, options, lists, version=0):
     # This should be done for all special bonds listed in the _special_ dictionary
     CystineCheckBonds = False   # By default, do not detect cystine bridges
     CystineMaxDist2   = (10*0.22)**2  # Maximum distance (A) for detection of SS bonds
-    for i in lists['cystines']:
+    for i in options['cystines']:
         if i.lower() == "auto":
             CystineCheckBonds = True
         elif i.replace(".", "").isdigit():
@@ -239,28 +203,37 @@ def option_parser(args, options, lists, version=0):
 
     # Now we have done everything to it, we can add Link/cystine related stuff to options
     # 'multi' is not stored anywhere else, so that we also add
-    options['linkList']          = linkList
-    options['linkListCG']        = linkListCG
+    options['links'] = linkList
+    options['cglinks'] = linkListCG
     options['CystineCheckBonds'] = CystineCheckBonds
     options['CystineMaxDist2']   = CystineMaxDist2
-    options['multi']             = lists['multi']
 
-    logging.info("Chain termini will%s be charged"%(options['NeutralTermini'] and " not" or ""))
+    ## LOGGING ##
+    # Set the log level and communicate which options are set and what is happening
+    # If 'Verbose' is set, change the logger level
+    logLevel = options["verbose"] and logging.DEBUG or logging.INFO
+    logging.basicConfig(format='%(levelname)-7s    %(message)s', level=logLevel)
 
-    logging.info("Residues at chain brakes will%s be charged"%((not options['ChargesAtBreaks']) and " not" or ""))
+    #logging.info('MARTINIZE, script version %s'%__version__)
+    logging.info('If you use this script please cite:')
+    logging.info('de Jong et al., J. Chem. Theory Comput., 2013, DOI:10.1021/ct300646g')
+
+    logging.info("Chain termini will%s be charged"%(options['neutraltermini'] and " not" or ""))
+
+    logging.info("Residues at chain brakes will%s be charged"%((not options['chargedbreaks']) and " not" or ""))
 
     if 'ForceField' in options:
         logging.info("The %s forcefield will be used."%(options['ForceField'].name))
     else:
-        logging.error("Forcefield '%s' has not been implemented."%(options['-ff']))
+        logging.error("Forcefield '%s' has not been implemented."%(options['forcefield']))
         sys.exit()
 
-    if options['ExtendedDihedrals']:
+    if options['extdih']:
         logging.info('Dihedrals will be used for extended regions. (Elastic bonds may be more stable)')
     else:
         logging.info('Local elastic bonds will be used for extended regions.')
 
-    if options['PosRes']:
+    if options['posres']:
         logging.info("Position restraints will be generated.")
         logging.warning("Position restraints are only enabled if -DPOSRES is set in the MDP file")
 
@@ -283,6 +256,8 @@ def main(argv):
     # Parse options
     try:
         options = OPTIONS.parse(argv[1:])
+        options["Arguments"] = argv[1:]
+        update_options(options)
     except simopt.SimoptHelp:
         print(OPTIONS.help(argv[1:]))
         return 0
@@ -295,7 +270,7 @@ def main(argv):
 
     ## WORK
     try:
-        system = core.martinize(**options)
+        system = core.main(options)
     except MartinizeException as e:
         print(e)
         return 2
@@ -304,13 +279,6 @@ def main(argv):
     # Build atom list
     # Build topology
     # Build index
-
-    # Get the possible commandline arguments arguments and help text. 
-    options, lists = DOC.options, DOC.lists
-    # Parse commandline options.
-    options = cli.option_parser(args, options, lists, version)
-
-    martinize.main(options)
 
     return 0
 

@@ -165,7 +165,7 @@ class Dihedral(Bonded):
         if ''.join(i for i in ss) == 'FFFF':
             # Collagen
             self.parameters = self.options['ForceField'].bbDihedDictD['F']
-        elif ''.join(i for i in ss) == 'EEEE' and self.options['ExtendedDihedrals']:
+        elif ''.join(i for i in ss) == 'EEEE' and self.options['extdih']:
             # Use dihedrals
             self.parameters = self.options['ForceField'].bbDihedDictD['E']
         elif set(ss).issubset("H123"):
@@ -343,7 +343,7 @@ class Topology:
         if bonds:
             # Add a CPP style directive to allow control over the elastic network
             out.append("#ifndef NO_RUBBER_BANDS")
-            out.append("#ifndef RUBBER_FC\n#define RUBBER_FC %f\n#endif" % self.options['ElasticMaximumForce'])
+            out.append("#ifndef RUBBER_FC\n#define RUBBER_FC %f\n#endif" % self.options['elastic_fc'])
             out.extend(bonds)
             out.append("#endif")
         # Backbone-Sidechain/Sidechain-Sidechain
@@ -394,7 +394,7 @@ class Topology:
         # Postition Restraints
         if self.posres:
             out.append("\n#ifdef POSRES")
-            out.append("#ifndef POSRES_FC\n#define POSRES_FC %.2f\n#endif" % self.options['PosResForce'])
+            out.append("#ifndef POSRES_FC\n#define POSRES_FC %.2f\n#endif" % self.options['posrefc'])
             out.append(" [ position_restraints ]")
             out.extend(['  %5d    1    POSRES_FC    POSRES_FC    POSRES_FC' % i for i in self.posres])
             out.append("#endif")
@@ -484,12 +484,12 @@ class Topology:
         bb = [self.options['ForceField'].bbGetBead(res, typ) for num, res, typ, Ca in seqss]
 
         # If termini need to be charged, change the bead types
-        if not self.options['NeutralTermini']:
+        if not self.options['neutraltermini']:
             bb[0]  = "Qd"
             bb[-1] = "Qa"
 
         # If breaks need to be charged, change the bead types
-        if self.options['ChargesAtBreaks']:
+        if self.options['chargedbreaks']:
             for i in breaks:
                 bb[i]   = "Qd"
                 bb[i-1] = "Qa"
@@ -515,7 +515,7 @@ class Topology:
                 for q in quadruples:
                     id, rn, ss, ca = zip(*q)
                     # Maybe do local elastic networks
-                    if ss == ("E", "E", "E", "E") and not self.options['ExtendedDihedrals']:
+                    if ss == ("E", "E", "E", "E") and not self.options['extdih']:
                         # This one may already be listed as the 2-4 bond of a previous one
                         if not (id[0], id[2]) in self.bonds:
                             self.bonds.append(Bond(
@@ -668,9 +668,9 @@ class Topology:
                                        self.options['ForceField'].charges.get(atype, 0), ss))
                 # Doing this here save going over all the atoms onesmore.
                 # Generate position restraints for all atoms or Backbone beads only.
-                if 'all' in self.options['PosRes']:
+                if 'all' in self.options['posres']:
                     self.posres.append((atid))
-                elif aname in self.options['PosRes']:
+                elif aname in self.options['posres']:
                     self.posres.append((atid))
                 if mapping:
                     self.mapping.append((atid, [i + shift for i in mapping[counter]]))
@@ -915,9 +915,9 @@ class Topology:
                                        self.options['ForceField'].charges.get(atype, 0), ss))
                     # Doing this here saves going over all the atoms onesmore.
                     # Generate position restraints for all atoms or Backbone beads only.
-                    if 'all' in self.options['PosRes']:
+                    if 'all' in self.options['posres']:
                         self.posres.append((atid))
-                    elif aname in self.options['PosRes']:
+                    elif aname in self.options['posres']:
                         self.posres.append((atid))
                     if mapping:
                         self.mapping.append((atid, [i+shift for i in mapping[counter]]))

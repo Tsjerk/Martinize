@@ -9,7 +9,7 @@ def main(options):
     # Check whether to read from a gro/pdb file or from stdin
     # We use an iterator to wrap around the stream to allow
     # inferring the file type, without consuming lines already
-    inStream = IO.streamTag(options["-f"] and options["-f"].value or sys.stdin)
+    inStream = IO.streamTag(options["input"] or sys.stdin)
 
     # The streamTag iterator first yields the file type, which
     # is used to specify the function for reading frames
@@ -28,7 +28,6 @@ def main(options):
     ssTotal   = []
     cysteines = []
     for title, atoms, box in frameIterator(inStream):
-
         if fileType == "PDB":
             # The PDB file can have chains, in which case we list and process them specifically
             # TER statements are also interpreted as chain separators
@@ -60,7 +59,8 @@ def main(options):
         # Note that in some cases HETATM residues are part of a
         # chain. This will get problematic. But we cannot cover
         # all, probably.
-        if not options['MixedChains']:
+        #***
+        if True or not options['MixedChains']:
             demixedChains = []
             for chain in chains:
                 demixedChains.extend(chain.split())
@@ -80,7 +80,7 @@ def main(options):
             elif chain.type() in ("Protein", "Nucleic"):
                 keep.append(chain)
             # This is currently not active:
-            elif options['RetainHETATM']:
+            elif False and options['RetainHETATM']: #***
                 keep.append(chain)
             else:
                 logging.info("Removing HETATM chain %s consisting of %d residues." % (chain.id, len(chain)))
@@ -90,14 +90,14 @@ def main(options):
         # Can be easily expanded to residues other than HIS
         for chain in chains:
             for i, resname in enumerate(chain.sequence):
-                if resname == 'HIS' and options['chHIS']:
+                if resname == 'HIS' and options['sethischarge']:
                     choices = {0: 'HIH', 1: 'HIS'}
                     choice = IO.getChargeType(resname, i, choices)
                     chain.sequence[i] = choice
 
         # Check which chains need merging
         if model == 1:
-            order, merge = IO.check_merge(chains, options['mergeList'], options['linkList'], options['CystineCheckBonds'] and options['CystineMaxDist2'])
+            order, merge = IO.check_merge(chains, options['merges'], options['links'], options['CystineCheckBonds'] and options['CystineMaxDist2'])
 
         # Get the total length of the sequence
         seqlength = sum([len(chain) for chain in chains])
@@ -105,22 +105,22 @@ def main(options):
 
         ## SECONDARY STRUCTURE
         ss = ''
-        if options['Collagen']:
+        if options['collagen']:
             for chain in chains:
                 chain.set_ss("F")
                 ss += chain.ss
-        elif options["-ss"]:
+        elif options["secstruc"]:
             # XXX We need error-catching here,
-            # in case the file doesn't excist, or the string contains bogus.
+            # in case the file doesn't exist, or the string contains bogus.
             # If the string given for the sequence consists strictly of upper case letters
             # and does not appear to be a file, assume it is the secondary structure
-            ss = options["-ss"].value.replace('~', 'L').replace(' ', 'L')
-            if ss.isalnum() and ss.isupper() and not os.path.exists(options["-ss"].value):
-                ss = options["-ss"].value
+            ss = options["secstruc"].replace('~', 'L').replace(' ', 'L')
+            if ss.isalnum() and ss.isupper() and not os.path.exists(options["secstruc"]):
+                ss = options["secstruc"]
                 logging.info('Secondary structure read from command-line:\n'+ss)
             else:
                 # There ought to be a file with the name specified
-                ssfile = [i.strip() for i in open(options["-ss"].value)]
+                ssfile = [i.strip() for i in open(options["secstruc"])]
 
                 # Try to read the file as a Gromacs Secondary Structure Dump
                 # Those have an integer as first line
@@ -131,7 +131,7 @@ def main(options):
                     # Get the secondary structure type from DSSP output
                     logging.info('Will read secondary structure from file (assuming DSSP output).')
                     pss = re.compile(r"^([ 0-9]{4}[0-9]){2}")
-                    ss  = "".join([i[16] for i in open(options["-ss"].value) if re.match(pss, i)])
+                    ss  = "".join([i[16] for i in open(options["secstruc"]) if re.match(pss, i)])
 
             # Now set the secondary structure for each of the chains
             sstmp = ss
@@ -140,10 +140,10 @@ def main(options):
                 chain.set_ss(sstmp[:ln])
                 sstmp = ss[:ln]
         else:
-            if options["-dssp"]:
-                method, executable = "dssp", options["-dssp"].value
-            #elif options["-pymol"]:
-            #    method, executable = "pymol", options["-pymol"].value
+            if options["dsspexe"]:
+                method, executable = "dssp", options["dsspexe"]
+            #elif options["pymol"]:
+            #    method, executable = "pymol", options["pymol"]
             else:
                 logging.warning("No secondary structure or determination method speficied. Protein chains will be set to 'COIL'.")
                 method, executable = None, None
@@ -159,10 +159,10 @@ def main(options):
         ssTotal.append(ss)
 
         # Write the coarse grained structure if requested
-        if options["-x"].value:
+        if options["outstruc"]:
             logging.info("Writing coarse grained structure.")
             if cgOutPDB is None:
-                cgOutPDB = open(options["-x"].value, "w")
+                cgOutPDB = open(options["outstruc"], "w")
             cgOutPDB.write("MODEL %8d\n" % model)
             cgOutPDB.write(title)
             cgOutPDB.write(IO.pdbBoxString(box))
@@ -195,7 +195,7 @@ def main(options):
     # Write the index file if requested.
     # Mainly of interest for multiscaling.
     # Could be improved by adding separte groups for BB, SC, etc.
-    if options["-n"].value:
+    if options["index"]:
         logging.info("Writing index file.")
         # Lists for All-atom, Virtual sites and Coarse Grain.
         NAA, NVZ, NCG = [], [], []
@@ -212,17 +212,17 @@ def main(options):
                 else:
                     NCG.extend([" %5d" % (a+atid) for a in range(len(coarseGrained))])
                 atid += len(coarseGrained)
-        outNDX = open(options["-n"].value, "w")
+        outNDX = open(options["index"], "w")
         outNDX.write("\n[ AA ]\n"+"\n".join([" ".join(NAA[i:i+15]) for i in range(0, len(NAA), 15)]))
         outNDX.write("\n[ VZ ]\n"+"\n".join([" ".join(NVZ[i:i+15]) for i in range(0, len(NVZ), 15)]))
         outNDX.write("\n[ CG ]\n"+"\n".join([" ".join(NCG[i:i+15]) for i in range(0, len(NCG), 15)]))
         outNDX.close()
 
     # Write the index file for mapping AA trajectory if requested
-    if options["-nmap"].value:
+    if options["mapping"]:
         logging.info("Writing trajectory index file.")
         atid = 1
-        outNDX = open(options["-nmap"].value, "w")
+        outNDX = open(options["mapping"], "w")
         # Get all AA atoms as lists of atoms in residues
         # First we skip hetatoms and unknowns then iterate over beads
         # In DNA the O3' atom is mapped together with atoms from the next residue
@@ -253,7 +253,7 @@ def main(options):
             atid += nra
 
     # Evertything below here we only need, if we need to write a Topology
-    if options['-o']:
+    if options['outtop']:
 
         # Collect the secondary structure stuff and decide what to do with it
         # First rearrange by the residue
@@ -269,7 +269,7 @@ def main(options):
                 i = list(i)
                 si = [(1.0*i.count(j)/len(i), j) for j in si]
                 si.sort()
-                if si[-1][0] > options["-ssc"].value:
+                if si[-1][0] > options["sscutoff"]:
                     ssAver.append(si[-1][1])
                 else:
                     ssAver.append(" ")
@@ -317,7 +317,7 @@ def main(options):
                     d2 = min([FUNC.distance2(a, b) for a, b in zip(cyscoord[i], cyscoord[j])])
                     if d2 <= options['CystineMaxDist2']:
                         a, b = cysteines[i], cysteines[j]
-                        options['linkListCG'].append((("SC1", "CYS", a[2], a[3]), ("SC1", "CYS", b[2], b[3]), bl, kb))
+                        options['cglinks'].append((("SC1", "CYS", a[2], a[3]), ("SC1", "CYS", b[2], b[3]), bl, kb))
                         a, b = (a[0], a[1], a[2]-(32 << 20), a[3]), (b[0], b[1], b[2]-(32 << 20), b[3])
                         logging.info("Detected SS bridge between %s and %s (%f nm)" % (a, b, math.sqrt(d2)/10))
 
@@ -345,10 +345,10 @@ def main(options):
             mol = molecules[mi]
             # Check if the moleculetype is already listed
             # If not, generate the topology from the chain definition
-            if mol not in moleculeTypes or options['SeparateTop']:
+            if mol not in moleculeTypes or options['separate']:
                 # Name of the moleculetype
                 # XXX: The naming should be changed; now it becomes Protein_X+Protein_Y+...
-                name = "+".join([chain.getname(options['-name'].value) for chain in mol])
+                name = "+".join([chain.getname(options['name']) for chain in mol])
                 moleculeTypes[mol] = name
 
                 # Write the molecule type topology
@@ -362,7 +362,7 @@ def main(options):
                 mcg         = list(mcg)
 
                 # Run through the link list and add connections (links = cys bridges or hand specified links)
-                for atomA, atomB, bondlength, forceconst in options['linkListCG']:
+                for atomA, atomB, bondlength, forceconst in options['cglinks']:
                     if bondlength == -1 and forceconst == -1:
                         bondlength, forceconst = options['ForceField'].special[(atomA[:2], atomB[:2])]
                     # Check whether this link applies to this group
@@ -382,24 +382,24 @@ def main(options):
                 # The elastic network is added after the topology is constructed, since that
                 # is where the correct atom list with numbering and the full set of
                 # coordinates for the merged chains are available.
-                if options['ElasticNetwork']:
+                if options['elastic']:
                     rubberType = options['ForceField'].EBondType
                     rubberList = ELN.rubberBands(
-                        [(i[0], j) for i, j in zip(top.atoms, coords) if i[4] in options['ElasticBeads']],
-                        options['ElasticLowerBound'], options['ElasticUpperBound'],
-                        options['ElasticDecayFactor'], options['ElasticDecayPower'],
-                        options['ElasticMaximumForce'], options['ElasticMinimumForce'])
+                        [(i[0], j) for i, j in zip(top.atoms, coords) if i[4] in options['eleads']],
+                        options['ellower'], options['elupper'],
+                        options['eldecay'], options['ElasticDecayPower'],
+                        options['elastic_fc'], options['elminforce'])
                     top.bonds.extend([TOP.Bond(i, options=options, type=rubberType, category="Rubber band") for i in rubberList])
 
                 # Write out the MoleculeType topology
-                destination = options["-o"] and open(moleculeTypes[mol]+".itp", 'w') or sys.stdout
+                destination = options["outtop"] and open(moleculeTypes[mol]+".itp", 'w') or sys.stdout
                 destination.write(str(top))
 
                 itp += 1
 
             # Check whether other chains are equal to this one
             # Skip this step if we are to write all chains to separate moleculetypes
-            if not options['SeparateTop']:
+            if not options['separate']:
                 for j in range(mi+1, len(molecules)):
                     if not molecules[j] in moleculeTypes and mol == molecules[j]:
                         # Molecule j is equal to a molecule mi
@@ -410,7 +410,7 @@ def main(options):
 
         # WRITING THE MASTER TOPOLOGY
         # Output stream
-        top  = options["-o"] and open(options['-o'].value, 'w') or sys.stdout
+        top  = options["outtop"] and open(options['outtop'], 'w') or sys.stdout
 
         # ITP file listing
         itps = '\n'.join(['#include "%s.itp"' % molecule for molecule in set(moleculeTypes.values())])
@@ -425,7 +425,7 @@ def main(options):
         molecules   = '\n'.join(['%s \t 1' % moleculeTypes[molecule] for molecule in molecules])
 
         # Set a define if we are to use rubber bands
-        useRubber   = options['ElasticNetwork'] and "#define RUBBER_BANDS" or ""
+        useRubber   = options['elastic'] and "#define RUBBER_BANDS" or ""
 
         # XXX Specify a better, version specific base-itp name.
         # Do not set a define for position restrains here, as people are more used to do it in mdp file?
@@ -442,7 +442,7 @@ Martini system from %s
 
 [ molecules ]
 ; name        number
-%s''' % (useRubber, itps, options["-f"] and options["-f"].value or "stdin", molecules))
+%s''' % (useRubber, itps, options["input"] and options["input"] or "stdin", molecules))
 
         logging.info('Written topology files')
 

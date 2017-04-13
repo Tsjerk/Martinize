@@ -67,7 +67,7 @@ def pdbOut(atom, i=1, **kwargs):
 
 
 def isPdbAtom(a):
-    return a.startswith("ATOM") or (options["-hetatm"] and a.startswith("HETATM")) or a.startswith("TER")
+    return a.startswith("ATOM") or a.startswith("HETATM") # (options["-hetatm"] and a.startswith("HETATM")) or a.startswith("TER")
 
 
 def pdbBoxRead(a):
