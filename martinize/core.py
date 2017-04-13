@@ -2,8 +2,9 @@
 ## 8 # MAIN #  -> @MAIN <-
 #############
 import sys, logging, random, math, os, re
-import IO, topology, quotes, elastic, functions, mapping
 
+from . import IO, topology, quotes, elastic, functions, mapping
+from .converters import Link
 
 def main(options):
     # Check whether to read from a gro/pdb file or from stdin
@@ -317,7 +318,9 @@ def main(options):
                     d2 = min([functions.distance2(a, b) for a, b in zip(cyscoord[i], cyscoord[j])])
                     if d2 <= options['CystineMaxDist2']:
                         a, b = cysteines[i], cysteines[j]
-                        options['cglinks'].append((("SC1", "CYS", a[2], a[3]), ("SC1", "CYS", b[2], b[3]), bl, kb))
+                        options['links'].append(Link(a=("SC1", "CYS", a[2], a[3]), 
+                                                     b=("SC1", "CYS", b[2], b[3]), 
+                                                     length=bl, fc=kb))
                         a, b = (a[0], a[1], a[2]-(32 << 20), a[3]), (b[0], b[1], b[2]-(32 << 20), b[3])
                         logging.info("Detected SS bridge between %s and %s (%f nm)" % (a, b, math.sqrt(d2)/10))
 
@@ -362,7 +365,8 @@ def main(options):
                 mcg         = list(mcg)
 
                 # Run through the link list and add connections (links = cys bridges or hand specified links)
-                for atomA, atomB, bondlength, forceconst in options['cglinks']:
+                for lnk in options['links']:
+                    atomA, atomB, bondlength, forceconst = lnk.a, lnk.b, lnk.length, lnk.fc
                     if bondlength == -1 and forceconst == -1:
                         bondlength, forceconst = options['ForceField'].special[(atomA[:2], atomB[:2])]
                     # Check whether this link applies to this group

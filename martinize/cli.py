@@ -28,7 +28,7 @@ from simopt import MULTI, MA
 
 from . import core
 
-#from .converters import vector, box3d, molspec
+from .converters import atom, atoms, Link
 
 
 # Option list
@@ -53,7 +53,7 @@ OPTIONS = simopt.Options([
     (0, "-nt",       "neutraltermini", bool,  0,         False,     0, "Set neutral termini (charged is default)"),
     (1, "-cb",       "chargedbreaks",  bool,  0,         False,     0, "Set charges at chain breaks (neutral is default)"),
     (0, "-cys",      "cystines",       str,   1,          None, MULTI, "Disulphide bond (+)"),
-    (1, "-link",     "links",          str,   1,          None, MULTI, "Link (+)"),
+    (1, "-link",     "links",          Link,  1,          None, MULTI, "Link (+)"),
     (1, "-merge",    "merges",         str,   1,          None, MULTI, "Merge chains: e.g. -merge A,B,C (+)"),
     (0, "-name",     "name",           str,   1,          None,     0, "Moleculetype name"),
     (1, "-p",        "posres",         str,   1,        'None',     0, "Output position restraints (None/All/Backbone) (default: None)"),
@@ -76,24 +76,6 @@ OPTIONS = simopt.Options([
 
 
 
-
-def str2atom(a):
-    """ Helper function to parse atom strings given on the command line:
-    resid, resname/resid, chain/resname/resid, resname/resid/atom,
-    chain/resname/resid/atom, chain//resid, chain/resname/atom """
-    a = a.split("/")
-    if len(a) == 1:  # Only a residue number:
-        return (None, None, int(a[0]), None)
-    if len(a) == 2:  # Residue name and number (CYS/123):
-        return (None, a[0], int(a[1]), None)
-    if len(a) == 3:
-        if a[2].isdigit():  # Chain, residue name, residue number
-            return (None, a[1], int(a[2]), a[0])
-        else:  # Residue name, residue number, atom name
-            return (a[2], a[0], int(a[1]), None)
-    return (a[3], a[1], int(a[2]), a[0])
-
-
 def update_options(options):
 
     options["Version"] = ""
@@ -113,16 +95,13 @@ def update_options(options):
                 # We add the directory where the script resides and a possible "ForceFields" directory to the search path
                 # realpath() will make your script run, even if you symlink it :)
                 cmd_folder = os.path.realpath(os.path.dirname(inspect.getfile(inspect.currentframe())))
-                print(cmd_folder)
                 if cmd_folder not in sys.path:
                     sys.path.insert(0, cmd_folder)
                 # use this if you want to include modules from a subfolder
                 cmd_subfolder = os.path.realpath(os.path.dirname(inspect.getfile(inspect.currentframe()))) + "/ForceFields"
-                print(cmd_subfolder)
                 if cmd_subfolder not in sys.path:
                      sys.path.insert(0, cmd_subfolder)
                 _tmp = __import__(options['forcefield'].lower()+"_ff")
-                print(_tmp)
                 options['ForceField'] = getattr(_tmp, options['forcefield'].lower())()
             except:
                 logging.error("Forcefield '%s' can not be loaded." % (options['forcefield']))
@@ -149,24 +128,6 @@ def update_options(options):
     # Merges, links and cystines
     options['merges'] = "all" in options['merges'] and ["all"] or [i.split(",") for i in options['merges']]
 
-    # Process links
-    linkList   = []
-    linkListCG = []
-    for i in options['links']:
-        ln     = i.split(",")
-        a, b   = str2atom(ln[0]), str2atom(ln[1])
-        if len(ln) > 3:  # Bond with given length and force constant
-            bl, fc = (ln[2] and float(ln[2]) or None, float(ln[3]))
-        elif len(a) == 3:  # Constraint at given distance
-            bl, fc = float(a[2]), None
-        else:  # Constraint at distance in structure
-            bl, fc = None, None
-        # Store the link, but do not list the atom name in the
-        # atomistic link list. Otherwise it will not get noticed
-        # as a valid link when checking for merging chains
-        linkList.append(((None, a[1], a[2], a[3]), (None, b[1], b[2], b[3])))
-        linkListCG.append((a, b, bl, fc))
-
     # Cystines
     # This should be done for all special bonds listed in the _special_ dictionary
     CystineCheckBonds = False   # By default, do not detect cystine bridges
@@ -179,19 +140,16 @@ def update_options(options):
             CystineMaxDist2   = (10*float(i))**2
         else:
             # This item should be a pair of cysteines
-            cysA, cysB = [str2atom(j) for j in i.split(",")]
+            cysA, cysB = [atom(j) for j in i.split(",")]
             # Internally we handle the residue number shifted by ord(' ')<<20.
             # We have to add this to the cys-residue numbers given here as well.
             constant = 32 << 20
-            linkList.append((("SG", "CYS", cysA[2]+constant, cysA[3]),
-                            ("SG", "CYS", cysB[2]+constant, cysB[3])))
-            linkListCG.append((("SC1", "CYS", cysA[2]+constant, cysA[3]),
-                              ("SC1", "CYS", cysB[2]+constant, cysB[3]), -1, -1))
+            options.links.append(Link(a=("SG", "CYS", cysA[2]+constant, cysA[3]),
+                                      b=("SG", "CYS", cysB[2]+constant, cysB[3]),
+                                      length=-1, fc=-1))
 
     # Now we have done everything to it, we can add Link/cystine related stuff to options
     # 'multi' is not stored anywhere else, so that we also add
-    options['links'] = linkList
-    options['cglinks'] = linkListCG
     options['CystineCheckBonds'] = CystineCheckBonds
     options['CystineMaxDist2']   = CystineMaxDist2
 

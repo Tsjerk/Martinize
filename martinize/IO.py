@@ -335,22 +335,16 @@ def check_merge(chains, m_list=[], l_list=[], ss_cutoff=0):
             if (i, j) in pairs:
                 continue
             # Check whether any link links these two groups
-            for a, b in l_list:
+            for lnk in l_list:
+                # Set atom name to None; otherwise it won't be found
+                a = (None, lnk.a[1], lnk.a[2], lnk.a[3])
+                b = (None, lnk.b[1], lnk.b[2], lnk.b[3])
                 if ((a in chains[i] and b in chains[j]) or (a in chains[j] and b in chains[i])):
                     logging.info("Merging chains %d and %d to allow link %s" % (i+1, j+1, str((a, b))))
                     pairs.append(i < j and (i, j) or (j, i))
                     break
             if (i, j) in pairs:
                 continue
-            # Check whether any cystine bond given links these two groups
-            #for a,b in s_list:
-            #    if ((a in chains[i] and b in chains[j]) or
-            #        (a in chains[j] and b in chains[i])):
-            #        logging.info("Merging chains %d and %d to allow cystine bridge"%(i+1,j+1))
-            #        pairs.append( i<j and (i,j) or (j,i) )
-            #        break
-            #if (i,j) in pairs:
-            #    continue
             # Check for cystine bridges based on distance
             if not ss_cutoff:
                 continue
