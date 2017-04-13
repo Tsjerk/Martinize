@@ -389,9 +389,9 @@ def main(options):
                 if options['elastic']:
                     rubberType = options['ForceField'].EBondType
                     rubberList = elastic.rubberBands(
-                        [(i[0], j) for i, j in zip(top.atoms, coords) if i[4] in options['eleads']],
-                        options['ellower'], options['elupper'],
-                        options['eldecay'], options['ElasticDecayPower'],
+                        [(i[0], j) for i, j in zip(top.atoms, coords) if i[4] in options['elbeads']],
+                        options['ellowerbound'], options['elupperbound'],
+                        options['eldecay'], options['elpower'],
                         options['elastic_fc'], options['elminforce'])
                     top.bonds.extend([topology.Bond(i, options=options, type=rubberType, category="Rubber band") for i in rubberList])
 

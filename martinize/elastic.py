@@ -29,7 +29,7 @@ def rubberBands(atomList, lowerBound, upperBound, decayFactor, decayPower, force
 
             if d2 < u2:
                 dij  = math.sqrt(d2)
-                fscl = decayFunction(dij, lowerBound, decayFactor, decayPower)
-                if fscl*forceConstant > minimumForce:
-                    out.append({"atoms": (bi, bj), "parameters": (dij, "RUBBER_FC*%f" % fscl)})
+                fscl = decayFunction(dij, lowerBound, decayFactor, decayPower)*forceConstant
+                if fscl > minimumForce:
+                    out.append({"atoms": (bi, bj), "parameters": (dij, fscl)})
     return out
