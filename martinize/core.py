@@ -21,7 +21,7 @@
 #############
 import sys, logging, random, math, os, re
 
-from . import IO, topology, quotes, elastic, functions, mapping
+from . import IO, topology, elastic, functions, mapping
 from .converters import Link
 
 def main(options):
@@ -473,5 +473,5 @@ Martini system from %s
 
     # The following lines are always printed (if no errors occur).
     print "\n\tThere you are. One MARTINI. Shaken, not stirred.\n"
-    Q = quotes.martiniq.pop(random.randint(0, len(quotes.martiniq)-1))
-    print "\n", Q[1], "\n%80s" % ("--"+Q[0]), "\n"
+    Q = random.choice(open(os.path.join(os.path.dirname(__file__), "quotes.txt")).readlines()).split('::')
+    print "\n", Q[1].strip(), "\n%80s" % ("--"+Q[0].strip()), "\n"
