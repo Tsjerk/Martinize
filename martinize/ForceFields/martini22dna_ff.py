@@ -1,3 +1,8 @@
+import functions
+import mapping
+
+from forcefield import Forcefield
+
 ################################
 ## 6 # FORCE FIELD PARAMETERS ##  -> @FF <-
 ################################
@@ -10,18 +15,16 @@
 #   Trp sidechain
 #   Helix BB-bonds to constraint      
 
-class martini22dna:
+class martini22dna(Forcefield):
     ff = True
     def __init__(self):
-        import secstruc,functions,IO
 
         # parameters are defined here for the following (protein) forcefields:
         self.name = 'martini22dna'
         
         # Charged types:
         self.charges = {"Qd":1, "Qa":-1, "SQd":1, "SQa":-1, "RQd":1, "AQa":-1}                                                           #@#
-        
-        
+                
         #----+---------------------+
         ## A | BACKBONE PARAMETERS |
         #----+---------------------+
@@ -254,38 +257,11 @@ class martini22dna:
         # But Elnedyn has been parametrized with type 1.
         self.EBondType = 6
         
-        #----+----------------+
-        ## D | INTERNAL STUFF |
-        #----+----------------+
-        
-        
-        ## BACKBONE BEAD TYPE ##                                                                    
-        # Dictionary of default bead types (*D)                                                     
-        self.bbBeadDictD  = functions.hash(secstruc.bbss,self.bbdef)                                                             
-        # Dictionary of dictionaries of types for specific residues (*S)                            
-        self.bbBeadDictS  = dict([(i,functions.hash(secstruc.bbss,self.bbtyp[i])) for i in self.bbtyp.keys()])                        
+        self.finish()
 
         # combine the connectivity records for different molecule types
         self.connectivity = dict(self.base_connectivity.items() + self.aa_connectivity.items())
         
-        ## BB BOND TYPE ##                                                                          
-        # Dictionary of default abond types (*D)                                                    
-        self.bbBondDictD = functions.hash(secstruc.bbss,zip(self.bbldef,self.bbkb))                                                   
-        # Dictionary of dictionaries for specific types (*S)                                        
-        self.bbBondDictS = dict([(i,functions.hash(secstruc.bbss,zip(self.bbltyp[i],self.bbkbtyp[i]))) for i in self.bbltyp.keys()])       
-        # This is tricky to read, but it gives the right bondlength/force constant
-        
-        ## BBB ANGLE TYPE ##                                                                        
-        # Dictionary of default angle types (*D)                                                    
-        self.bbAngleDictD = functions.hash(secstruc.bbss,zip(self.bbadef,self.bbka))                                                  
-        # Dictionary of dictionaries for specific types (*S)                                        
-        self.bbAngleDictS = dict([(i,functions.hash(secstruc.bbss,zip(self.bbatyp[i],self.bbkatyp[i]))) for i in self.bbatyp.keys()])      
-                    
-        ## BBBB DIHEDRAL TYPE ##                                                                    
-        # Dictionary of default dihedral types (*D)                                                 
-        self.bbDihedDictD = functions.hash(secstruc.bbss,zip(self.bbddef,self.bbkd,self.bbdmul))                                           
-        # Dictionary of dictionaries for specific types (*S)                                        
-        self.bbDihedDictS = dict([(i,functions.hash(secstruc.bbss,zip(self.bbdtyp[i],self.bbkdtyp[i]))) for i in self.bbdtyp.keys()])      
         
     # The following function returns the backbone bead for a given residue and                   
     # secondary structure type.                                                                 
@@ -295,10 +271,9 @@ class martini22dna:
     # If the secondary structure is not listed (in the residue specific                         
     # dictionary) revert to the default.                                                        
     def bbGetBead(self,r1,ss="C"):                                                                   
-        import MAP
-        if r1 in MAP.dnares3:
+        if r1 in mapping.dnares3:
             return self.dna_bb['atoms']
-        elif r1 in MAP.rnares3:
+        elif r1 in mapping.rnares3:
             return self.rna_bb['atoms']
         else:
             return self.bbBeadDictS.get(r1,self.bbBeadDictD).get(ss,self.bbBeadDictD.get(ss))                      
@@ -306,8 +281,7 @@ class martini22dna:
     
     def bbGetBond(self,r,ca,ss):
         # Retrieve parameters for each residue from table defined above
-        import MAP
-        if r[0] in MAP.dnares3:
+        if r[0] in mapping.dnares3:
             if ca == (0, 1):
                 return self.dna_bb['bonds'][0]
             elif ca == (1, 2):
@@ -315,7 +289,7 @@ class martini22dna:
             else: 
                 return self.dna_bb['bonds'][2]
         # This is not implemented properly yet
-        elif r[0] in MAP.rnares3:
+        elif r[0] in mapping.rnares3:
             return self.rna_bb['bonds']
         else:
             b1 = self.bbBondDictS.get(r[0],self.bbBondDictD).get(ss[0],self.bbBondDictD.get(ss[0]))
@@ -324,8 +298,7 @@ class martini22dna:
             return ( (b1[0]+b2[0])/2, min(b1[1],b2[1]) )
     
     def bbGetAngle(self,r,ca,ss):
-        import MAP
-        if r[0] in MAP.dnares3:
+        if r[0] in mapping.dnares3:
             if ca == (0, 1, 2):
                 return self.dna_bb['angles'][0]
             elif ca == (1, 2, 0):
@@ -333,7 +306,7 @@ class martini22dna:
             else: 
                 return self.dna_bb['angles'][2]
         # This is not implemented properly yet
-        elif r[0] in MAP.rnares3:
+        elif r[0] in mapping.rnares3:
             return self.rna_bb['angles']
         else:
             # PRO in helices is dominant
@@ -350,8 +323,7 @@ class martini22dna:
                 return a[0]
 
     def bbGetDihedral(self,r,ca,ss):
-        import MAP
-        if r[0] in MAP.dnares3:
+        if r[0] in mapping.dnares3:
             if ca == (0, 1, 2, 0):
                 return self.dna_bb['dih'][0]
             elif ca == (1, 2, 0, 1):
@@ -359,7 +331,7 @@ class martini22dna:
             else: 
                 return self.dna_bb['dih'][2]
         # This is not implemented properly yet
-        elif r[0] in MAP.rnares3:
+        elif r[0] in mapping.rnares3:
             return self.rna_bb['angles']
         
     def messages(self):

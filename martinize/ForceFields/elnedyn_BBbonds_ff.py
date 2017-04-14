@@ -1,8 +1,12 @@
+import functions
+
+from forcefield import Forcefield
+
 ################################
 ## 6 # FORCE FIELD PARAMETERS ##  -> @FF <-
 ################################
 
-class elnedyn:
+class elnedyn(Forcefield):
     ff = True
     def __init__(self):
         '''The forcefield has been implemented with some changes compared to the published parameters:
@@ -10,14 +14,11 @@ class elnedyn:
         - Trp has an extra constrain added to the sidechain
         - The Backbone sidechain bonds with high force constants are replaced by constraints except for Trp.
         '''
-        import secstruc,functions,IO 
-
         # parameters are defined here for the following (protein) forcefields:
         self.name = 'elnedyn'
         
         # Charged types:
         self.charges = {"Qd":1, "Qa":-1, "RQd":1, "AQa":-1}                                                           #@#
-        
         
         #----+---------------------+
         ## A | BACKBONE PARAMETERS |
@@ -183,61 +184,9 @@ class elnedyn:
         # Elastic networks bond shouldn't lead to exclusions (type 6) 
         # But Elnedyn has been parametrized with type 1.
         self.EBondType = 1
+
+        self.finish()
         
-        #----+----------------+
-        ## D | INTERNAL STUFF |
-        #----+----------------+
-        
-        
-        ## BACKBONE BEAD TYPE ##                                                                    
-        # Dictionary of default bead types (*D)                                                     
-        self.bbBeadDictD  = functions.hash(secstruc.bbss,self.bbdef)                                                             
-        # Dictionary of dictionaries of types for specific residues (*S)                            
-        self.bbBeadDictS  = dict([(i,functions.hash(secstruc.bbss,self.bbtyp[i])) for i in self.bbtyp.keys()])                        
-         
-        ## BB BOND TYPE ##                                                                          
-        # Dictionary of default abond types (*D)                                                    
-        self.bbBondDictD = functions.hash(secstruc.bbss,zip(self.bbldef,self.bbkb))                                                   
-        # Dictionary of dictionaries for specific types (*S)                                        
-        self.bbBondDictS = dict([(i,functions.hash(secstruc.bbss,zip(self.bbltyp[i],self.bbkbtyp[i]))) for i in self.bbltyp.keys()])       
-        # This is tricky to read, but it gives the right bondlength/force constant
-
-        ## BBB ANGLE TYPE ##                                                                        
-        # Dictionary of default angle types (*D)                                                    
-        self.bbAngleDictD = functions.hash(secstruc.bbss,zip(self.bbadef,self.bbka))                                                  
-        # Dictionary of dictionaries for specific types (*S)                                        
-        self.bbAngleDictS = dict([(i,functions.hash(secstruc.bbss,zip(self.bbatyp[i],self.bbkatyp[i]))) for i in self.bbatyp.keys()])      
-       
-        ## BBBB DIHEDRAL TYPE ##                                                                    
-        # Dictionary of default dihedral types (*D)                                                 
-        self.bbDihedDictD = functions.hash(secstruc.bbss,zip(self.bbddef,self.bbkd,self.bbdmul))                                           
-        # Dictionary of dictionaries for specific types (*S)                                        
-        self.bbDihedDictS = dict([(i,functions.hash(secstruc.bbss,zip(self.bbdtyp[i],self.bbkdtyp[i]))) for i in self.bbdtyp.keys()])      
-
-    # The following function returns the backbone bead for a given residue and                   
-    # secondary structure type.                                                                 
-    # 1. Look up the proper dictionary for the residue                                          
-    # 2. Get the proper type from it for the secondary structure                                
-    # If the residue is not in the dictionary of specials, use the default                      
-    # If the secondary structure is not listed (in the residue specific                         
-    # dictionary) revert to the default.                                                        
-    def bbGetBead(self,r1,ss="C"):                                                                   
-        return self.bbBeadDictS.get(r1,self.bbBeadDictD).get(ss,self.bbBeadDictD.get(ss))                      
-    
-    # For Elnedyn we need something else to get the bond length (much simpler due to Ca position BB's)
-    def bbGetBond(self,r,ca,ss):
-        import functions 
-        import math
-        # The 150000 forceconstant gave an error message, turning to constraints would be better.
-        return ( math.sqrt(functions.distance2(ca[0],ca[1]))/10., 150000 )
-    
-    def bbGetAngle(self,r,ca,ss):
-        import functions,IO 
-        import math
-        # Elnedyn takes angles from structure, with fc=40
-        return (math.acos(functions.cos_angle([i-j for i,j in zip(ca[0],ca[1])],[i-j for i,j in zip(ca[2],ca[1])]))/IO.d2r, 40)
-
-
     def messages(self):
         '''Prints any force-field specific logging messages.'''
         import logging
