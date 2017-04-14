@@ -215,34 +215,39 @@ def read_input_file(options):
     return chains, atoms, ssTotal, cysteines, merge
     
 
+def write_index(indexfile, chains):
+    # Write the index file if requested.
+    # Mainly of interest for multiscaling.
+    # Could be improved by adding separate groups for BB, SC, etc.
+
+    logging.info("Writing index file.")
+    # Lists for All-atom, Virtual sites and Coarse Grain.
+    NAA, NVZ, NCG = [], [], []
+    atid = 1
+    for i in order:
+        ci = chains[i]
+        coarseGrained = ci.cg(force=True)
+        if ci.multiscale:
+            NAA.extend([" %5d" % (a+atid) for a in range(ci.natoms)])
+            atid += ci.natoms
+        if coarseGrained:
+            if ci.multiscale:
+                NVZ.extend([" %5d" % (a+atid) for a in range(len(coarseGrained))])
+            else:
+                NCG.extend([" %5d" % (a+atid) for a in range(len(coarseGrained))])
+            atid += len(coarseGrained)
+    outNDX = open(indexfile, "w")
+    outNDX.write("\n[ AA ]\n"+"\n".join([" ".join(NAA[i:i+15]) for i in range(0, len(NAA), 15)]))
+    outNDX.write("\n[ VZ ]\n"+"\n".join([" ".join(NVZ[i:i+15]) for i in range(0, len(NVZ), 15)]))
+    outNDX.write("\n[ CG ]\n"+"\n".join([" ".join(NCG[i:i+15]) for i in range(0, len(NCG), 15)]))
+    outNDX.close()
+
+
 def main(options):
     chains, atoms, ssTotal, cysteines, merge = read_input_file(options)
 
-    # Write the index file if requested.
-    # Mainly of interest for multiscaling.
-    # Could be improved by adding separte groups for BB, SC, etc.
     if options["index"]:
-        logging.info("Writing index file.")
-        # Lists for All-atom, Virtual sites and Coarse Grain.
-        NAA, NVZ, NCG = [], [], []
-        atid = 1
-        for i in order:
-            ci = chains[i]
-            coarseGrained = ci.cg(force=True)
-            if ci.multiscale:
-                NAA.extend([" %5d" % (a+atid) for a in range(ci.natoms)])
-                atid += ci.natoms
-            if coarseGrained:
-                if ci.multiscale:
-                    NVZ.extend([" %5d" % (a+atid) for a in range(len(coarseGrained))])
-                else:
-                    NCG.extend([" %5d" % (a+atid) for a in range(len(coarseGrained))])
-                atid += len(coarseGrained)
-        outNDX = open(options["index"], "w")
-        outNDX.write("\n[ AA ]\n"+"\n".join([" ".join(NAA[i:i+15]) for i in range(0, len(NAA), 15)]))
-        outNDX.write("\n[ VZ ]\n"+"\n".join([" ".join(NVZ[i:i+15]) for i in range(0, len(NVZ), 15)]))
-        outNDX.write("\n[ CG ]\n"+"\n".join([" ".join(NCG[i:i+15]) for i in range(0, len(NCG), 15)]))
-        outNDX.close()
+        write_index(options["index"], chains)
 
     # Write the index file for mapping AA trajectory if requested
     if options["mapping"]:
