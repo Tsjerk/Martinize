@@ -16,9 +16,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#############
-## 8 # MAIN #  -> @MAIN <-
-#############
+
 import sys, logging, random, math, os, re
 
 from . import IO, topology, elastic, functions, mapping
@@ -384,6 +382,41 @@ def cystine_bridges(cys, options):
     return bridges
 
 
+def elastic_network(atoms, coords, options):
+    rubberType = options['ForceField'].EBondType
+    rubberList = elastic.rubberBands(
+        [(i[0], j) for i, j in zip(atoms, coords) if i[4] in options['elbeads']],
+        options['ellowerbound'], options['elupperbound'],
+        options['eldecay'], options['elpower'],
+        options['elastic_fc'], options['elminforce'])
+    return [ topology.Bond(i, options=options, type=rubberType, category="Rubber band") for i in rubberList]
+
+
+
+def links(linklist, atoms, forcefield):
+
+    # Run through the link list and add connections (links = cys bridges or hand specified links)
+    out = []
+    for lnk in linklist:
+        atomA, atomB, bondlength, forceconst = lnk.a, lnk.b, lnk.length, lnk.fc
+        if bondlength == -1 and forceconst == -1:
+            bondlength, forceconst = forcefield.special[(atomA[:2], atomB[:2])]
+        # Check whether this link applies to this group
+        atomA = atomA in atoms and atoms.index(atomA)+1
+        atomB = atomB in atoms and atoms.index(atomB)+1
+        if atomA and atomB:
+            cat = (forceconst is None) and "Constraint" or "Link"
+            out.append(topology.Bond(
+                (atomA, atomB),
+                options    = options,
+                type       = 1,
+                parameters = (bondlength, forceconst),
+                category   = cat,
+                comments   = "Cys-bonds/special link"))
+
+    return out
+
+
 def do_topology(options, chains, ssTotal, cysteines, merge):
 
     ssAver = average_secstruc(ssTotal)
@@ -453,36 +486,14 @@ def do_topology(options, chains, ssTotal, cysteines, merge):
             mcg, coords = zip(*[(j[:4], j[4:7]) for m in mol for j in m.cg(force=True)])
             mcg         = list(mcg)
 
-            # Run through the link list and add connections (links = cys bridges or hand specified links)
-            for lnk in options['links']:
-                atomA, atomB, bondlength, forceconst = lnk.a, lnk.b, lnk.length, lnk.fc
-                if bondlength == -1 and forceconst == -1:
-                    bondlength, forceconst = options['ForceField'].special[(atomA[:2], atomB[:2])]
-                # Check whether this link applies to this group
-                atomA = atomA in mcg and mcg.index(atomA)+1
-                atomB = atomB in mcg and mcg.index(atomB)+1
-                if atomA and atomB:
-                    cat = (forceconst is None) and "Constraint" or "Link"
-                    top.bonds.append(topology.Bond(
-                        (atomA, atomB),
-                        options    = options,
-                        type       = 1,
-                        parameters = (bondlength, forceconst),
-                        category   = cat,
-                        comments   = "Cys-bonds/special link"))
+            top.bonds.extend(links(options['links'], mcg, options["ForceField"]))
 
             # Elastic Network
             # The elastic network is added after the topology is constructed, since that
             # is where the correct atom list with numbering and the full set of
             # coordinates for the merged chains are available.
             if options['elastic']:
-                rubberType = options['ForceField'].EBondType
-                rubberList = elastic.rubberBands(
-                    [(i[0], j) for i, j in zip(top.atoms, coords) if i[4] in options['elbeads']],
-                    options['ellowerbound'], options['elupperbound'],
-                    options['eldecay'], options['elpower'],
-                    options['elastic_fc'], options['elminforce'])
-                top.bonds.extend([topology.Bond(i, options=options, type=rubberType, category="Rubber band") for i in rubberList])
+                top.bonds.extend(elastic_network(top.atoms, coords, options))
 
             # Write out the MoleculeType topology
             destination = options["outtop"] and open(moleculeTypes[mol]+".itp", 'w') or sys.stdout
