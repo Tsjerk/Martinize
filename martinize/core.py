@@ -24,7 +24,7 @@ import sys, logging, random, math, os, re
 from . import IO, topology, elastic, functions, mapping
 from .converters import Link
 
-def main(options):
+def read_input_file(options):
     # Check whether to read from a gro/pdb file or from stdin
     # We use an iterator to wrap around the stream to allow
     # inferring the file type, without consuming lines already
@@ -211,6 +211,13 @@ def main(options):
 
         model += 1
 
+    ## DONE READING STRUCTURE
+    return chains, atoms, ssTotal, cysteines, merge
+    
+
+def main(options):
+    chains, atoms, ssTotal, cysteines, merge = read_input_file(options)
+
     # Write the index file if requested.
     # Mainly of interest for multiscaling.
     # Could be improved by adding separte groups for BB, SC, etc.
@@ -247,7 +254,7 @@ def main(options):
         # In DNA the O3' atom is mapped together with atoms from the next residue
         # This stores it until we get to the next residue
         o3_shift = ''
-        for i_count, i in enumerate(IO.residues(atoms)):
+        for i_count, i in enumerate(IO.residues(atoms)): ## 'atoms' contains last frame read
             if i[0][1] in ("SOL", "HOH", "TIP"):
                 continue
             if not i[0][1] in mapping.CoarseGrained.mapping.keys():
