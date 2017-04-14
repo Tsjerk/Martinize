@@ -243,227 +243,221 @@ def write_index(indexfile, chains):
     outNDX.close()
 
 
-def main(options):
-    chains, atoms, ssTotal, cysteines, merge = read_input_file(options)
-
-    if options["index"]:
-        write_index(options["index"], chains)
-
-    # Write the index file for mapping AA trajectory if requested
-    if options["mapping"]:
-        logging.info("Writing trajectory index file.")
-        atid = 1
-        outNDX = open(options["mapping"], "w")
-        # Get all AA atoms as lists of atoms in residues
-        # First we skip hetatoms and unknowns then iterate over beads
-        # In DNA the O3' atom is mapped together with atoms from the next residue
-        # This stores it until we get to the next residue
-        o3_shift = ''
-        for i_count, i in enumerate(IO.residues(atoms)): ## 'atoms' contains last frame read
-            if i[0][1] in ("SOL", "HOH", "TIP"):
-                continue
-            if not i[0][1] in mapping.CoarseGrained.mapping.keys():
-                continue
-            nra = 0
-            names = [j[0] for j in i]
-            # This gives out a list of atoms in residue, each tuple has other
-            # stuff in it that's needed elsewhere so we just take the last
-            # element which is the atom index (in that residue)
-            for j_count, j in enumerate(mapping.mapIndex(i)):
-                outNDX.write('[ Bead %i of residue %i ]\n' % (j_count+1, i_count+1))
-                line = ''
-                for k in j:
-                    if names[k[2]] == "O3'":
-                        line += '%s ' % (str(o3_shift))
-                        o3_shift = k[2]+atid
-                    else:
-                        line += '%i ' % (k[2]+atid)
-                line += '\n'
-                nra += len(j)
-                outNDX.write(line)
-            atid += nra
-
-    # Evertything below here we only need, if we need to write a Topology
-    if options['outtop']:
-
-        # Collect the secondary structure stuff and decide what to do with it
-        # First rearrange by the residue
-        ssTotal = zip(*ssTotal)
-        ssAver  = []
-        for i in ssTotal:
-            si = list(set(i))
-            if len(si) == 1:
-                # Only one type -- consensus
-                ssAver.append(si[0])
-            else:
-                # Transitions between secondary structure types
-                i = list(i)
-                si = [(1.0*i.count(j)/len(i), j) for j in si]
-                si.sort()
-                if si[-1][0] > options["sscutoff"]:
-                    ssAver.append(si[-1][1])
+def write_mapping_index(filename, atoms):
+    logging.info("Writing trajectory index file.")
+    atid = 1
+    outNDX = open(filename, "w")
+    # Get all AA atoms as lists of atoms in residues
+    # First we skip hetatoms and unknowns then iterate over beads
+    # In DNA the O3' atom is mapped together with atoms from the next residue
+    # This stores it until we get to the next residue
+    o3_shift = ''
+    for i_count, i in enumerate(IO.residues(atoms)): ## 'atoms' contains last frame read
+        if i[0][1] in ("SOL", "HOH", "TIP"):
+            continue
+        if not i[0][1] in mapping.CoarseGrained.mapping.keys():
+            continue
+        nra = 0
+        names = [j[0] for j in i]
+        # This gives out a list of atoms in residue, each tuple has other
+        # stuff in it that's needed elsewhere so we just take the last
+        # element which is the atom index (in that residue)
+        for j_count, j in enumerate(mapping.mapIndex(i)):
+            outNDX.write('[ Bead %i of residue %i ]\n' % (j_count+1, i_count+1))
+            line = ''
+            for k in j:
+                if names[k[2]] == "O3'":
+                    line += '%s ' % (str(o3_shift))
+                    o3_shift = k[2]+atid
                 else:
-                    ssAver.append(" ")
+                    line += '%i ' % (k[2]+atid)
+            line += '\n'
+            nra += len(j)
+            outNDX.write(line)
+        atid += nra
 
-        ssAver = "".join(ssAver)
-        logging.info('(Average) Secondary structure has been determined (see head of .itp-file).')
+    return
 
-        # Divide the secondary structure according to the division in chains
-        # This will set the secondary structure types to be used for the
-        # topology.
-        for chain in chains:
-            chain.set_ss(ssAver[:len(chain)])
-            ssAver = ssAver[len(chain):]
 
-        # Now the chains are complete, each consisting of a residuelist,
-        # and a secondary structure designation if the chain is of type 'Protein'.
-        # There may be mixed chains, there may be HETATM things.
-        # Water has been discarded. Maybe this has to be changed at some point.
-        # The order in the coarse grained files matches the order in the set of chains.
-        #
-        # If there are no merges to be done, i.e. no global Elnedyn network, no
-        # disulphide bridges, no links, no distance restraints and no explicit merges,
-        # then we can write out the topology, which will match the coarse grained file.
-        #
-        # If there are merges to be done, the order of things may be changed, in which
-        # case the coarse grained structure will not match with the topology...
+def write_topology(options, chains, ssTotal, cysteines, merge):
+    # Collect the secondary structure stuff and decide what to do with it
+    # First rearrange by the residue
+    ssTotal = zip(*ssTotal)
+    ssAver  = []
+    for i in ssTotal:
+        si = list(set(i))
+        if len(si) == 1:
+            # Only one type -- consensus
+            ssAver.append(si[0])
+        else:
+            # Transitions between secondary structure types
+            i = list(i)
+            si = [(1.0*i.count(j)/len(i), j) for j in si]
+            si.sort()
+            if si[-1][0] > options["sscutoff"]:
+                ssAver.append(si[-1][1])
+            else:
+                ssAver.append(" ")
 
-        # CYSTINE BRIDGES #
-        # Extract the cysteine coordinates (for all frames) and the cysteine identifiers
-        if options['CystineCheckBonds']:
-            logging.info("Checking for cystine bridges, based on sulphur (SG) atoms lying closer than %.4f nm" % math.sqrt(options['CystineMaxDist2']/100))
+    ssAver = "".join(ssAver)
+    logging.info('(Average) Secondary structure has been determined (see head of .itp-file).')
 
-            cyscoord  = zip(*[[j[4:7] for j in i] for i in cysteines])
-            cysteines = [i[:4] for i in cysteines[0]]
+    # Divide the secondary structure according to the division in chains
+    # This will set the secondary structure types to be used for the
+    # topology.
+    for chain in chains:
+        chain.set_ss(ssAver[:len(chain)])
+        ssAver = ssAver[len(chain):]
 
-            bl, kb    = options['ForceField'].special[(("SC1", "CYS"), ("SC1", "CYS"))]
+    # Now the chains are complete, each consisting of a residuelist,
+    # and a secondary structure designation if the chain is of type 'Protein'.
+    # There may be mixed chains, there may be HETATM things.
+    # Water has been discarded. Maybe this has to be changed at some point.
+    # The order in the coarse grained files matches the order in the set of chains.
+    #
+    # If there are no merges to be done, i.e. no global Elnedyn network, no
+    # disulphide bridges, no links, no distance restraints and no explicit merges,
+    # then we can write out the topology, which will match the coarse grained file.
+    #
+    # If there are merges to be done, the order of things may be changed, in which
+    # case the coarse grained structure will not match with the topology...
 
-            # Check the distances and add the cysteines to the link list if the
-            # SG atoms have a distance smaller than the cutoff.
-            rlc = range(len(cysteines))
-            for i in rlc[:-1]:
-                for j in rlc[i+1:]:
-                    # Checking the minimum distance over all frames
-                    # But we could also take the maximum, or the mean
-                    d2 = min([functions.distance2(a, b) for a, b in zip(cyscoord[i], cyscoord[j])])
-                    if d2 <= options['CystineMaxDist2']:
-                        a, b = cysteines[i], cysteines[j]
-                        options['links'].append(Link(a=("SC1", "CYS", a[2], a[3]), 
-                                                     b=("SC1", "CYS", b[2], b[3]), 
-                                                     length=bl, fc=kb))
-                        a, b = (a[0], a[1], a[2]-(32 << 20), a[3]), (b[0], b[1], b[2]-(32 << 20), b[3])
-                        logging.info("Detected SS bridge between %s and %s (%f nm)" % (a, b, math.sqrt(d2)/10))
+    # CYSTINE BRIDGES #
+    # Extract the cysteine coordinates (for all frames) and the cysteine identifiers
+    if options['CystineCheckBonds']:
+        logging.info("Checking for cystine bridges, based on sulphur (SG) atoms lying closer than %.4f nm" % math.sqrt(options['CystineMaxDist2']/100))
 
-        # REAL ITP STUFF #
-        # Check whether we have identical chains, in which case we
-        # only write the ITP for one...
-        # This means making a distinction between chains and
-        # moleculetypes.
+        cyscoord  = zip(*[[j[4:7] for j in i] for i in cysteines])
+        cysteines = [i[:4] for i in cysteines[0]]
 
-        molecules = [tuple([chains[i] for i in j]) for j in merge]
+        bl, kb    = options['ForceField'].special[(("SC1", "CYS"), ("SC1", "CYS"))]
 
-        # At this point we should have a list or dictionary of chains
-        # Each chain should be given a unique name, based on the value
-        # of options["-o"] combined with the chain identifier and possibly
-        # a number if there are chains with identical identifiers.
-        # For each chain we then write an ITP file using the name for
-        # moleculetype and name + ".itp" for the topology include file.
-        # In addition we write a master topology file, using the value of
-        # options["-o"], with an added extension ".top" if not given.
+        # Check the distances and add the cysteines to the link list if the
+        # SG atoms have a distance smaller than the cutoff.
+        rlc = range(len(cysteines))
+        for i in rlc[:-1]:
+            for j in rlc[i+1:]:
+                # Checking the minimum distance over all frames
+                # But we could also take the maximum, or the mean
+                d2 = min([functions.distance2(a, b) for a, b in zip(cyscoord[i], cyscoord[j])])
+                if d2 <= options['CystineMaxDist2']:
+                    a, b = cysteines[i], cysteines[j]
+                    options['links'].append(Link(a=("SC1", "CYS", a[2], a[3]), 
+                                                 b=("SC1", "CYS", b[2], b[3]), 
+                                                 length=bl, fc=kb))
+                    a, b = (a[0], a[1], a[2]-(32 << 20), a[3]), (b[0], b[1], b[2]-(32 << 20), b[3])
+                    logging.info("Detected SS bridge between %s and %s (%f nm)" % (a, b, math.sqrt(d2)/10))
 
-        # XXX *NOTE*: This should probably be gathered in a 'Universe' class
-        itp = 0
-        moleculeTypes = {}
-        for mi in range(len(molecules)):
-            mol = molecules[mi]
-            # Check if the moleculetype is already listed
-            # If not, generate the topology from the chain definition
-            if mol not in moleculeTypes or options['separate']:
-                # Name of the moleculetype
-                # XXX: The naming should be changed; now it becomes Protein_X+Protein_Y+...
-                name = "+".join([chain.getname(options['name']) for chain in mol])
-                moleculeTypes[mol] = name
+    # REAL ITP STUFF #
+    # Check whether we have identical chains, in which case we
+    # only write the ITP for one...
+    # This means making a distinction between chains and
+    # moleculetypes.
 
-                # Write the molecule type topology
-                top = topology.Topology(mol[0], options=options, name=name)
-                for m in mol[1:]:
-                    top += topology.Topology(m, options=options)
+    molecules = [tuple([chains[i] for i in j]) for j in merge]
 
-                # Have to add the connections, like the connecting network
-                # Gather coordinates
-                mcg, coords = zip(*[(j[:4], j[4:7]) for m in mol for j in m.cg(force=True)])
-                mcg         = list(mcg)
+    # At this point we should have a list or dictionary of chains
+    # Each chain should be given a unique name, based on the value
+    # of options["-o"] combined with the chain identifier and possibly
+    # a number if there are chains with identical identifiers.
+    # For each chain we then write an ITP file using the name for
+    # moleculetype and name + ".itp" for the topology include file.
+    # In addition we write a master topology file, using the value of
+    # options["-o"], with an added extension ".top" if not given.
 
-                # Run through the link list and add connections (links = cys bridges or hand specified links)
-                for lnk in options['links']:
-                    atomA, atomB, bondlength, forceconst = lnk.a, lnk.b, lnk.length, lnk.fc
-                    if bondlength == -1 and forceconst == -1:
-                        bondlength, forceconst = options['ForceField'].special[(atomA[:2], atomB[:2])]
-                    # Check whether this link applies to this group
-                    atomA = atomA in mcg and mcg.index(atomA)+1
-                    atomB = atomB in mcg and mcg.index(atomB)+1
-                    if atomA and atomB:
-                        cat = (forceconst is None) and "Constraint" or "Link"
-                        top.bonds.append(topology.Bond(
-                            (atomA, atomB),
-                            options    = options,
-                            type       = 1,
-                            parameters = (bondlength, forceconst),
-                            category   = cat,
-                            comments   = "Cys-bonds/special link"))
+    # XXX *NOTE*: This should probably be gathered in a 'Universe' class
+    itp = 0
+    moleculeTypes = {}
+    for mi in range(len(molecules)):
+        mol = molecules[mi]
+        # Check if the moleculetype is already listed
+        # If not, generate the topology from the chain definition
+        if mol not in moleculeTypes or options['separate']:
+            # Name of the moleculetype
+            # XXX: The naming should be changed; now it becomes Protein_X+Protein_Y+...
+            name = "+".join([chain.getname(options['name']) for chain in mol])
+            moleculeTypes[mol] = name
 
-                # Elastic Network
-                # The elastic network is added after the topology is constructed, since that
-                # is where the correct atom list with numbering and the full set of
-                # coordinates for the merged chains are available.
-                if options['elastic']:
-                    rubberType = options['ForceField'].EBondType
-                    rubberList = elastic.rubberBands(
-                        [(i[0], j) for i, j in zip(top.atoms, coords) if i[4] in options['elbeads']],
-                        options['ellowerbound'], options['elupperbound'],
-                        options['eldecay'], options['elpower'],
-                        options['elastic_fc'], options['elminforce'])
-                    top.bonds.extend([topology.Bond(i, options=options, type=rubberType, category="Rubber band") for i in rubberList])
+            # Write the molecule type topology
+            top = topology.Topology(mol[0], options=options, name=name)
+            for m in mol[1:]:
+                top += topology.Topology(m, options=options)
 
-                # Write out the MoleculeType topology
-                destination = options["outtop"] and open(moleculeTypes[mol]+".itp", 'w') or sys.stdout
-                destination.write(str(top))
+            # Have to add the connections, like the connecting network
+            # Gather coordinates
+            mcg, coords = zip(*[(j[:4], j[4:7]) for m in mol for j in m.cg(force=True)])
+            mcg         = list(mcg)
 
-                itp += 1
+            # Run through the link list and add connections (links = cys bridges or hand specified links)
+            for lnk in options['links']:
+                atomA, atomB, bondlength, forceconst = lnk.a, lnk.b, lnk.length, lnk.fc
+                if bondlength == -1 and forceconst == -1:
+                    bondlength, forceconst = options['ForceField'].special[(atomA[:2], atomB[:2])]
+                # Check whether this link applies to this group
+                atomA = atomA in mcg and mcg.index(atomA)+1
+                atomB = atomB in mcg and mcg.index(atomB)+1
+                if atomA and atomB:
+                    cat = (forceconst is None) and "Constraint" or "Link"
+                    top.bonds.append(topology.Bond(
+                        (atomA, atomB),
+                        options    = options,
+                        type       = 1,
+                        parameters = (bondlength, forceconst),
+                        category   = cat,
+                        comments   = "Cys-bonds/special link"))
 
-            # Check whether other chains are equal to this one
-            # Skip this step if we are to write all chains to separate moleculetypes
-            if not options['separate']:
-                for j in range(mi+1, len(molecules)):
-                    if not molecules[j] in moleculeTypes and mol == molecules[j]:
-                        # Molecule j is equal to a molecule mi
-                        # Set the name of the moleculetype to the one of that molecule
-                        moleculeTypes[molecules[j]] = moleculeTypes[mol]
+            # Elastic Network
+            # The elastic network is added after the topology is constructed, since that
+            # is where the correct atom list with numbering and the full set of
+            # coordinates for the merged chains are available.
+            if options['elastic']:
+                rubberType = options['ForceField'].EBondType
+                rubberList = elastic.rubberBands(
+                    [(i[0], j) for i, j in zip(top.atoms, coords) if i[4] in options['elbeads']],
+                    options['ellowerbound'], options['elupperbound'],
+                    options['eldecay'], options['elpower'],
+                    options['elastic_fc'], options['elminforce'])
+                top.bonds.extend([topology.Bond(i, options=options, type=rubberType, category="Rubber band") for i in rubberList])
 
-        logging.info('Written %d ITP file%s' % (itp, itp > 1 and "s" or ""))
+            # Write out the MoleculeType topology
+            destination = options["outtop"] and open(moleculeTypes[mol]+".itp", 'w') or sys.stdout
+            destination.write(str(top))
 
-        # WRITING THE MASTER TOPOLOGY
-        # Output stream
-        top  = options["outtop"] and open(options['outtop'], 'w') or sys.stdout
+            itp += 1
 
-        # ITP file listing
-        itps = '\n'.join(['#include "%s.itp"' % molecule for molecule in set(moleculeTypes.values())])
+        # Check whether other chains are equal to this one
+        # Skip this step if we are to write all chains to separate moleculetypes
+        if not options['separate']:
+            for j in range(mi+1, len(molecules)):
+                if not molecules[j] in moleculeTypes and mol == molecules[j]:
+                    # Molecule j is equal to a molecule mi
+                    # Set the name of the moleculetype to the one of that molecule
+                    moleculeTypes[molecules[j]] = moleculeTypes[mol]
 
-        # Molecule listing
-        logging.info("Output contains %d molecules:" % len(molecules))
-        n = 1
-        for molecule in molecules:
-            chainInfo = (n, moleculeTypes[molecule], len(molecule) > 1 and "s" or " ", " ".join([i.id for i in molecule]))
-            logging.info("  %2d->  %s (chain%s %s)" % chainInfo)
-            n += 1
-        molecules   = '\n'.join(['%s \t 1' % moleculeTypes[molecule] for molecule in molecules])
+    logging.info('Written %d ITP file%s' % (itp, itp > 1 and "s" or ""))
 
-        # Set a define if we are to use rubber bands
-        useRubber   = options['elastic'] and "#define RUBBER_BANDS" or ""
+    # WRITING THE MASTER TOPOLOGY
+    # Output stream
+    top  = options["outtop"] and open(options['outtop'], 'w') or sys.stdout
 
-        # XXX Specify a better, version specific base-itp name.
-        # Do not set a define for position restrains here, as people are more used to do it in mdp file?
-        top.write(
+    # ITP file listing
+    itps = '\n'.join(['#include "%s.itp"' % molecule for molecule in set(moleculeTypes.values())])
+
+    # Molecule listing
+    logging.info("Output contains %d molecules:" % len(molecules))
+    n = 1
+    for molecule in molecules:
+        chainInfo = (n, moleculeTypes[molecule], len(molecule) > 1 and "s" or " ", " ".join([i.id for i in molecule]))
+        logging.info("  %2d->  %s (chain%s %s)" % chainInfo)
+        n += 1
+    molecules   = '\n'.join(['%s \t 1' % moleculeTypes[molecule] for molecule in molecules])
+
+    # Set a define if we are to use rubber bands
+    useRubber   = options['elastic'] and "#define RUBBER_BANDS" or ""
+
+    # XXX Specify a better, version specific base-itp name.
+    # Do not set a define for position restrains here, as people are more used to do it in mdp file?
+    top.write(
 '''#include "martini.itp"
 
 %s
@@ -478,12 +472,31 @@ Martini system from %s
 ; name        number
 %s''' % (useRubber, itps, options["input"] and options["input"] or "stdin", molecules))
 
-        logging.info('Written topology files')
+    logging.info('Written topology files')
+
+    return
+
+
+def main(options):
+    chains, atoms, ssTotal, cysteines, merge = read_input_file(options)
+
+    if options["index"]:
+        write_index(options["index"], chains)
+
+    # Write the index file for mapping AA trajectory if requested
+    if options["mapping"]:
+        write_mapping_index(options["mapping"], atoms)
+
+    if options['outtop']:
+        write_topology(options, chains, ssTotal, cysteines, merge)
 
     # Maybe there are forcefield specific log messages?
     options['ForceField'].messages()
 
     # The following lines are always printed (if no errors occur).
     print "\n\tThere you are. One MARTINI. Shaken, not stirred.\n"
+
     Q = random.choice(open(os.path.join(os.path.dirname(__file__), "quotes.txt")).readlines()).split('::')
     print "\n", Q[1].strip(), "\n%80s" % ("--"+Q[0].strip()), "\n"
+
+    return 0
