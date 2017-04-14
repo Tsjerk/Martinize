@@ -24,6 +24,116 @@ import sys, logging, random, math, os, re
 from . import IO, topology, elastic, functions, mapping
 from .converters import Link
 
+
+def write_structure(ostream, model, title, box, chains, order):
+    logging.info("Writing coarse grained structure.")
+    ostream.write("MODEL %8d\n" % model)
+    ostream.write(title)
+    ostream.write(IO.pdbBoxString(box))
+    atid = 1
+    for i in order:
+        ci = chains[i]
+        if ci.multiscale:
+            for r in ci.residues:
+                for name, resn, resi, chain, x, y, z in r:
+                    ostream.write(IO.pdbOut((name, resn[:3], resi, chain, x, y, z),i=atid))
+                    atid += 1
+        coarseGrained = ci.cg(com=True)
+        if coarseGrained:
+            for name, resn, resi, chain, x, y, z, ssid in coarseGrained:
+                if ci.multiscale:
+                    name = "v"+name
+                ostream.write(IO.pdbOut((name, resn[:3], resi, chain, x, y, z),i=atid,ssid=ssid))
+                atid += 1
+            ostream.write("TER\n")
+        else:
+            logging.warning("No mapping for coarse graining chain %s (%s); chain is skipped." % (ci.id, ci.type()))
+    ostream.write("ENDMDL\n")
+
+
+def average_secstruc(sslist):
+    # Collect the secondary structure stuff and decide what to do with it
+    # First rearrange by the residue
+    ssTotal = zip(*sslist)
+    ssAver  = []
+    for i in ssTotal:
+        si = list(set(i))
+        if len(si) == 1:
+            # Only one type -- consensus
+            ssAver.append(si[0])
+        else:
+            # Transitions between secondary structure types
+            i = list(i)
+            si = [(1.0*i.count(j)/len(i), j) for j in si]
+            si.sort()
+            if si[-1][0] > options["sscutoff"]:
+                ssAver.append(si[-1][1])
+            else:
+                ssAver.append(" ")
+
+    ssAver = "".join(ssAver)
+    logging.info('(Average) Secondary structure has been determined (see head of .itp-file).')
+
+    return ssAver
+
+
+def determine_secondary_structure(chains, options):
+    ## SECONDARY STRUCTURE
+    ss = ''
+    if options['collagen']:
+        for chain in chains:
+            chain.set_ss("F")
+            ss += chain.ss
+    elif options["secstruc"]:
+        # XXX We need error-catching here,
+        # in case the file doesn't exist, or the string contains bogus.
+        # If the string given for the sequence consists strictly of upper case letters
+        # and does not appear to be a file, assume it is the secondary structure
+        ss = options["secstruc"].replace('~', 'L').replace(' ', 'L')
+        if ss.isalnum() and ss.isupper() and not os.path.exists(options["secstruc"]):
+            ss = options["secstruc"]
+            logging.info('Secondary structure read from command-line:\n'+ss)
+        else:
+            # There ought to be a file with the name specified
+            ssfile = [i.strip() for i in open(options["secstruc"])]
+
+            # Try to read the file as a Gromacs Secondary Structure Dump
+            # Those have an integer as first line
+            if ssfile[0].isdigit():
+                logging.info('Will read secondary structure from file (assuming Gromacs ssdump).')
+                ss = "".join([i for i in ssfile[1:]])
+            else:
+                # Get the secondary structure type from DSSP output
+                logging.info('Will read secondary structure from file (assuming DSSP output).')
+                pss = re.compile(r"^([ 0-9]{4}[0-9]){2}")
+                ss  = "".join([i[16] for i in open(options["secstruc"]) if re.match(pss, i)])
+
+        # Now set the secondary structure for each of the chains
+        sstmp = ss
+        for chain in chains:
+            ln = min(len(sstmp), len(chain))
+            chain.set_ss(sstmp[:ln])
+            sstmp = ss[:ln]
+    else:
+        if options["dsspexe"]:
+            method, executable = "dssp", options["dsspexe"]
+        #elif options["pymol"]:
+        #    method, executable = "pymol", options["pymol"]
+        else:
+            logging.warning("No secondary structure or determination method speficied. Protein chains will be set to 'COIL'.")
+            method, executable = None, None
+
+        for chain in chains:
+            ss += chain.dss(method, executable)
+
+        # Used to be: if method in ("dssp","pymol"): but pymol is not supported
+        if method in ["dssp"]:
+            logging.debug('%s determined secondary structure:\n' % method.upper()+ss)
+
+    # Collect the secondary structure classifications for different frames
+    return ss
+
+
 def read_input_file(options):
     # Check whether to read from a gro/pdb file or from stdin
     # We use an iterator to wrap around the stream to allow
@@ -43,7 +153,7 @@ def read_input_file(options):
     # Now iterate over the frames in the stream
     # This should become a StructureFile class with a nice .next method
     model     = 1
-    cgOutPDB  = None
+    cgOutPDB  = options["outstruc"] and open(options["outstruc"], "w")
     ssTotal   = []
     cysteines = []
     for title, atoms, box in frameIterator(inStream):
@@ -116,94 +226,18 @@ def read_input_file(options):
 
         # Check which chains need merging
         if model == 1:
-            order, merge = IO.check_merge(chains, options['merges'], options['links'], options['CystineCheckBonds'] and options['CystineMaxDist2'])
+            order, merge = IO.check_merge(chains, options['merges'], options['links'], 
+                                          options['CystineCheckBonds'] and options['CystineMaxDist2'])
 
         # Get the total length of the sequence
         seqlength = sum([len(chain) for chain in chains])
         logging.info('Total size of the system: %s residues.' % seqlength)
 
-        ## SECONDARY STRUCTURE
-        ss = ''
-        if options['collagen']:
-            for chain in chains:
-                chain.set_ss("F")
-                ss += chain.ss
-        elif options["secstruc"]:
-            # XXX We need error-catching here,
-            # in case the file doesn't exist, or the string contains bogus.
-            # If the string given for the sequence consists strictly of upper case letters
-            # and does not appear to be a file, assume it is the secondary structure
-            ss = options["secstruc"].replace('~', 'L').replace(' ', 'L')
-            if ss.isalnum() and ss.isupper() and not os.path.exists(options["secstruc"]):
-                ss = options["secstruc"]
-                logging.info('Secondary structure read from command-line:\n'+ss)
-            else:
-                # There ought to be a file with the name specified
-                ssfile = [i.strip() for i in open(options["secstruc"])]
-
-                # Try to read the file as a Gromacs Secondary Structure Dump
-                # Those have an integer as first line
-                if ssfile[0].isdigit():
-                    logging.info('Will read secondary structure from file (assuming Gromacs ssdump).')
-                    ss = "".join([i for i in ssfile[1:]])
-                else:
-                    # Get the secondary structure type from DSSP output
-                    logging.info('Will read secondary structure from file (assuming DSSP output).')
-                    pss = re.compile(r"^([ 0-9]{4}[0-9]){2}")
-                    ss  = "".join([i[16] for i in open(options["secstruc"]) if re.match(pss, i)])
-
-            # Now set the secondary structure for each of the chains
-            sstmp = ss
-            for chain in chains:
-                ln = min(len(sstmp), len(chain))
-                chain.set_ss(sstmp[:ln])
-                sstmp = ss[:ln]
-        else:
-            if options["dsspexe"]:
-                method, executable = "dssp", options["dsspexe"]
-            #elif options["pymol"]:
-            #    method, executable = "pymol", options["pymol"]
-            else:
-                logging.warning("No secondary structure or determination method speficied. Protein chains will be set to 'COIL'.")
-                method, executable = None, None
-
-            for chain in chains:
-                ss += chain.dss(method, executable)
-
-            # Used to be: if method in ("dssp","pymol"): but pymol is not supported
-            if method in ["dssp"]:
-                logging.debug('%s determined secondary structure:\n' % method.upper()+ss)
-
-        # Collect the secondary structure classifications for different frames
-        ssTotal.append(ss)
+        ssTotal.append(determine_secondary_structure(chains, options))
 
         # Write the coarse grained structure if requested
-        if options["outstruc"]:
-            logging.info("Writing coarse grained structure.")
-            if cgOutPDB is None:
-                cgOutPDB = open(options["outstruc"], "w")
-            cgOutPDB.write("MODEL %8d\n" % model)
-            cgOutPDB.write(title)
-            cgOutPDB.write(IO.pdbBoxString(box))
-            atid = 1
-            for i in order:
-                ci = chains[i]
-                if ci.multiscale:
-                    for r in ci.residues:
-                        for name, resn, resi, chain, x, y, z in r:
-                            cgOutPDB.write(IO.pdbOut((name, resn[:3], resi, chain, x, y, z),i=atid))
-                            atid += 1
-                coarseGrained = ci.cg(com=True)
-                if coarseGrained:
-                    for name, resn, resi, chain, x, y, z, ssid in coarseGrained:
-                        if ci.multiscale:
-                            name = "v"+name
-                        cgOutPDB.write(IO.pdbOut((name, resn[:3], resi, chain, x, y, z),i=atid,ssid=ssid))
-                        atid += 1
-                    cgOutPDB.write("TER\n")
-                else:
-                    logging.warning("No mapping for coarse graining chain %s (%s); chain is skipped." % (ci.id, ci.type()))
-            cgOutPDB.write("ENDMDL\n")
+        if cgOutPDB:
+            write_structure(cgOutPDB, model, title, box, chains, order)
 
         # Gather cysteine sulphur coordinates
         cyslist = [cys["SG"] for chain in chains for cys in chain["CYS"]]
@@ -242,6 +276,8 @@ def write_index(indexfile, chains):
     outNDX.write("\n[ CG ]\n"+"\n".join([" ".join(NCG[i:i+15]) for i in range(0, len(NCG), 15)]))
     outNDX.close()
 
+    return
+
 
 def write_mapping_index(filename, atoms):
     logging.info("Writing trajectory index file.")
@@ -279,28 +315,78 @@ def write_mapping_index(filename, atoms):
     return
 
 
-def write_topology(options, chains, ssTotal, cysteines, merge):
-    # Collect the secondary structure stuff and decide what to do with it
-    # First rearrange by the residue
-    ssTotal = zip(*ssTotal)
-    ssAver  = []
-    for i in ssTotal:
-        si = list(set(i))
-        if len(si) == 1:
-            # Only one type -- consensus
-            ssAver.append(si[0])
-        else:
-            # Transitions between secondary structure types
-            i = list(i)
-            si = [(1.0*i.count(j)/len(i), j) for j in si]
-            si.sort()
-            if si[-1][0] > options["sscutoff"]:
-                ssAver.append(si[-1][1])
-            else:
-                ssAver.append(" ")
+def write_topology(filename, name, molecules, moleculeTypes):
+    # WRITING THE MASTER TOPOLOGY
+    # Output stream
+    top  = filename and open(filename, 'w') or sys.stdout
 
-    ssAver = "".join(ssAver)
-    logging.info('(Average) Secondary structure has been determined (see head of .itp-file).')
+    # ITP file listing
+    itps = '\n'.join(['#include "%s.itp"' % molecule for molecule in set(moleculeTypes.values())])
+
+    # Molecule listing
+    logging.info("Output contains %d molecules:" % len(molecules))
+    n = 1
+    for molecule in molecules:
+        chainInfo = (n, moleculeTypes[molecule], len(molecule) > 1 and "s" or " ", " ".join([i.id for i in molecule]))
+        logging.info("  %2d->  %s (chain%s %s)" % chainInfo)
+        n += 1
+    molecules   = '\n'.join(['%s \t 1' % moleculeTypes[molecule] for molecule in molecules])
+
+    # Set a define if we are to use rubber bands
+    # useRubber   = options['elastic'] and "#define RUBBER_BANDS" or ""
+
+    # XXX Specify a better, version specific base-itp name.
+    # Do not set a define for position restrains here, as people are more used to do it in mdp file?
+    top.write(
+'''#include "martini.itp"
+
+%s
+
+[ system ]
+; name
+Martini system from %s
+
+[ molecules ]
+; name        number
+%s''' % (itps, name, molecules))
+
+    logging.info('Written topology files')
+
+    return
+
+
+def cystine_bridges(cys, options):
+    logging.info("Checking for cystine bridges, based on sulphur (SG) atoms lying closer than %.4f nm" % math.sqrt(options['CystineMaxDist2']/100))
+
+    cyscoord  = zip(*[[j[4:7] for j in i] for i in cys])
+    cysteines = [i[:4] for i in cys[0]]
+
+    bl, kb    = options['ForceField'].special[(("SC1", "CYS"), ("SC1", "CYS"))]
+
+    bridges = []
+
+    # Check the distances and add the cysteines to the link list if the
+    # SG atoms have a distance smaller than the cutoff.
+    rlc = range(len(cys))
+    for i in rlc[:-1]:
+        for j in rlc[i+1:]:
+            # Checking the minimum distance over all frames
+            # But we could also take the maximum, or the mean
+            d2 = min([functions.distance2(a, b) for a, b in zip(cyscoord[i], cyscoord[j])])
+            if d2 <= options['CystineMaxDist2']:
+                a, b = cys[i], cys[j]
+                bridges.append(Link(a=("SC1", "CYS", a[2], a[3]), 
+                                    b=("SC1", "CYS", b[2], b[3]), 
+                                    length=bl, fc=kb))
+                a, b = (a[0], a[1], a[2]-(32 << 20), a[3]), (b[0], b[1], b[2]-(32 << 20), b[3])
+                logging.info("Detected SS bridge between %s and %s (%f nm)" % (a, b, math.sqrt(d2)/10))
+    
+    return bridges
+
+
+def do_topology(options, chains, ssTotal, cysteines, merge):
+
+    ssAver = average_secstruc(ssTotal)
 
     # Divide the secondary structure according to the division in chains
     # This will set the secondary structure types to be used for the
@@ -325,28 +411,7 @@ def write_topology(options, chains, ssTotal, cysteines, merge):
     # CYSTINE BRIDGES #
     # Extract the cysteine coordinates (for all frames) and the cysteine identifiers
     if options['CystineCheckBonds']:
-        logging.info("Checking for cystine bridges, based on sulphur (SG) atoms lying closer than %.4f nm" % math.sqrt(options['CystineMaxDist2']/100))
-
-        cyscoord  = zip(*[[j[4:7] for j in i] for i in cysteines])
-        cysteines = [i[:4] for i in cysteines[0]]
-
-        bl, kb    = options['ForceField'].special[(("SC1", "CYS"), ("SC1", "CYS"))]
-
-        # Check the distances and add the cysteines to the link list if the
-        # SG atoms have a distance smaller than the cutoff.
-        rlc = range(len(cysteines))
-        for i in rlc[:-1]:
-            for j in rlc[i+1:]:
-                # Checking the minimum distance over all frames
-                # But we could also take the maximum, or the mean
-                d2 = min([functions.distance2(a, b) for a, b in zip(cyscoord[i], cyscoord[j])])
-                if d2 <= options['CystineMaxDist2']:
-                    a, b = cysteines[i], cysteines[j]
-                    options['links'].append(Link(a=("SC1", "CYS", a[2], a[3]), 
-                                                 b=("SC1", "CYS", b[2], b[3]), 
-                                                 length=bl, fc=kb))
-                    a, b = (a[0], a[1], a[2]-(32 << 20), a[3]), (b[0], b[1], b[2]-(32 << 20), b[3])
-                    logging.info("Detected SS bridge between %s and %s (%f nm)" % (a, b, math.sqrt(d2)/10))
+        options["links"].extend(cystine_bridges(cysteines, options))
 
     # REAL ITP STUFF #
     # Check whether we have identical chains, in which case we
@@ -436,43 +501,8 @@ def write_topology(options, chains, ssTotal, cysteines, merge):
 
     logging.info('Written %d ITP file%s' % (itp, itp > 1 and "s" or ""))
 
-    # WRITING THE MASTER TOPOLOGY
-    # Output stream
-    top  = options["outtop"] and open(options['outtop'], 'w') or sys.stdout
-
-    # ITP file listing
-    itps = '\n'.join(['#include "%s.itp"' % molecule for molecule in set(moleculeTypes.values())])
-
-    # Molecule listing
-    logging.info("Output contains %d molecules:" % len(molecules))
-    n = 1
-    for molecule in molecules:
-        chainInfo = (n, moleculeTypes[molecule], len(molecule) > 1 and "s" or " ", " ".join([i.id for i in molecule]))
-        logging.info("  %2d->  %s (chain%s %s)" % chainInfo)
-        n += 1
-    molecules   = '\n'.join(['%s \t 1' % moleculeTypes[molecule] for molecule in molecules])
-
-    # Set a define if we are to use rubber bands
-    useRubber   = options['elastic'] and "#define RUBBER_BANDS" or ""
-
-    # XXX Specify a better, version specific base-itp name.
-    # Do not set a define for position restrains here, as people are more used to do it in mdp file?
-    top.write(
-'''#include "martini.itp"
-
-%s
-
-%s
-
-[ system ]
-; name
-Martini system from %s
-
-[ molecules ]
-; name        number
-%s''' % (useRubber, itps, options["input"] and options["input"] or "stdin", molecules))
-
-    logging.info('Written topology files')
+    name = options["input"] and options["input"] or "stdin"
+    write_topology(options["outtop"], name, molecules, moleculeTypes)
 
     return
 
@@ -488,7 +518,7 @@ def main(options):
         write_mapping_index(options["mapping"], atoms)
 
     if options['outtop']:
-        write_topology(options, chains, ssTotal, cysteines, merge)
+        do_topology(options, chains, ssTotal, cysteines, merge)
 
     # Maybe there are forcefield specific log messages?
     options['ForceField'].messages()
