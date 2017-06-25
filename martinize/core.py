@@ -244,10 +244,10 @@ def read_input_file(options):
         model += 1
 
     ## DONE READING STRUCTURE
-    return chains, atoms, ssTotal, cysteines, merge
+    return chains, atoms, ssTotal, cysteines, merge, order
     
 
-def write_index(indexfile, chains):
+def write_index(indexfile, chains, order):
     # Write the index file if requested.
     # Mainly of interest for multiscaling.
     # Could be improved by adding separate groups for BB, SC, etc.
@@ -256,6 +256,7 @@ def write_index(indexfile, chains):
     # Lists for All-atom, Virtual sites and Coarse Grain.
     NAA, NVZ, NCG = [], [], []
     atid = 1
+    print(order)
     for i in order:
         ci = chains[i]
         coarseGrained = ci.cg(force=True)
@@ -519,10 +520,10 @@ def do_topology(options, chains, ssTotal, cysteines, merge):
 
 
 def main(options):
-    chains, atoms, ssTotal, cysteines, merge = read_input_file(options)
+    chains, atoms, ssTotal, cysteines, merge, order = read_input_file(options)
 
     if options["index"]:
-        write_index(options["index"], chains)
+        write_index(options["index"], chains, order)
 
     # Write the index file for mapping AA trajectory if requested
     if options["mapping"]:
