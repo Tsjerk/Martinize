@@ -182,7 +182,7 @@ def call_dssp(chain, atomlist, executable='dsspcmbi'):
         sys.exit(1)
 
     for atom in atomlist:
-        if atom[0][:2] == 'O1': atom = ('O',)+atom[1:]
+        if atom[0][:2] == 'O1' or atom[0][:3] == 'OXT': atom = ('O',)+atom[1:]
         if atom[0][0] != 'H' and atom[0][:2] != 'O2': p.stdin.write(IO.pdbOut(atom))
     p.stdin.write('TER\n')
     data = p.communicate()
