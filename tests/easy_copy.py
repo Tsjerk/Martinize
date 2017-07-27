@@ -56,7 +56,7 @@ def color_arguments(arguments, colors):
     return arguments
 
 
-def replace_function(arguments, replace_files=True, program):
+def replace_function(program, arguments, replace_files=True):
     """
     Rewrites regression test description for easy copy-paste
     """
@@ -82,7 +82,7 @@ def replace_function(arguments, replace_files=True, program):
                     arg = arg_list.pop(0)
                     new_list.append(os.path.join(input_dir, arg))
             prog_args = ' '.join(new_list)
-        result = ' '.join(program, prog_args[:-1])
+        result = ' '.join((program, prog_args[:-1]))
     return result
 
 
@@ -139,7 +139,7 @@ class ImprovedDisplay(Plugin):
         """
         args = test.id()
         if self.easy_copy:
-            args = replace_function(args, self.replace_input, program=PROGRAM)
+            args = replace_function(PROGRAM, args, self.replace_input)
         if self.color_verbose:
             args = color_arguments(args, colors=COLORS)
         return args
