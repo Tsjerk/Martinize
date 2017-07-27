@@ -1,0 +1,9 @@
+language: python
+python:
+    - "2.7"
+install:
+    - git clone https://github.com/Tsjerk/simopt.git && pip install ./simopt
+    - pip install ./
+    - pip install nose coverage mock testfixtures
+script:
+    - cd tests && python run_tests.py -v --with-coverage --cover-package=martinize

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from __future__ import print_function, absolute_import
-from setuptools import setup
+from setuptools import setup, find_packages
 
 # Read the version from a file to be sure it is consistent with the version
 # in the package.
@@ -40,8 +40,8 @@ setup(
 
     tests_requires=['nose'],
 
-    packages=['martinize'],
-    package_data={'martinize': ['VERSION.txt']},
+    packages=find_packages(),
+    package_data={'martinize': ['VERSION.txt', 'quotes.txt']},
 
     entry_points={
         'console_scripts': [
