@@ -4,6 +4,8 @@ python:
 install:
     - git clone https://github.com/Tsjerk/simopt.git && pip install ./simopt
     - pip install ./
-    - pip install nose coverage mock testfixtures
+    - pip install nose coverage mock testfixtures codecov
 script:
     - cd tests && python run_tests.py -v --with-coverage --cover-package=martinize
+after_success:
+    - codecov
