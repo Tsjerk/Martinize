@@ -1,11 +1,28 @@
 language: python
 python:
     - "2.7"
+addons:
+    apt:
+        packages:
+            - libboost-dev
+            - libboost-thread-dev
+            - libboost-iostreams-dev
+            - libboost-program-options-dev
+            - libboost-filesystem-dev
 install:
+    - |
+        wget ftp://ftp.cmbi.ru.nl/pub/software/dssp/dssp-2.2.1.tgz \
+        && tar -xf dssp-2.2.1.tgz \
+        && cd dssp-2.2.1 \
+        && make \
+        && mv mkdssp dssp \
+        && export PATH=$PWD:$PATH \
+        && cd ..
     - git clone https://github.com/Tsjerk/simopt.git && pip install ./simopt
     - pip install ./
     - pip install nose coverage mock testfixtures codecov
 script:
+    - which dssp
     - cd tests && python run_tests.py -v --with-coverage --cover-package=martinize
 after_success:
     - codecov
