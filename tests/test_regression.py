@@ -76,12 +76,46 @@ INPUT_DIR = os.path.join(HERE, 'data', 'inputs')
 RANDSEED = '42'
 SEED_ENV = 'INSANE_SEED'
 
+PDB_LIST = ('1ubq', '3csy', '2qwo', '1a8g', '2oar')  #, '1cag')
+FF_LIST = ('martini21', 'martini21p',
+           'martini22', 'martini22p',
+           'elnedyn', 'elnedyn22', 'elnedyn22p')
+
 # The arguments to test insane with are listed here. The tuple is used both to
 # generate the references, and to run the tests.
 # To add a test case, add the arguments to test in the tuple.
 SIMPLE_TEST_CASES = [
-    ('-f {}.pdb'.format(pdb), pdb) for pdb in ('1ubq', '3csy', '2qwo')
+    ('-f {}.pdb'.format(pdb), pdb) for pdb in PDB_LIST
 ]
+SIMPLE_TEST_CASES.extend([
+    # Examples from the martini tutorial
+    # <http://cgmartini.nl/index.php/tutorials-general-introduction-gmx5/proteins-gmx5>
+    ('-f 1ubq.pdb -o system-vaccum.top -x 1UBQ-CG.pdb '
+     '-dssp dssp -p backbone -ff martini22', '1ubq'),
+    ('-f 1ubq.pdb -o system-vaccum.top -x 1UBQ-CG.pdb '
+     '-ss chainA.ss -p backbone -ff martini22', '1ubq-ss'),
+    ('-f 1a8g.pdb -o system-vaccum.top -x 1UBQ-CG.pdb '
+     '-dssp dssp -p backbone -ff martini22', '1a8g'),
+    ('-f 1a8g.pdb -o system-vaccum.top -x 1UBQ-CG.pdb '
+     '-dssp dssp -p backbone -ff martini22 '
+     '-elastic -ef 500 -el 0.5 -eu 0.9 -ea 0 -ep 0', '1a8g', '1a8g-elastic'),
+    ('-f 1a8g.pdb -o system-vaccum.top -x 1UBQ-CG.pdb '
+     '-dssp dssp -p backbone -ff elnedyn22', '1a8g'),
+    # Examples taken from Djurre's tests
+    # <https://github.com/cgmartini/martinize.py/blob/master/test/test.sh>
+    ('-f 1ubq.pdb -o 1UBQ_cg.top -x 1UBQ_cg.pdb '
+     '-ss ~EEEEEETTS~EEEEE~~TTSBHHHHHHHHHHHH~~~GGGEEEEETTEE~~TTSBTGGGT~~TT~EEEEEE~~S~~',
+     '1ubq', '1ubq-inline-ss'),
+    ('-f 2oar.pdb -o 2OAR_cg.top -x 2OAR_cg.pdb '
+     '-sep -nt -p All -pf 500 -dssp dssp -ff martini22', '2oar'),
+    ('-f 1cag.pdb -o 1CAG_cg.top -x 1CAG_cg.pdb -collagen -ff martini22', '1cag'),
+    # ('-f 3sjm.pdb -o 3SJM_cg.top -x 3SJM_cg.pdb -collagen -ff martini22dna', '3sjm'),
+])
+SIMPLE_TEST_CASES.extend([
+    ('-f {}.pdb -ff {}'.format(pdb, ff), pdb)
+    for pdf in PDB_LIST
+    for ff in FF_LIST
+])
 
 
 def _arguments_as_list(arguments):
@@ -528,10 +562,12 @@ nosetests -v: run the tests
         sys.exit(1)
     try:
         commands[sys.argv[1]]()
-    except KeyError:
-        print("Unrecognized keyword '{}'.".format(sys.argv[1]))
-        print(help_, file=sys.stderr)
-        sys.exit(1)
+    #except KeyError:
+    #    print("Unrecognized keyword '{}'.".format(sys.argv[1]))
+    #    print(help_, file=sys.stderr)
+    #    sys.exit(1)
+    finally:
+        pass
 
 
 if __name__ == '__main__':

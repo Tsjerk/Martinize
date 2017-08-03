@@ -1,0 +1,82 @@
+root INFO
+  If you use this script please cite:
+root INFO
+  de Jong et al., J. Chem. Theory Comput., 2013, DOI:10.1021/ct300646g
+root INFO
+  Chain termini will be charged
+root INFO
+  Residues at chain brakes will not be charged
+root INFO
+  The martini22 forcefield will be used.
+root INFO
+  Local elastic bonds will be used for extended regions.
+root INFO
+  Read input structure from file.
+root INFO
+  Input structure is a PDB file.
+root WARNING
+  Several chains have identical chain identifiers in the PDB file.
+root INFO
+  Found 9 chains:
+root INFO
+     1:   A (Protein), 187 atoms in 29 residues.
+root INFO
+     2:   B (Protein), 191 atoms in 30 residues.
+root INFO
+     3:   C (Protein), 187 atoms in 29 residues.
+root INFO
+     4:   A (Unknown), 4 atoms in 1 residues.
+root INFO
+     5:   B (Unknown), 8 atoms in 2 residues.
+root INFO
+     6:   C (Unknown), 12 atoms in 3 residues.
+root INFO
+     7:   A (Water), 28 atoms in 28 residues.
+root INFO
+     8:   B (Water), 26 atoms in 26 residues.
+root INFO
+     9:   C (Water), 31 atoms in 31 residues.
+root INFO
+  Removing HETATM chain A consisting of 1 residues.
+root INFO
+  Removing HETATM chain B consisting of 2 residues.
+root INFO
+  Removing HETATM chain C consisting of 3 residues.
+root INFO
+  Removing 28 water molecules (chain A).
+root INFO
+  Removing 26 water molecules (chain B).
+root INFO
+  Removing 31 water molecules (chain C).
+root INFO
+  Total size of the system: 88 residues.
+root INFO
+  Writing coarse grained structure.
+root INFO
+  (Average) Secondary structure has been determined (see head of .itp-file).
+root DEBUG
+  FFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+root DEBUG
+  ['PRO', 'HYP', 'GLY', 'PRO', 'HYP', 'GLY', 'PRO', 'HYP', 'GLY', 'PRO', 'HYP', 'GLY', 'PRO', 'HYP', 'ALA', 'PRO', 'HYP', 'GLY', 'PRO', 'HYP', 'GLY', 'PRO', 'HYP', 'GLY', 'PRO', 'HYP', 'GLY', 'PRO', 'HYP']
+root INFO
+  Created coarsegrained topology
+root DEBUG
+  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+root DEBUG
+  ['PRO', 'HYP', 'GLY', 'PRO', 'HYP', 'GLY', 'PRO', 'HYP', 'GLY', 'PRO', 'HYP', 'GLY', 'PRO', 'HYP', 'ALA', 'PRO', 'HYP', 'GLY', 'PRO', 'HYP', 'GLY', 'PRO', 'HYP', 'GLY', 'PRO', 'HYP', 'GLY', 'PRO', 'HYP', 'GLY']
+root INFO
+  Created coarsegrained topology
+root INFO
+  Written 2 ITP files
+root INFO
+  Output contains 3 molecules:
+root INFO
+     1->  Protein_A (chain  A)
+root INFO
+     2->  Protein_B (chain  B)
+root INFO
+     3->  Protein_A (chain  C)
+root INFO
+  Written topology files
+root INFO
+  Note: Cysteine bonds are 0.24 nm constraints, instead of the published 0.39nm/5000kJ/mol.
