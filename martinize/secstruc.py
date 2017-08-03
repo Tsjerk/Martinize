@@ -179,7 +179,8 @@ def call_dssp(chain, atomlist, executable='dsspcmbi'):
             p = subp.Popen([executable, "--", ssdfile], stderr=subp.PIPE, stdout=subp.PIPE, stdin=subp.PIPE)
     except OSError:
         logging.error("A problem occured calling %s." % executable)
-        sys.exit(1)
+        #sys.exit(1)
+        raise OSError
 
     for atom in atomlist:
         if atom[0][:2] == 'O1' or atom[0][:3] == 'OXT': atom = ('O',)+atom[1:]

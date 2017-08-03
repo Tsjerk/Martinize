@@ -219,6 +219,8 @@ def main(argv):
     except MartinizeException as e:
         print(e)
         return 2
+    except OSError:
+        return 3
 
     ## OUTPUT
     # Build atom list
