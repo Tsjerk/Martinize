@@ -26,6 +26,10 @@ from .converters import Link
 def write_structure(ostream, model, title, box, chains, order):
     logging.info("Writing coarse grained structure.")
     ostream.write("MODEL %8d\n" % model)
+    # TODO The title lines should not be more than 80 columns, including
+    # the TITLE prefix.
+    if not title.startswith('TITLE'):
+        title = 'TITLE     ' + title
     ostream.write(title)
     ostream.write(IO.pdbBoxString(box))
     atid = 1

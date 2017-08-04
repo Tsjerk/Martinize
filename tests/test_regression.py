@@ -121,6 +121,8 @@ SIMPLE_TEST_CASES.extend([
 SIMPLE_TEST_CASES.extend([
     ('-f 1a8g.pdb -merge A,B', '1a8g'),
     ('-f 2oar.pdb -merge A,B,C -merge D,E', '2oar'),
+    ('-f 1ubq.gro -x 1ubq-cg.pdb', '1ubq-gro'),
+    ('-f 1ubq.gro -x 1ubq-cg.pdb -dssp dssp', '1ubq-gro'),
 ])
 SIMPLE_TEST_CASES.extend([
     ('-f {}.pdb -ff {}'.format(pdb, ff), pdb)
