@@ -29,6 +29,8 @@ import shutil
 import sys
 import tempfile
 
+from nose.tools import assert_equal
+
 try:
     from StringIO import StringIO
 except ImportError:
@@ -348,6 +350,58 @@ def assert_gro_equal(path, ref_path):
         differences = compare_gro(stream, ref_stream)
         format_gro_diff(differences, outstream=diff_out)
         assert len(differences) == 0, '\n' + diff_out.getvalue()
+
+
+def ignore_comments(stream, comment_chars=()):
+    return (line for line in stream
+            if not (line.strip() and line.strip()[0] in comment_chars))
+
+
+def compare(output, reference, comment_chars=()):
+    """
+    Assert that two files are identical.
+    """
+    out_file = _open_if_needed(output)
+    ref_file = _open_if_needed(reference)
+    with out_file, ref_file:
+        lines_zip = zip(ignore_comments(out_file, comment_chars),
+                        ignore_comments(ref_file, comment_chars))
+        for out_line, ref_line in lines_zip:
+            assert_equal(out_line, ref_line)
+        extra_out = list(out_file)
+        extra_ref = list(ref_file)
+        assert_equal(extra_out, [])
+        assert_equal(extra_ref, [])
+
+
+def compare_directories(directory, ref_directory, ignore=()):
+    extra_files = []
+    missing_files = []
+    for root, dirs, files in os.walk(directory):
+        for single_file in [f for f in files if f not in ignore]:
+            path = os.path.join(root, single_file)
+            rel_path = os.path.relpath(path, directory)
+            ref_path = os.path.join(ref_directory, rel_path)
+            comment_chars = ()
+            if os.path.splitext(ref_path)[-1] == '.ssd':
+                comment_chars = ('=',)
+            if os.path.exists(ref_path):
+                print('Comparing {}'.format(path))
+                compare(path, ref_path, comment_chars=comment_chars)
+            else:
+                extra_files.append(rel_path)
+    for root, dirs, files in os.walk(ref_directory):
+        for single_file in [f for f in files if f not in ignore]:
+            path = os.path.join(root, single_file)
+            rel_path = os.path.relpath(path, ref_directory)
+            ref_path = os.path.join(directory, rel_path)
+            if not os.path.exists(ref_path):
+                missing_files.append(rel_path)
+    assert not bool(extra_files), ("The following files are unexpected: {}"
+                                   .format(extra_files))
+    assert not bool(missing_files), ("The following files are missing: {}"
+                                     .format(missing_files))
+
 
 def _open_if_needed(handle):
     """
