@@ -77,9 +77,14 @@ RANDSEED = '42'
 SEED_ENV = 'INSANE_SEED'
 
 PDB_LIST = ('1ubq', '3csy', '2qwo', '1a8g', '2oar')  #, '1cag')
-FF_LIST = ('martini21', 'martini21p',
-           'martini22', 'martini22p',
-           'elnedyn', 'elnedyn22', 'elnedyn22p')
+FF_LIST = (
+    'martini21', 'martini21p',
+    'martini22', 'martini22p',
+    'elnedyn', 'elnedyn22', 'elnedyn22p',
+    'elnedyn_BBbonds', 'elnedyn_BBconstr',
+    'elnedyn22_BBbonds', 'elnedyn22_BBconstr',
+    'elnedyn22p_BBbonds', 'elnedyn22p_BBconstr',
+)
 
 # The arguments to test insane with are listed here. The tuple is used both to
 # generate the references, and to run the tests.
