@@ -1,6 +1,6 @@
 ; MARTINI (martini22) Coarse Grained topology file for "Protein_B"
 ; Created by martinize.py version  
-; Using the following options:  -f 1a8g.pdb -o system-vaccum.top -x 1UBQ-CG.pdb -dssp dssp -p backbone -ff martini22 -elastic -ef 500 -el 0.5 -eu 0.9 -ea 0 -ep 0
+; Using the following options:  -f 1a8g.pdb -o system-vaccum.top -x 1A8G-CG.pdb -dssp dssp -p backbone -ff martini22 -elastic -ef 500 -el 0.5 -eu 0.9 -ea 0 -ep 0
 ; Sequence:
 ; PQITLWQRPLVTIKIGGQLKEALLDTGADDTVLEEMNLPGRWKPKMIGGIGGFIKVRQYDQILIEICGHKAIGTVLVGPTPVNIIGRNLLTQIGCTLNF
 ; Secondary Structure:

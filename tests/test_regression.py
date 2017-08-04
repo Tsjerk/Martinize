@@ -94,13 +94,15 @@ SIMPLE_TEST_CASES.extend([
      '-dssp dssp -p backbone -ff martini22', '1ubq'),
     ('-f 1ubq.pdb -o system-vaccum.top -x 1UBQ-CG.pdb '
      '-ss chainA.ss -p backbone -ff martini22', '1ubq-ss'),
-    ('-f 1a8g.pdb -o system-vaccum.top -x 1UBQ-CG.pdb '
+    ('-f 1a8g.pdb -o system-vaccum.top -x 1A8G-CG.pdb '
      '-dssp dssp -p backbone -ff martini22', '1a8g'),
-    ('-f 1a8g.pdb -o system-vaccum.top -x 1UBQ-CG.pdb '
+    ('-f 1a8g.pdb -o system-vaccum.top -x 1A8G-CG.pdb '
      '-dssp dssp -p backbone -ff martini22 '
      '-elastic -ef 500 -el 0.5 -eu 0.9 -ea 0 -ep 0', '1a8g', '1a8g-elastic'),
     ('-f 1a8g.pdb -o system-vaccum.top -x 1UBQ-CG.pdb '
      '-dssp dssp -p backbone -ff elnedyn22', '1a8g'),
+])
+SIMPLE_TEST_CASES.extend([
     # Examples taken from Djurre's tests
     # <https://github.com/cgmartini/martinize.py/blob/master/test/test.sh>
     ('-f 1ubq.pdb -o 1UBQ_cg.top -x 1UBQ_cg.pdb '
@@ -109,12 +111,27 @@ SIMPLE_TEST_CASES.extend([
     ('-f 2oar.pdb -o 2OAR_cg.top -x 2OAR_cg.pdb '
      '-sep -nt -p All -pf 500 -dssp dssp -ff martini22', '2oar'),
     ('-f 1cag.pdb -o 1CAG_cg.top -x 1CAG_cg.pdb -collagen -ff martini22', '1cag'),
-    # ('-f 3sjm.pdb -o 3SJM_cg.top -x 3SJM_cg.pdb -collagen -ff martini22dna', '3sjm'),
+    ('-f 3sjm.pdb -o 3SJM_cg.top -x 3SJM_cg.pdb -collagen -ff martini22dna', '3sjm'),
+])
+SIMPLE_TEST_CASES.extend([
+    ('-f 1l35.pdb -o 1L35_cg.top -x 1l35_cg.pdb '
+     '-cys auto -name lysozyme -dssp dssp -ed -ff {}'.format(ff), '1l35')
+    for ff in FF_LIST
+])
+SIMPLE_TEST_CASES.extend([
+    ('-f 1a8g.pdb -merge A,B', '1a8g'),
+    ('-f 2oar.pdb -merge A,B,C -merge D,E', '2oar'),
 ])
 SIMPLE_TEST_CASES.extend([
     ('-f {}.pdb -ff {}'.format(pdb, ff), pdb)
     for pdf in PDB_LIST
     for ff in FF_LIST
+])
+SIMPLE_TEST_CASES.extend([
+    ('-f {}.pdb -nmap nmap.idx'.format(pdb), pdb) for pdb in PDB_LIST
+])
+SIMPLE_TEST_CASES.extend([
+    ('-f {}.pdb -n index.idx'.format(pdb), pdb) for pdb in PDB_LIST
 ])
 
 
@@ -131,28 +148,6 @@ def _arguments_as_list(arguments):
     except ValueError:
         arguments_list = arguments
     return arguments_list
-
-
-def _output_from_arguments(arguments, option='-o'):
-    """
-    Find the file name of the GRO output provided as argument to program.
-
-    The file name is passed to program via the '-o' argument. If the argument is
-    provided several times, then only the last one is considered.
-
-    This function reads the arguments provided as a list of arguments.
-    """
-    if not option:
-        return None
-
-    for i, argument in reversed(list(enumerate(arguments))):
-        if argument == option:
-            break
-    else:
-        raise ValueError('Output name is not provided to {} '
-                         'using the {} argument.'.format(PROGRAM, option))
-
-    return arguments[i + 1]
 
 
 def _split_case(case):

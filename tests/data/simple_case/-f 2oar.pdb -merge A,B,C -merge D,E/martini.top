@@ -1,0 +1,13 @@
+#include "martini.itp"
+
+#include "Protein_A+Protein_B+Protein_C.itp"
+#include "Protein_D+Protein_E.itp"
+
+[ system ]
+; name
+Martini system from 2oar.pdb
+
+[ molecules ]
+; name        number
+Protein_A+Protein_B+Protein_C 	 1
+Protein_D+Protein_E 	 1
