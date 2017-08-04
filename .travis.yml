@@ -23,6 +23,6 @@ install:
     - pip install nose coverage mock testfixtures codecov
 script:
     - which dssp
-    - cd tests && python run_tests.py -v --with-coverage --cover-package=martinize
+    - cd tests && python run_tests.py -v --with-coverage --cover-package=martinize,martinize.ForceFields
 after_success:
     - codecov
