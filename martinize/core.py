@@ -366,14 +366,14 @@ def cystine_bridges(cys, options):
 
     # Check the distances and add the cysteines to the link list if the
     # SG atoms have a distance smaller than the cutoff.
-    rlc = range(len(cys))
+    rlc = range(len(cysteines))
     for i in rlc[:-1]:
         for j in rlc[i+1:]:
             # Checking the minimum distance over all frames
             # But we could also take the maximum, or the mean
             d2 = min([functions.distance2(a, b) for a, b in zip(cyscoord[i], cyscoord[j])])
             if d2 <= options['CystineMaxDist2']:
-                a, b = cys[i], cys[j]
+                a, b = cysteines[i], cysteines[j]
                 bridges.append(Link(a=("SC1", "CYS", a[2], a[3]), 
                                     b=("SC1", "CYS", b[2], b[3]), 
                                     length=bl, fc=kb))
@@ -394,7 +394,7 @@ def elastic_network(atoms, coords, options):
 
 
 
-def links(linklist, atoms, forcefield):
+def links(linklist, atoms, forcefield, options):
 
     # Run through the link list and add connections (links = cys bridges or hand specified links)
     out = []
@@ -487,7 +487,7 @@ def do_topology(options, chains, ssTotal, cysteines, merge):
             mcg, coords = zip(*[(j[:4], j[4:7]) for m in mol for j in m.cg(force=True)])
             mcg         = list(mcg)
 
-            top.bonds.extend(links(options['links'], mcg, options["ForceField"]))
+            top.bonds.extend(links(options['links'], mcg, options["ForceField"], options))
 
             # Elastic Network
             # The elastic network is added after the topology is constructed, since that

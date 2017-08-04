@@ -754,6 +754,7 @@ lysozyme_A        1
   351   352      1   0.27000 ; TYR
   351   353      1   0.27000 ; TYR
   352   353      1   0.27000 ; TYR
+   21   360      1   0.24000 ; Cys-bonds/special link
 
 [ angles ]
 ; Backbone angles

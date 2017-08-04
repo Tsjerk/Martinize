@@ -37,6 +37,8 @@ root INFO
   (Average) Secondary structure has been determined (see head of .itp-file).
 root INFO
   Checking for cystine bridges, based on sulphur (SG) atoms lying closer than 0.2200 nm
+root INFO
+  Detected SS bridge between ('SG', 'CYS', 9, 'A') and ('SG', 'CYS', 164, 'A') (0.205434 nm)
 root DEBUG
   CC1111H2222CCEEEEEECTTSCEEEETTEEEESSSC1111HHHH2222TSCCTTCCC1111HHHHHHHHHHHHH2222CTT1113222SC1111HHHHHHHHHHHH2222TC11112222TTC11112222TSS13332S1111HHHHH2222SSSCCCTTC
 root DEBUG
