@@ -1,6 +1,6 @@
-import functions
+from .. import functions
 
-from forcefield import Forcefield
+from .forcefield import Forcefield
 
 ################################
 ## 6 # FORCE FIELD PARAMETERS ##  -> @FF <-
@@ -8,11 +8,9 @@ from forcefield import Forcefield
 
 class elnedyn22p(Forcefield):
     ff = True
-    def __init__(self):
+    name = 'elnedyn22p'
 
-        # parameters are defined here for the following (protein) forcefields:
-        self.name = 'elnedyn22p'
-        
+    def __init__(self):
         # Charged types:
         self.charges = {"Qd":1, "Qa":-1, "SQd":1, "SQa":-1, "RQd":1, "AQa":-1}                                                           #@#        
         

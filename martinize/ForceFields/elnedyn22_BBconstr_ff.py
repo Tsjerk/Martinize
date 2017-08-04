@@ -1,4 +1,5 @@
-from forcefield import Forcefield
+from .forcefield import Forcefield
+from .. import secstruc,functions,IO 
 
 ################################
 ## 6 # FORCE FIELD PARAMETERS ##  -> @FF <-
@@ -11,12 +12,9 @@ class elnedyn22(Forcefield):
     - The Backbone-Sidechain bonds with high force constants are replaced by constraints except for Trp and His.
     '''
     ff = True
-    def __init__(self):
-        import secstruc,functions,IO 
+    name = 'elnedyn22_BBconstr'
 
-        # parameters are defined here for the following (protein) forcefields:
-        self.name = 'elnedyn22'
-        
+    def __init__(self):
         # Charged types:
         self.charges = {"Qd":1, "Qa":-1, "SQd":1, "SQa":-1, "RQd":1, "AQa":-1}                                                           #@#
         

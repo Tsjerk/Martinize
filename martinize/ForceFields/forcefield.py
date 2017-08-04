@@ -1,7 +1,26 @@
 
-import functions, secstruc
+from .. import functions, secstruc
 
-class Forcefield:
+FORCE_FIELD_COLLECTION = {}
+
+
+class _MetaForceField(type):
+    def __init__(cls, name, bases, classdict):
+        super(_MetaForceField, cls).__init__(name, bases, classdict)
+        try:
+            ff_name = classdict['name']
+        except KeyError:
+            raise KeyError('Class "{}" does not define a name.'.format(name))
+        if ff_name is not None:
+            ff_name = ff_name.lower()
+            if ff_name in FORCE_FIELD_COLLECTION:
+                raise RuntimeError('Force field "{}" already exists'.format(ff_name))
+            FORCE_FIELD_COLLECTION[ff_name] = cls
+
+
+class Forcefield(object):
+    __metaclass__ = _MetaForceField
+    name = None
 
     def finish(self):
         print "A"

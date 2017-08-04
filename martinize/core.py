@@ -21,6 +21,7 @@ import sys, logging, random, math, os, re
 
 from . import IO, topology, elastic, functions, mapping
 from .converters import Link
+from .ForceFields import forcefield
 
 
 def write_structure(ostream, model, title, box, chains, order):

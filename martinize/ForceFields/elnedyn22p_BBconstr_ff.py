@@ -1,4 +1,5 @@
-from forcefield import Forcefield
+from .forcefield import Forcefield
+from .. import secstruc,functions,IO 
 
 ################################
 ## 6 # FORCE FIELD PARAMETERS ##  -> @FF <-
@@ -6,11 +7,10 @@ from forcefield import Forcefield
 
 class elnedyn22p(Forcefield):
     ff = True
+    name = 'elnedyn22p_BBconstr'
     def __init__(self):
-        import secstruc,functions,IO 
 
         # parameters are defined here for the following (protein) forcefields:
-        self.name = 'elnedyn22p'
         
         # Charged types:
         self.charges = {"Qd":1, "Qa":-1, "SQd":1, "SQa":-1, "RQd":1, "AQa":-1}                                                           #@#

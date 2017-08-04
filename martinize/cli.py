@@ -29,7 +29,7 @@ from simopt import MULTI, MA
 from . import core
 
 from .converters import atom, atoms, Link
-
+from .ForceFields.forcefield import FORCE_FIELD_COLLECTION
 
 # Option list
 OPTIONS = simopt.Options([
@@ -75,37 +75,19 @@ OPTIONS = simopt.Options([
 ])
 
 
+class MartinizeException(BaseException): pass
+
 
 def update_options(options):
 
     options["Version"] = ""
 
-    # To make the program flexible, the forcefield parameters are defined
-    # for multiple forcefield. We first check for a FF file in the current directory.
-    # Next we check for the FF in globals (for catenated scripts). 
-    # Next we check in at the location of the script and the subdiretory FF.
     try:
-        options['ForceField'] = globals()[options['forcefield'].lower()]()
+        options['ForceField'] = FORCE_FIELD_COLLECTION[options['forcefield'].lower()]()
     except KeyError:
-        try:
-            _tmp = __import__(options['forcefield'].lower()+"_ff")
-            options['ForceField'] = getattr(_tmp, options['forcefield'].lower())()
-        except ImportError:
-            try:
-                # We add the directory where the script resides and a possible "ForceFields" directory to the search path
-                # realpath() will make your script run, even if you symlink it :)
-                cmd_folder = os.path.realpath(os.path.dirname(inspect.getfile(inspect.currentframe())))
-                if cmd_folder not in sys.path:
-                    sys.path.insert(0, cmd_folder)
-                # use this if you want to include modules from a subfolder
-                cmd_subfolder = os.path.realpath(os.path.dirname(inspect.getfile(inspect.currentframe()))) + "/ForceFields"
-                if cmd_subfolder not in sys.path:
-                     sys.path.insert(0, cmd_subfolder)
-                _tmp = __import__(options['forcefield'].lower()+"_ff")
-                options['ForceField'] = getattr(_tmp, options['forcefield'].lower())()
-            except:
-                logging.error("Forcefield '%s' can not be loaded." % (options['forcefield']))
-                sys.exit()
+        message = "Forcefield '{}' can not be loaded.".format(options['forcefield'])
+        logging.error(message)
+        raise MartinizeException(message)
         
     # Process the raw options from the command line
     # Boolean options are set to more intuitive variables
@@ -194,7 +176,6 @@ def update_options(options):
 def main(argv):
     ## TEMPORARY ---
     # Exception to be defined in martinize
-    class MartinizeException(BaseException): pass
     ## <---
 
     ## OPTIONS
@@ -212,6 +193,9 @@ def main(argv):
     except simopt.Usage as e:
         print(e)
         return 1
+    except MartinizeException as e:
+        print(e)
+        return 5
 
     ## WORK
     try:
@@ -220,7 +204,7 @@ def main(argv):
         print(e)
         return 2
     except OSError:
-        return 3
+        return 4
 
     ## OUTPUT
     # Build atom list

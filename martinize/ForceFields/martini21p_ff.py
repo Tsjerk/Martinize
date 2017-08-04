@@ -1,6 +1,6 @@
 import logging
-import functions
-from forcefield import Forcefield
+from .. import functions
+from .forcefield import Forcefield
 
 ################################
 ## 6 # FORCE FIELD PARAMETERS ##  -> @FF <-
@@ -8,11 +8,8 @@ from forcefield import Forcefield
 
 class martini21p(Forcefield):
     ff = True
+    name = 'martini21p'
     def __init__(self):
-
-        # parameters are defined here for the following (protein) forcefields:
-        self.name = 'martini21p'
-        
         # Charged types:
         self.charges = {"Qd":1, "Qa":-1, "SQd":1, "SQa":-1, "RQd":1, "AQa":-1}                                                           #@#
                 
