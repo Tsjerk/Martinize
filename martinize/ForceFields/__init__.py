@@ -7,6 +7,8 @@ import martini22p_ff
 import martini22dna_ff
 
 import elnedyn_ff
+import elnedyn_BBbonds_ff
+import elnedyn_BBconstr_ff
 import elnedyn22_ff
 import elnedyn22_BBbonds_ff
 import elnedyn22_BBconstr_ff
