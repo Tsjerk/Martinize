@@ -76,12 +76,70 @@ INPUT_DIR = os.path.join(HERE, 'data', 'inputs')
 RANDSEED = '42'
 SEED_ENV = 'INSANE_SEED'
 
+PDB_LIST = ('1ubq', '3csy', '2qwo', '1a8g', '2oar')  #, '1cag')
+FF_LIST = (
+    'martini21', 'martini21p',
+    'martini22', 'martini22p',
+    'elnedyn', 'elnedyn22', 'elnedyn22p',
+    'elnedyn_BBbonds', 'elnedyn_BBconstr',
+    'elnedyn22_BBbonds', 'elnedyn22_BBconstr',
+    'elnedyn22p_BBbonds', 'elnedyn22p_BBconstr',
+)
+
 # The arguments to test insane with are listed here. The tuple is used both to
 # generate the references, and to run the tests.
 # To add a test case, add the arguments to test in the tuple.
 SIMPLE_TEST_CASES = [
-    ('-f {}.pdb'.format(pdb), pdb) for pdb in ('1ubq', '3csy', '2qwo')
+    ('-f {}.pdb'.format(pdb), pdb) for pdb in PDB_LIST
 ]
+SIMPLE_TEST_CASES.extend([
+    # Examples from the martini tutorial
+    # <http://cgmartini.nl/index.php/tutorials-general-introduction-gmx5/proteins-gmx5>
+    ('-f 1ubq.pdb -o system-vaccum.top -x 1UBQ-CG.pdb '
+     '-dssp dssp -p backbone -ff martini22', '1ubq'),
+    ('-f 1ubq.pdb -o system-vaccum.top -x 1UBQ-CG.pdb '
+     '-ss chainA.ss -p backbone -ff martini22', '1ubq-ss'),
+    ('-f 1a8g.pdb -o system-vaccum.top -x 1A8G-CG.pdb '
+     '-dssp dssp -p backbone -ff martini22', '1a8g'),
+    ('-f 1a8g.pdb -o system-vaccum.top -x 1A8G-CG.pdb '
+     '-dssp dssp -p backbone -ff martini22 '
+     '-elastic -ef 500 -el 0.5 -eu 0.9 -ea 0 -ep 0', '1a8g', '1a8g-elastic'),
+    ('-f 1a8g.pdb -o system-vaccum.top -x 1UBQ-CG.pdb '
+     '-dssp dssp -p backbone -ff elnedyn22', '1a8g'),
+])
+SIMPLE_TEST_CASES.extend([
+    # Examples taken from Djurre's tests
+    # <https://github.com/cgmartini/martinize.py/blob/master/test/test.sh>
+    ('-f 1ubq.pdb -o 1UBQ_cg.top -x 1UBQ_cg.pdb '
+     '-ss ~EEEEEETTS~EEEEE~~TTSBHHHHHHHHHHHH~~~GGGEEEEETTEE~~TTSBTGGGT~~TT~EEEEEE~~S~~',
+     '1ubq', '1ubq-inline-ss'),
+    ('-f 2oar.pdb -o 2OAR_cg.top -x 2OAR_cg.pdb '
+     '-sep -nt -p All -pf 500 -dssp dssp -ff martini22', '2oar'),
+    ('-f 1cag.pdb -o 1CAG_cg.top -x 1CAG_cg.pdb -collagen -ff martini22', '1cag'),
+    ('-f 3sjm.pdb -o 3SJM_cg.top -x 3SJM_cg.pdb -collagen -ff martini22dna', '3sjm'),
+])
+SIMPLE_TEST_CASES.extend([
+    ('-f 1l35.pdb -o 1L35_cg.top -x 1l35_cg.pdb '
+     '-cys auto -name lysozyme -dssp dssp -ed -ff {}'.format(ff), '1l35')
+    for ff in FF_LIST
+])
+SIMPLE_TEST_CASES.extend([
+    ('-f 1a8g.pdb -merge A,B', '1a8g'),
+    ('-f 2oar.pdb -merge A,B,C -merge D,E', '2oar'),
+    ('-f 1ubq.gro -x 1ubq-cg.pdb', '1ubq-gro'),
+    ('-f 1ubq.gro -x 1ubq-cg.pdb -dssp dssp', '1ubq-gro'),
+])
+SIMPLE_TEST_CASES.extend([
+    ('-f {}.pdb -ff {}'.format(pdb, ff), pdb)
+    for pdf in PDB_LIST
+    for ff in FF_LIST
+])
+SIMPLE_TEST_CASES.extend([
+    ('-f {}.pdb -nmap nmap.idx'.format(pdb), pdb) for pdb in PDB_LIST
+])
+SIMPLE_TEST_CASES.extend([
+    ('-f {}.pdb -n index.idx'.format(pdb), pdb) for pdb in PDB_LIST
+])
 
 
 def _arguments_as_list(arguments):
@@ -97,28 +155,6 @@ def _arguments_as_list(arguments):
     except ValueError:
         arguments_list = arguments
     return arguments_list
-
-
-def _output_from_arguments(arguments, option='-o'):
-    """
-    Find the file name of the GRO output provided as argument to program.
-
-    The file name is passed to program via the '-o' argument. If the argument is
-    provided several times, then only the last one is considered.
-
-    This function reads the arguments provided as a list of arguments.
-    """
-    if not option:
-        return None
-
-    for i, argument in reversed(list(enumerate(arguments))):
-        if argument == option:
-            break
-    else:
-        raise ValueError('Output name is not provided to {} '
-                         'using the {} argument.'.format(PROGRAM, option))
-
-    return arguments[i + 1]
 
 
 def _split_case(case):
@@ -200,47 +236,6 @@ def run_program(arguments, input_directory=None, runner=_run_internal):
     return out, err, log, returncode
 
 
-def compare(output, reference):
-    """
-    Assert that two files are identical.
-    """
-    out_file = utils._open_if_needed(output)
-    ref_file = utils._open_if_needed(reference)
-    with out_file, ref_file:
-        lines_zip = zip(out_file, ref_file)
-        for out_line, ref_line in lines_zip:
-            assert_equal(out_line, ref_line)
-        extra_out = list(out_file)
-        extra_ref = list(ref_file)
-        assert_equal(extra_out, [])
-        assert_equal(extra_ref, [])
-
-
-def compare_directories(directory, ref_directory, ignore=()):
-    extra_files = []
-    missing_files = []
-    for root, dirs, files in os.walk(directory):
-        for single_file in [f for f in files if f not in ignore]:
-            path = os.path.join(root, single_file)
-            rel_path = os.path.relpath(path, directory)
-            ref_path = os.path.join(ref_directory, rel_path)
-            if os.path.exists(ref_path):
-                compare(path, ref_path)
-            else:
-                extra_files.append(rel_path)
-    for root, dirs, files in os.walk(ref_directory):
-        for single_file in [f for f in files if f not in ignore]:
-            path = os.path.join(root, single_file)
-            rel_path = os.path.relpath(path, ref_directory)
-            ref_path = os.path.join(directory, rel_path)
-            if not os.path.exists(ref_path):
-                missing_files.append(rel_path)
-    assert not bool(extra_files), ("The following files are unexpected: {}"
-                                   .format(extra_files))
-    assert not bool(missing_files), ("The following files are missing: {}"
-                                     .format(missing_files))
-
-
 def run_and_compare(arguments, input_dir, ref_dir, runner):
     """
     Run program and compare its output against a reference
@@ -260,11 +255,11 @@ def run_and_compare(arguments, input_dir, ref_dir, runner):
     with utils.tempdir():
         out, err, log, returncode = run_program(arguments, input_dir, runner=runner)
         assert not returncode
-        compare(utils.ContextStringIO(out), ref_stdout)
-        compare(utils.ContextStringIO(err), ref_stderr)
-        compare(utils.ContextStringIO(log), ref_log)
-        compare_directories('./', ref_dir,
-                            ignore=('stderr', 'stdout', 'testlog'))
+        utils.compare(utils.ContextStringIO(out), ref_stdout)
+        utils.compare(utils.ContextStringIO(err), ref_stderr)
+        utils.compare(utils.ContextStringIO(log), ref_log)
+        utils.compare_directories('./', ref_dir,
+                                  ignore=('stderr', 'stdout', 'testlog'))
 
 
 def _test_simple_cases():
@@ -528,10 +523,12 @@ nosetests -v: run the tests
         sys.exit(1)
     try:
         commands[sys.argv[1]]()
-    except KeyError:
-        print("Unrecognized keyword '{}'.".format(sys.argv[1]))
-        print(help_, file=sys.stderr)
-        sys.exit(1)
+    #except KeyError:
+    #    print("Unrecognized keyword '{}'.".format(sys.argv[1]))
+    #    print(help_, file=sys.stderr)
+    #    sys.exit(1)
+    finally:
+        pass
 
 
 if __name__ == '__main__':

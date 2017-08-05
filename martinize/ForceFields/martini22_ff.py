@@ -1,5 +1,5 @@
-import functions
-from forcefield import Forcefield
+from .. import functions
+from .forcefield import Forcefield
 
 ################################
 ## 6 # FORCE FIELD PARAMETERS ##  -> @FF <-
@@ -15,10 +15,10 @@ from forcefield import Forcefield
 
 class martini22(Forcefield):
     ff = True
+    # parameters are defined here for the following (protein) forcefields:
+    name = 'martini22'
     def __init__(self):
 
-        # parameters are defined here for the following (protein) forcefields:
-        self.name = 'martini22'
         
         # Charged types:
         self.charges = {"Qd":1, "Qa":-1, "SQd":1, "SQa":-1, "RQd":1, "AQa":-1}                                                           #@#

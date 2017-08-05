@@ -1,0 +1,16 @@
+#include "martini.itp"
+
+#include "Protein_A.itp"
+#include "Nucleic_D.itp"
+#include "Nucleic_C.itp"
+
+[ system ]
+; name
+Martini system from 3sjm.pdb
+
+[ molecules ]
+; name        number
+Nucleic_C 	 1
+Nucleic_D 	 1
+Protein_A 	 1
+Protein_A 	 1

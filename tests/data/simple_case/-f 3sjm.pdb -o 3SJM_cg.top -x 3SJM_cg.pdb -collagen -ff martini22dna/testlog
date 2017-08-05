@@ -1,0 +1,84 @@
+root INFO
+  If you use this script please cite:
+root INFO
+  de Jong et al., J. Chem. Theory Comput., 2013, DOI:10.1021/ct300646g
+root INFO
+  Chain termini will be charged
+root INFO
+  Residues at chain brakes will not be charged
+root INFO
+  The martini22dna forcefield will be used.
+root INFO
+  Local elastic bonds will be used for extended regions.
+root INFO
+  Read input structure from file.
+root INFO
+  Input structure is a PDB file.
+root WARNING
+  Several chains have identical chain identifiers in the PDB file.
+root INFO
+  Found 8 chains:
+root INFO
+     1:   C (Nucleic), 365 atoms in 17 residues.
+root INFO
+     2:   D (Nucleic), 341 atoms in 17 residues.
+root INFO
+     3:   A (Protein), 468 atoms in 55 residues.
+root INFO
+     4:   B (Protein), 469 atoms in 55 residues.
+root INFO
+     5:   C (Water), 69 atoms in 69 residues.
+root INFO
+     6:   D (Water), 76 atoms in 76 residues.
+root INFO
+     7:   A (Water), 73 atoms in 73 residues.
+root INFO
+     8:   B (Water), 80 atoms in 80 residues.
+root INFO
+  Removing 69 water molecules (chain C).
+root INFO
+  Removing 76 water molecules (chain D).
+root INFO
+  Removing 73 water molecules (chain A).
+root INFO
+  Removing 80 water molecules (chain B).
+root INFO
+  Total size of the system: 144 residues.
+root INFO
+  Writing coarse grained structure.
+root INFO
+  (Average) Secondary structure has been determined (see head of .itp-file).
+root DEBUG
+  FFFFFFFFFFFFFFFFF
+root DEBUG
+  ['DT', 'DC', 'DT', 'DA', 'DG', 'DG', 'DG', 'DT', 'DT', 'DA', 'DG', 'DG', 'DG', 'DT', 'DT', 'DA', 'DG']
+root INFO
+  Created coarsegrained topology
+root DEBUG
+  FFFFFFFFFFFFFFFFF
+root DEBUG
+  ['DC', 'DT', 'DA', 'DA', 'DC', 'DC', 'DC', 'DT', 'DA', 'DA', 'DC', 'DC', 'DC', 'DT', 'DA', 'DG', 'DA']
+root INFO
+  Created coarsegrained topology
+root DEBUG
+  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+root DEBUG
+  ['LYS', 'LYS', 'GLN', 'LYS', 'TRP', 'THR', 'VAL', 'GLU', 'GLU', 'SER', 'GLU', 'TRP', 'VAL', 'LYS', 'ALA', 'GLY', 'VAL', 'GLN', 'LYS', 'TYR', 'GLY', 'GLU', 'GLY', 'ASN', 'TRP', 'ALA', 'ALA', 'ILE', 'SER', 'LYS', 'ASN', 'TYR', 'PRO', 'PHE', 'VAL', 'ASN', 'ARG', 'THR', 'ALA', 'VAL', 'MET', 'ILE', 'LYS', 'ASP', 'ARG', 'TRP', 'ARG', 'THR', 'MET', 'LYS', 'ARG', 'LEU', 'GLY', 'MET', 'ASN']
+root INFO
+  Created coarsegrained topology
+root INFO
+  Written 3 ITP files
+root INFO
+  Output contains 4 molecules:
+root INFO
+     1->  Nucleic_C (chain  C)
+root INFO
+     2->  Nucleic_D (chain  D)
+root INFO
+     3->  Protein_A (chain  A)
+root INFO
+     4->  Protein_A (chain  B)
+root INFO
+  Written topology files
+root WARNING
+  Martini version 2.2dna is not yet finished.

@@ -1,0 +1,11 @@
+#include "martini.itp"
+
+#include "lysozyme_A.itp"
+
+[ system ]
+; name
+Martini system from 1l35.pdb
+
+[ molecules ]
+; name        number
+lysozyme_A 	 1

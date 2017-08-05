@@ -1,0 +1,57 @@
+root INFO
+  If you use this script please cite:
+root INFO
+  de Jong et al., J. Chem. Theory Comput., 2013, DOI:10.1021/ct300646g
+root INFO
+  Chain termini will be charged
+root INFO
+  Residues at chain brakes will not be charged
+root INFO
+  The martini21p forcefield will be used.
+root INFO
+  Dihedrals will be used for extended regions. (Elastic bonds may be more stable)
+root INFO
+  Read input structure from file.
+root INFO
+  Input structure is a PDB file.
+root DEBUG
+  Splitting chain A in 2 chains
+root INFO
+  Found 2 chains:
+root INFO
+     1:   A (Protein), 1305 atoms in 164 residues.
+root INFO
+     2:   A (Water), 151 atoms in 151 residues.
+root INFO
+  Removing 151 water molecules (chain A).
+root INFO
+  Total size of the system: 164 residues.
+root DEBUG
+  New version of DSSP; Executing 'dssp -i /dev/stdin -o chain_A.ssd'
+root DEBUG
+  DSSP determined secondary structure:
+  HHHHHHHHH  EEEEEE TTS EEEETTEEEESSS HHHHHHHHHHHHTS  TTB  HHHHHHHHHHHHHHHHHHHHH TTHHHHHHHS HHHHHHHHHHHHHHHHHHHHT HHHHHHHHTT HHHHHHHHTSSHHHHHSHHHHHHHHHHHHHSSSGGGTT 
+root INFO
+  Writing coarse grained structure.
+root INFO
+  (Average) Secondary structure has been determined (see head of .itp-file).
+root INFO
+  Checking for cystine bridges, based on sulphur (SG) atoms lying closer than 0.2200 nm
+root INFO
+  Detected SS bridge between ('SG', 'CYS', 9, 'A') and ('SG', 'CYS', 164, 'A') (0.205434 nm)
+root DEBUG
+  CC1111H2222CCEEEEEECTTSCEEEETTEEEESSSC1111HHHH2222TSCCTTCCC1111HHHHHHHHHHHHH2222CTT1113222SC1111HHHHHHHHHHHH2222TC11112222TTC11112222TSS13332S1111HHHHH2222SSSCCCTTC
+root DEBUG
+  ['MET', 'ASN', 'ILE', 'PHE', 'GLU', 'MET', 'LEU', 'ARG', 'CYS', 'ASP', 'GLU', 'GLY', 'LEU', 'ARG', 'LEU', 'LYS', 'ILE', 'TYR', 'LYS', 'ASP', 'THR', 'GLU', 'GLY', 'TYR', 'TYR', 'THR', 'ILE', 'GLY', 'ILE', 'GLY', 'HIS', 'LEU', 'LEU', 'THR', 'LYS', 'SER', 'PRO', 'SER', 'LEU', 'ASN', 'ALA', 'ALA', 'LYS', 'SER', 'GLU', 'LEU', 'ASP', 'LYS', 'ALA', 'ILE', 'GLY', 'ARG', 'ASN', 'THR', 'ASN', 'GLY', 'VAL', 'ILE', 'THR', 'LYS', 'ASP', 'GLU', 'ALA', 'GLU', 'LYS', 'LEU', 'PHE', 'ASN', 'GLN', 'ASP', 'VAL', 'ASP', 'ALA', 'ALA', 'VAL', 'ARG', 'GLY', 'ILE', 'LEU', 'ARG', 'ASN', 'ALA', 'LYS', 'LEU', 'LYS', 'PRO', 'VAL', 'TYR', 'ASP', 'SER', 'LEU', 'ASP', 'ALA', 'VAL', 'ARG', 'ARG', 'ALA', 'ALA', 'LEU', 'ILE', 'ASN', 'MET', 'VAL', 'PHE', 'GLN', 'MET', 'GLY', 'GLU', 'THR', 'GLY', 'VAL', 'ALA', 'GLY', 'PHE', 'THR', 'ASN', 'SER', 'LEU', 'ARG', 'MET', 'LEU', 'GLN', 'GLN', 'LYS', 'ARG', 'TRP', 'ASP', 'GLU', 'ALA', 'ALA', 'VAL', 'ASN', 'LEU', 'ALA', 'LYS', 'SER', 'ARG', 'TRP', 'TYR', 'ASN', 'GLN', 'THR', 'PRO', 'ASN', 'ARG', 'ALA', 'LYS', 'ARG', 'VAL', 'ILE', 'THR', 'THR', 'PHE', 'ARG', 'THR', 'GLY', 'THR', 'TRP', 'ASP', 'ALA', 'TYR', 'LYS', 'ASN', 'CYS']
+root INFO
+  Created coarsegrained topology
+root INFO
+  Written 1 ITP file
+root INFO
+  Output contains 1 molecules:
+root INFO
+     1->  lysozyme_A (chain  A)
+root INFO
+  Written topology files
+root INFO
+  Note: Cysteine bonds are 0.24 nm constraints, instead of the published 0.39nm/5000kJ/mol.

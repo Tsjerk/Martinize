@@ -1,6 +1,6 @@
-import functions
+from .. import functions
 
-from forcefield import Forcefield
+from .forcefield import Forcefield
 
 ################################
 ## 6 # FORCE FIELD PARAMETERS ##  -> @FF <-
@@ -8,15 +8,14 @@ from forcefield import Forcefield
 
 class elnedyn(Forcefield):
     ff = True
+    name = 'elnedyn_BBbonds'
+
     def __init__(self):
         '''The forcefield has been implemented with some changes compared to the published parameters:
         - Backbone-Backbone bonds are constraints in stead of strong bonds.
         - Trp has an extra constrain added to the sidechain
         - The Backbone sidechain bonds with high force constants are replaced by constraints except for Trp.
         '''
-        # parameters are defined here for the following (protein) forcefields:
-        self.name = 'elnedyn'
-        
         # Charged types:
         self.charges = {"Qd":1, "Qa":-1, "RQd":1, "AQa":-1}                                                           #@#
         

@@ -1,0 +1,64 @@
+root INFO
+  If you use this script please cite:
+root INFO
+  de Jong et al., J. Chem. Theory Comput., 2013, DOI:10.1021/ct300646g
+root INFO
+  Chain termini will be charged
+root INFO
+  Residues at chain brakes will not be charged
+root INFO
+  The martini22 forcefield will be used.
+root INFO
+  Local elastic bonds will be used for extended regions.
+root INFO
+  Read input structure from file.
+root INFO
+  Input structure is a PDB file.
+root WARNING
+  Several chains have identical chain identifiers in the PDB file.
+root DEBUG
+  Splitting chain A in 2 chains
+root INFO
+  Found 5 chains:
+root INFO
+     1:   A (Protein), 760 atoms in 99 residues.
+root INFO
+     2:   B (Protein), 760 atoms in 99 residues.
+root INFO
+     3:   A (Unknown), 60 atoms in 1 residues.
+root INFO
+     4:   A (Water), 36 atoms in 36 residues.
+root INFO
+     5:   B (Water), 33 atoms in 33 residues.
+root INFO
+  Removing HETATM chain A consisting of 1 residues.
+root INFO
+  Removing 36 water molecules (chain A).
+root INFO
+  Removing 33 water molecules (chain B).
+root INFO
+  Total size of the system: 198 residues.
+root WARNING
+  No secondary structure or determination method speficied. Protein chains will be set to 'COIL'.
+root INFO
+  Writing trajectory index file.
+root INFO
+  (Average) Secondary structure has been determined (see head of .itp-file).
+root DEBUG
+  CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+root DEBUG
+  ['PRO', 'GLN', 'ILE', 'THR', 'LEU', 'TRP', 'GLN', 'ARG', 'PRO', 'LEU', 'VAL', 'THR', 'ILE', 'LYS', 'ILE', 'GLY', 'GLY', 'GLN', 'LEU', 'LYS', 'GLU', 'ALA', 'LEU', 'LEU', 'ASP', 'THR', 'GLY', 'ALA', 'ASP', 'ASP', 'THR', 'VAL', 'LEU', 'GLU', 'GLU', 'MET', 'ASN', 'LEU', 'PRO', 'GLY', 'ARG', 'TRP', 'LYS', 'PRO', 'LYS', 'MET', 'ILE', 'GLY', 'GLY', 'ILE', 'GLY', 'GLY', 'PHE', 'ILE', 'LYS', 'VAL', 'ARG', 'GLN', 'TYR', 'ASP', 'GLN', 'ILE', 'LEU', 'ILE', 'GLU', 'ILE', 'CYS', 'GLY', 'HIS', 'LYS', 'ALA', 'ILE', 'GLY', 'THR', 'VAL', 'LEU', 'VAL', 'GLY', 'PRO', 'THR', 'PRO', 'VAL', 'ASN', 'ILE', 'ILE', 'GLY', 'ARG', 'ASN', 'LEU', 'LEU', 'THR', 'GLN', 'ILE', 'GLY', 'CYS', 'THR', 'LEU', 'ASN', 'PHE']
+root INFO
+  Created coarsegrained topology
+root INFO
+  Written 1 ITP file
+root INFO
+  Output contains 2 molecules:
+root INFO
+     1->  Protein_A (chain  A)
+root INFO
+     2->  Protein_A (chain  B)
+root INFO
+  Written topology files
+root INFO
+  Note: Cysteine bonds are 0.24 nm constraints, instead of the published 0.39nm/5000kJ/mol.

@@ -1,7 +1,7 @@
-import functions
-import mapping
+from .. import functions
+from .. import mapping
 
-from forcefield import Forcefield
+from .forcefield import Forcefield
 
 ################################
 ## 6 # FORCE FIELD PARAMETERS ##  -> @FF <-
@@ -17,11 +17,9 @@ from forcefield import Forcefield
 
 class martini22dna(Forcefield):
     ff = True
-    def __init__(self):
+    name = 'martini22dna'
 
-        # parameters are defined here for the following (protein) forcefields:
-        self.name = 'martini22dna'
-        
+    def __init__(self):
         # Charged types:
         self.charges = {"Qd":1, "Qa":-1, "SQd":1, "SQa":-1, "RQd":1, "AQa":-1}                                                           #@#
                 
