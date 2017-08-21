@@ -116,7 +116,7 @@ def determine_secondary_structure(chains, options):
         for chain in chains:
             ln = min(len(sstmp), len(chain))
             chain.set_ss(sstmp[:ln])
-            sstmp = ss[:ln]
+            sstmp = ss[ln:]
     else:
         if options["dsspexe"]:
             method, executable = "dssp", options["dsspexe"]
