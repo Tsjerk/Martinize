@@ -58,12 +58,12 @@ bbss = functions.spl("  F     E     H     1     2     3     T     S     C")  # S
 #  in cgss.
 #
 ssdefs = {
-    "dssp":  list(".HGIBETSC~"),             # DSSP one letter secondary structure code     #@#
-    "pymol": list(".H...S...L"),             # Pymol one letter secondary structure code    #@#
-    "gmx":   list(".H...ETS.C"),             # Gromacs secondary structure dump code        #@#
-    "self":  list("FHHHEETSCC")              # Internal CG secondary structure codes        #@#
+    "dssp":  list(".123HGIBETSC~"),             # DSSP one letter secondary structure code     #@#
+    "pymol": list(".123H...S...L"),             # Pymol one letter secondary structure code    #@#
+    "gmx":   list(".123H...ETS.C"),             # Gromacs secondary structure dump code        #@#
+    "self":  list("F123HHHEETSCC")              # Internal CG secondary structure codes        #@#
 }
-cgss     =   list("FHHHEETSCC")              # Corresponding CG secondary structure types   #@#
+cgss     =   list("FHHHHHHEETSCC")              # Corresponding CG secondary structure types   #@#
 
 
 #----+-------------------------------------------+
