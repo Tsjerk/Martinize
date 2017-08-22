@@ -427,6 +427,11 @@ def do_topology(options, chains, ssTotal, cysteines, merge):
 
     ssAver = average_secstruc(ssTotal)
 
+    residues = sum(len(chain) for chain in chains)
+    if len(ssAver) != residues:
+        logging.warning("Length of secondary structure string does not match number of residues!"
+                        " Note that a too short secondary structure string will truncate the residues.")
+
     # Divide the secondary structure according to the division in chains
     # This will set the secondary structure types to be used for the
     # topology.
