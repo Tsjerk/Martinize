@@ -8,7 +8,7 @@ from .. import secstruc,functions,IO
 class elnedyn22p(Forcefield):
     ff = True
     name = 'elnedyn22p_BBbonds'
-    def __init__(self):
+    def setup(self):
         # Charged types:
         self.charges = {"Qd":1, "Qa":-1, "SQd":1, "SQa":-1, "RQd":1, "AQa":-1}                                                           #@#
         
@@ -189,8 +189,6 @@ class elnedyn22p(Forcefield):
         # Elastic networks bond shouldn't lead to exclusions (type 6) 
         # But Elnedyn has been parametrized with type 1.
         self.EBondType = 1
-
-        self.finish()
 
     def messages(self):
         '''Prints any force-field specific logging messages.'''

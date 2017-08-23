@@ -19,7 +19,7 @@ class martini22dna(Forcefield):
     ff = True
     name = 'martini22dna'
 
-    def __init__(self):
+    def setup(self):
         # Charged types:
         self.charges = {"Qd":1, "Qa":-1, "SQd":1, "SQa":-1, "RQd":1, "AQa":-1}                                                           #@#
                 
@@ -255,8 +255,6 @@ class martini22dna(Forcefield):
         # But Elnedyn has been parametrized with type 1.
         self.EBondType = 6
         
-        self.finish()
-
         # combine the connectivity records for different molecule types
         self.connectivity = dict(self.base_connectivity.items() + self.aa_connectivity.items())
         

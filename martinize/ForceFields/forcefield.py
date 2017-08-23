@@ -22,6 +22,13 @@ class Forcefield(object):
     __metaclass__ = _MetaForceField
     name = None
 
+    def __init__(self):
+        self.setup()
+        self.finish()
+
+    def setup(self):
+        raise NotImplementedError()
+
     def finish(self):
         print "A"
         ## BACKBONE BEAD TYPE ##                                                                    
