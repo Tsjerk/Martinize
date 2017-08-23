@@ -1,0 +1,225 @@
+root INFO
+  If you use this script please cite:
+root INFO
+  de Jong et al., J. Chem. Theory Comput., 2013, DOI:10.1021/ct300646g
+root INFO
+  Chain termini will be charged
+root INFO
+  Residues at chain brakes will not be charged
+root INFO
+  The martini21p forcefield will be used.
+root INFO
+  Local elastic bonds will be used for extended regions.
+root INFO
+  Read input structure from file.
+root INFO
+  Input structure is a PDB file.
+root INFO
+  Found 16 chains:
+root INFO
+     1:   A (Protein), 1655 atoms in 222 residues.
+root INFO
+     2:   B (Protein), 1674 atoms in 216 residues.
+root INFO
+     3:   C (Protein), 1655 atoms in 222 residues.
+root INFO
+     4:   D (Protein), 1674 atoms in 216 residues.
+root INFO
+     5:   E (Protein), 1655 atoms in 222 residues.
+root INFO
+     6:   F (Protein), 1674 atoms in 216 residues.
+root INFO
+     7:   G (Protein), 1655 atoms in 222 residues.
+root INFO
+     8:   H (Protein), 1674 atoms in 216 residues.
+root INFO
+     9:   I (Protein), 1855 atoms in 236 residues.
+root INFO
+    10:   J (Protein), 773 atoms in 98 residues.
+root INFO
+    11:   K (Protein), 1820 atoms in 232 residues.
+root INFO
+    12:   L (Protein), 743 atoms in 93 residues.
+root INFO
+    13:   M (Protein), 1806 atoms in 230 residues.
+root INFO
+    14:   N (Protein), 752 atoms in 95 residues.
+root INFO
+    15:   O (Protein), 1773 atoms in 225 residues.
+root INFO
+    16:   P (Protein), 739 atoms in 93 residues.
+root INFO
+  Total size of the system: 3054 residues.
+root DEBUG
+  New version of DSSP; Executing 'dssp -i /dev/stdin -o chain_A.ssd'
+root DEBUG
+  New version of DSSP; Executing 'dssp -i /dev/stdin -o chain_B.ssd'
+root DEBUG
+  New version of DSSP; Executing 'dssp -i /dev/stdin -o chain_C.ssd'
+root DEBUG
+  New version of DSSP; Executing 'dssp -i /dev/stdin -o chain_D.ssd'
+root DEBUG
+  New version of DSSP; Executing 'dssp -i /dev/stdin -o chain_E.ssd'
+root DEBUG
+  New version of DSSP; Executing 'dssp -i /dev/stdin -o chain_F.ssd'
+root DEBUG
+  New version of DSSP; Executing 'dssp -i /dev/stdin -o chain_G.ssd'
+root DEBUG
+  New version of DSSP; Executing 'dssp -i /dev/stdin -o chain_H.ssd'
+root DEBUG
+  New version of DSSP; Executing 'dssp -i /dev/stdin -o chain_I.ssd'
+root DEBUG
+  New version of DSSP; Executing 'dssp -i /dev/stdin -o chain_J.ssd'
+root DEBUG
+  New version of DSSP; Executing 'dssp -i /dev/stdin -o chain_K.ssd'
+root DEBUG
+  New version of DSSP; Executing 'dssp -i /dev/stdin -o chain_L.ssd'
+root DEBUG
+  New version of DSSP; Executing 'dssp -i /dev/stdin -o chain_M.ssd'
+root DEBUG
+  New version of DSSP; Executing 'dssp -i /dev/stdin -o chain_N.ssd'
+root DEBUG
+  New version of DSSP; Executing 'dssp -i /dev/stdin -o chain_O.ssd'
+root DEBUG
+  New version of DSSP; Executing 'dssp -i /dev/stdin -o chain_P.ssd'
+root DEBUG
+  DSSP determined secondary structure:
+  EEEEE   EE TT    EEEEEESS GGG   EEEE TTS EEEEEEE TTS  EEE TTTTTT  EEEETTTTEEEE     GGG SEEEEEEE TT  TT    EEEE S   EESS   B  EEEEE  SSTTBSSS EEEEEEEEEEBSS  EEEETTTT  TTEEE      TTS EEEEEEEEE TTTTTTS  BEEEEEGGGTEEE  B        EE SEEEEETTS EEEEEE SS  B TTT  B EEEEEE TTS EEEEEETTTEE TT  TTEEEEEETTEEEEEESS  GGG EEEEEEE SSSS EE   EEEEEE   B      B   HHHHTTTEEEEEEEEEEEBSS  EEEEEETTEE  SSEEEEE    TTT  EEEEEEEEEEHHHHTT   EEEEEE TTSSS EEEEE    EEEEE   EE TT    EEEEEESS GGG   EEEE TTS EEEEEEE TTS SEEE GGGTTT  EEEETTTTEEEE     GGG S  EEEEE TT  S     EEEE S   EESS   B  EEEEE   STTBSSSEEEEEEEEEEEBSS  EEEETTTT  TTEEEE     TTS EEEEEEEEEETTSTTTS  EEEEEEGGGTEEEEEE         S SEEEEETTS EEEEEE SS  EETTTTEE EEEEEE TTS  EEEEETTTEE TT  TTEEEEEETTEEEEEESS  GGG EEEEEEE SSSS EE   EEEEEE   B      B   HHHHTTTEEEEEEEEEEEBSS  EEEEEETTEE  SSEEEEE    TTT  EEEEEEEEEEHHHHHS   EEEEEE TTSSS EEEEE    EEEEE   EE TT    EEEEEESS GGG   EEEE TTS EEEEEEE TTT  EEE GGGTTT  EEEETTTTEEEE     GGG SEEEEEEE TT  TT    EEEE     EE SS  B  EEEEE   SSSBSSSEEEEEEEEEEEBSS  EEEETTTT  TTEEE   EE TTS EEEEEEEEEEGGGGSSS  BEEEEEGGGTEEE  B        EE SEEEEETTS EEEEEE SS  B TTT  B EEEEEE TTS  EEEEETTTEE TT  TTEEEEEETTEEEEEESS  STT EEEEEEE SSSS EE   EEEEEE   B    EEE   HHHHTTTEEEEEEEEEEEBSS  EEEEEETTEE  SSEEEEE    TTT  EEEEEEEEEEHHHHHS   EEEEEE TTSSS EEEEE    EEEEE   EE TT    EEEEEESS GGG   EEEE TTS EEEEEEE TTS SEEE GGGTTT  EEEEGGGTEEEE     GGG SEEEEEEE TT  TT    EEEE     EE S   B  EEEEE   SSSBSSSEEEEEEEEEEEBSS  B  BTTTT  TTEEE   EE TTS EEEEEEEEEESGGGTTS  BB EEEGGGTEEE  B        EE SEEEEETTS EEEEEE SS  B TTT  B EEEEEE TTS  EEEE TTS B TT  TTEEEEEETTEEEEEESS  GGG EEEEEEE SSSS EE   EEEEEE   B      B   HHHHTTTEEEEEEEEEEEBSS  EEEEEETTEE  SSEEEEE    TTT  EEEEEEEEEEHHHHHS   EEEEEE TTSSS EEEEE      EEEEETTEEEEE SSS  TT    SGGGEEEEEEEGGGGS    HHHHHTTEEEESSS   EEE SEE  EEEEEEEEEE SSS BSS    TT    S EEEEEEEEEE    SSEEEETTS EEE SSEEESS  TT EEEEEEEEEEE      EEEEEEEESSSSSS EEEE  BTTBEEB  S   HHHHHHHHHHHHHHT   SSS  EEEE    S   EEE         SS     EEEEEE  SS SSTTTTSSSSS  TTSSEEEEEE   TTHHHHHHHHHHHHHHHHHHHHHH  SSS  THHHHHHHHHHHHTS      EEEEETTEEEEE SSS  S S    GGGEEEEEEEGGGGS    HHHHHHHEEEE SS   EEE SEE  EEEEEEEEEE SSS BSS    TT    S EEEEEEEEEE    SSEEEETTS EEEETTEEESS  TT EEEEEEEEEEE      EEEEEEEESSSSSS EEEEESSSSEEEE  S   HHHHHHHHHHHHHH    SSS EEEEE     EEE       SS     EE  B     STTTTSTTSS  TTSS B  EE   TTHHHHHHHHHHHHHHHHHHHHHH  SSS  THHHHHHHHHHHHT     EEEEETTEEEEE SSS  TT    SGGGEEEEEEEGGGGS    HHHHHTTEEEE SS   EEE SEE  BS  EEEEEE TTS BSS    TT    S BSEEEEEEEE    SSEEEETTS EEEETTEEESS  TT  BEEEEEEEEE      EEEEEEEESSSSSS EEEEE STTEEEE  S   HHHHHHHHHHHHTT       EEEEE     EE        SS     EEEEEE    STTTTSTTS   TTSSEEEEEE   TTHHHHHHHHHHHHHHHHHHHHHH  SSS  TTHHHHHHHHHHHTT     EEEEETTEEEEE SSS  SSS   STTSEEEEEEEGGGGS    HHHHHTTEEE  SS   EEE SEE  EEEEEEEEEEETTEEESS    TT    S EEEEEEEEEE    SSSEEETTS EEEETTEEESB  TT  BEEEEEEEEE       EEEEEEESSSSSS EEEEE STT EEE  S   HHHHHHHHHHHHHH      EEB    B       SS     EE  EE   STTTTSTTSS  TTTSEE  EE   TTHHHHHHHHHHHHHHHHHHHHHH  SSS  THHHHHHHHHHHHTT 
+root INFO
+  (Average) Secondary structure has been determined (see head of .itp-file).
+root DEBUG
+  CCEEEEECCCEECTTCCCCEEEEEESSCCCCCCCEEEECTTSCEEEEEEECTTSCCEEECTTTTTTCCEEEETTTTEEEECCCCCCCCCSEEEEEEECTTCCTTCCCCEEEECSCCCEESSCCCCCCEEEEECCSSTTCSSSCEEEEEEEEEECSSCCEEEETTTTCCTTEEECCCCCCTTSCEEEEEEEEECTTTTTTSCCCEEEEECCCTEEECCCCCCC
+root DEBUG
+  ['GLU', 'VAL', 'GLN', 'LEU', 'LEU', 'GLU', 'SER', 'GLY', 'GLY', 'GLY', 'LEU', 'VAL', 'LYS', 'PRO', 'GLY', 'GLY', 'SER', 'LEU', 'ARG', 'LEU', 'SER', 'CYS', 'ALA', 'ALA', 'SER', 'GLY', 'PHE', 'THR', 'LEU', 'ILE', 'ASN', 'TYR', 'ARG', 'ASN', 'TRP', 'VAL', 'ARG', 'GLN', 'ALA', 'PRO', 'GLY', 'LYS', 'GLY', 'LEU', 'GLU', 'TRP', 'VAL', 'SER', 'SER', 'ILE', 'SER', 'SER', 'SER', 'SER', 'SER', 'TYR', 'ILE', 'HIS', 'TYR', 'ALA', 'ASP', 'SER', 'VAL', 'LYS', 'GLY', 'ARG', 'PHE', 'THR', 'ILE', 'SER', 'ARG', 'ASP', 'ASN', 'ALA', 'GLU', 'ASN', 'SER', 'LEU', 'TYR', 'LEU', 'GLN', 'ASN', 'SER', 'LEU', 'ARG', 'ALA', 'GLU', 'ASP', 'THR', 'ALA', 'VAL', 'TYR', 'TYR', 'CYS', 'VAL', 'ARG', 'GLU', 'GLY', 'PRO', 'ARG', 'ALA', 'THR', 'GLY', 'TYR', 'SER', 'ALA', 'ASP', 'VAL', 'PHE', 'ASP', 'ILE', 'TRP', 'GLY', 'GLN', 'GLY', 'THR', 'VAL', 'THR', 'VAL', 'SER', 'SER', 'ALA', 'SER', 'THR', 'LYS', 'GLY', 'PRO', 'SER', 'VAL', 'PHE', 'PRO', 'LEU', 'ALA', 'PRO', 'SER', 'SER', 'LYS', 'SER', 'THR', 'SER', 'GLY', 'GLY', 'THR', 'ALA', 'ALA', 'LEU', 'GLY', 'CYS', 'LEU', 'VAL', 'LYS', 'ASP', 'TYR', 'PHE', 'PRO', 'GLU', 'PRO', 'VAL', 'THR', 'VAL', 'SER', 'TRP', 'ASN', 'SER', 'GLY', 'ALA', 'LEU', 'THR', 'SER', 'GLY', 'VAL', 'HIS', 'THR', 'PHE', 'PRO', 'ALA', 'VAL', 'LEU', 'GLN', 'SER', 'SER', 'GLY', 'LEU', 'TYR', 'SER', 'LEU', 'SER', 'SER', 'VAL', 'VAL', 'THR', 'VAL', 'PRO', 'SER', 'SER', 'SER', 'LEU', 'GLY', 'THR', 'GLN', 'THR', 'TYR', 'ILE', 'CYS', 'ASN', 'VAL', 'ASN', 'HIS', 'LYS', 'PRO', 'SER', 'ASN', 'THR', 'LYS', 'VAL', 'ASP', 'LYS', 'LYS', 'VAL', 'GLU', 'PRO', 'LYS']
+root INFO
+  Created coarsegrained topology
+root DEBUG
+  CCCCEECSEEEEETTSCEEEEEECSSCCCCTTTCCCCEEEEEECTTSCEEEEEETTTEECTTCCTTEEEEEETTEEEEEESSCCCCCCEEEEEEECSSSSCEECCCEEEEEECCCCCCCCCCCCCC3333TTTEEEEEEEEEEECSSCCEEEEEETTEECCSSEEEEECCCCTTTCCEEEEEEEEEE3333TTCCCEEEEEECTTSSSCEEEEECC
+root DEBUG
+  ['GLU', 'LEU', 'VAL', 'THR', 'GLN', 'SER', 'PRO', 'ASP', 'SER', 'LEU', 'ALA', 'VAL', 'SER', 'LEU', 'GLY', 'GLU', 'ARG', 'ALA', 'THR', 'ILE', 'ASN', 'CYS', 'LYS', 'SER', 'SER', 'GLN', 'SER', 'VAL', 'LEU', 'TYR', 'SER', 'SER', 'ASN', 'ASN', 'LYS', 'SER', 'TYR', 'LEU', 'ALA', 'TRP', 'TYR', 'GLN', 'GLN', 'LYS', 'PRO', 'GLY', 'GLN', 'PRO', 'PRO', 'LYS', 'LEU', 'LEU', 'ILE', 'TYR', 'TRP', 'ALA', 'SER', 'THR', 'ARG', 'GLU', 'SER', 'GLY', 'VAL', 'PRO', 'ASP', 'ARG', 'PHE', 'SER', 'GLY', 'SER', 'GLY', 'SER', 'GLY', 'THR', 'ASP', 'PHE', 'THR', 'LEU', 'THR', 'ILE', 'SER', 'SER', 'LEU', 'GLN', 'ALA', 'GLU', 'ASP', 'VAL', 'ALA', 'VAL', 'TYR', 'TYR', 'CYS', 'GLN', 'GLN', 'TYR', 'TYR', 'SER', 'ALA', 'PRO', 'LEU', 'THR', 'PHE', 'GLY', 'GLY', 'GLY', 'THR', 'LYS', 'VAL', 'GLU', 'ILE', 'LYS', 'ARG', 'THR', 'VAL', 'ALA', 'ALA', 'PRO', 'SER', 'VAL', 'PHE', 'ILE', 'PHE', 'PRO', 'PRO', 'SER', 'ASP', 'GLU', 'GLN', 'LEU', 'LYS', 'SER', 'GLY', 'THR', 'ALA', 'SER', 'VAL', 'VAL', 'CYS', 'LEU', 'LEU', 'ASN', 'ASN', 'PHE', 'TYR', 'PRO', 'ARG', 'GLU', 'ALA', 'LYS', 'VAL', 'GLN', 'TRP', 'LYS', 'VAL', 'ASP', 'ASN', 'ALA', 'LEU', 'GLN', 'SER', 'GLY', 'ASN', 'SER', 'GLN', 'GLU', 'SER', 'VAL', 'THR', 'GLU', 'GLN', 'ASP', 'SER', 'LYS', 'ASP', 'SER', 'THR', 'TYR', 'SER', 'LEU', 'SER', 'SER', 'THR', 'LEU', 'THR', 'LEU', 'SER', 'LYS', 'ALA', 'ASP', 'TYR', 'GLU', 'LYS', 'HIS', 'LYS', 'VAL', 'TYR', 'ALA', 'CYS', 'GLU', 'VAL', 'THR', 'HIS', 'GLN', 'GLY', 'LEU', 'ARG', 'SER', 'PRO', 'VAL', 'THR', 'LYS', 'SER', 'PHE', 'ASN', 'ARG']
+root INFO
+  Created coarsegrained topology
+root DEBUG
+  CCEEEEECCCEECTTCCCCEEEEEESSCCCCCCCEEEECTTSCEEEEEEECTTSCSEEECCCCTTTCCEEEETTTTEEEECCCCCCCCCSCCEEEEECTTCCSCCCCCEEEECSCCCEESSCCCCCCEEEEECCCSTTCSSSEEEEEEEEEEECSSCCEEEETTTTCCTTEEEECCCCCTTSCEEEEEEEEEETTSTTTSCCEEEEEECCCTEEEEEECCCC
+root DEBUG
+  ['GLU', 'VAL', 'GLN', 'LEU', 'LEU', 'GLU', 'SER', 'GLY', 'GLY', 'GLY', 'LEU', 'VAL', 'LYS', 'PRO', 'GLY', 'GLY', 'SER', 'LEU', 'ARG', 'LEU', 'SER', 'CYS', 'ALA', 'ALA', 'SER', 'GLY', 'PHE', 'THR', 'LEU', 'ILE', 'ASN', 'TYR', 'ARG', 'ASN', 'TRP', 'VAL', 'ARG', 'GLN', 'ALA', 'PRO', 'GLY', 'LYS', 'GLY', 'LEU', 'GLU', 'TRP', 'VAL', 'SER', 'SER', 'ILE', 'SER', 'SER', 'SER', 'SER', 'SER', 'TYR', 'ILE', 'HIS', 'TYR', 'ALA', 'ASP', 'SER', 'VAL', 'LYS', 'GLY', 'ARG', 'PHE', 'THR', 'ILE', 'SER', 'ARG', 'ASP', 'ASN', 'ALA', 'GLU', 'ASN', 'SER', 'LEU', 'TYR', 'LEU', 'GLN', 'ASN', 'SER', 'LEU', 'ARG', 'ALA', 'GLU', 'ASP', 'THR', 'ALA', 'VAL', 'TYR', 'TYR', 'CYS', 'VAL', 'ARG', 'GLU', 'GLY', 'PRO', 'ARG', 'ALA', 'THR', 'GLY', 'TYR', 'SER', 'ALA', 'ASP', 'VAL', 'PHE', 'ASP', 'ILE', 'TRP', 'GLY', 'GLN', 'GLY', 'THR', 'VAL', 'THR', 'VAL', 'SER', 'SER', 'ALA', 'SER', 'THR', 'LYS', 'GLY', 'PRO', 'SER', 'VAL', 'PHE', 'PRO', 'LEU', 'ALA', 'PRO', 'SER', 'SER', 'LYS', 'SER', 'THR', 'SER', 'GLY', 'GLY', 'THR', 'ALA', 'ALA', 'LEU', 'GLY', 'CYS', 'LEU', 'VAL', 'LYS', 'ASP', 'TYR', 'PHE', 'PRO', 'GLU', 'PRO', 'VAL', 'THR', 'VAL', 'SER', 'TRP', 'ASN', 'SER', 'GLY', 'ALA', 'LEU', 'THR', 'SER', 'GLY', 'VAL', 'HIS', 'THR', 'PHE', 'PRO', 'ALA', 'VAL', 'LEU', 'GLN', 'SER', 'SER', 'GLY', 'LEU', 'TYR', 'SER', 'LEU', 'SER', 'SER', 'VAL', 'VAL', 'THR', 'VAL', 'PRO', 'SER', 'SER', 'SER', 'LEU', 'GLY', 'THR', 'GLN', 'THR', 'TYR', 'ILE', 'CYS', 'ASN', 'VAL', 'ASN', 'HIS', 'LYS', 'PRO', 'SER', 'ASN', 'THR', 'LYS', 'VAL', 'ASP', 'LYS', 'LYS', 'VAL', 'GLU', 'PRO', 'LYS']
+root INFO
+  Created coarsegrained topology
+root DEBUG
+  CCCCCSCSEEEEETTSCEEEEEECSSCCEETTTTEECEEEEEECTTSCCEEEEETTTEECTTCCTTEEEEEETTEEEEEESSCCCCCCEEEEEEECSSSSCEECCCEEEEEECCCCCCCCCCCCCC3333TTTEEEEEEEEEEECSSCCEEEEEETTEECCSSEEEEECCCCTTTCCEEEEEEEEEE13332SCCCEEEEEECTTSSSCEEEEECC
+root DEBUG
+  ['GLU', 'LEU', 'VAL', 'THR', 'GLN', 'SER', 'PRO', 'ASP', 'SER', 'LEU', 'ALA', 'VAL', 'SER', 'LEU', 'GLY', 'GLU', 'ARG', 'ALA', 'THR', 'ILE', 'ASN', 'CYS', 'LYS', 'SER', 'SER', 'GLN', 'SER', 'VAL', 'LEU', 'TYR', 'SER', 'SER', 'ASN', 'ASN', 'LYS', 'SER', 'TYR', 'LEU', 'ALA', 'TRP', 'TYR', 'GLN', 'GLN', 'LYS', 'PRO', 'GLY', 'GLN', 'PRO', 'PRO', 'LYS', 'LEU', 'LEU', 'ILE', 'TYR', 'TRP', 'ALA', 'SER', 'THR', 'ARG', 'GLU', 'SER', 'GLY', 'VAL', 'PRO', 'ASP', 'ARG', 'PHE', 'SER', 'GLY', 'SER', 'GLY', 'SER', 'GLY', 'THR', 'ASP', 'PHE', 'THR', 'LEU', 'THR', 'ILE', 'SER', 'SER', 'LEU', 'GLN', 'ALA', 'GLU', 'ASP', 'VAL', 'ALA', 'VAL', 'TYR', 'TYR', 'CYS', 'GLN', 'GLN', 'TYR', 'TYR', 'SER', 'ALA', 'PRO', 'LEU', 'THR', 'PHE', 'GLY', 'GLY', 'GLY', 'THR', 'LYS', 'VAL', 'GLU', 'ILE', 'LYS', 'ARG', 'THR', 'VAL', 'ALA', 'ALA', 'PRO', 'SER', 'VAL', 'PHE', 'ILE', 'PHE', 'PRO', 'PRO', 'SER', 'ASP', 'GLU', 'GLN', 'LEU', 'LYS', 'SER', 'GLY', 'THR', 'ALA', 'SER', 'VAL', 'VAL', 'CYS', 'LEU', 'LEU', 'ASN', 'ASN', 'PHE', 'TYR', 'PRO', 'ARG', 'GLU', 'ALA', 'LYS', 'VAL', 'GLN', 'TRP', 'LYS', 'VAL', 'ASP', 'ASN', 'ALA', 'LEU', 'GLN', 'SER', 'GLY', 'ASN', 'SER', 'GLN', 'GLU', 'SER', 'VAL', 'THR', 'GLU', 'GLN', 'ASP', 'SER', 'LYS', 'ASP', 'SER', 'THR', 'TYR', 'SER', 'LEU', 'SER', 'SER', 'THR', 'LEU', 'THR', 'LEU', 'SER', 'LYS', 'ALA', 'ASP', 'TYR', 'GLU', 'LYS', 'HIS', 'LYS', 'VAL', 'TYR', 'ALA', 'CYS', 'GLU', 'VAL', 'THR', 'HIS', 'GLN', 'GLY', 'LEU', 'ARG', 'SER', 'PRO', 'VAL', 'THR', 'LYS', 'SER', 'PHE', 'ASN', 'ARG']
+root INFO
+  Created coarsegrained topology
+root DEBUG
+  CCEEEEECCCEECTTCCCCEEEEEESSCCCCCCCEEEECTTSCEEEEEEECTTTCCEEECCCCTTTCCEEEETTTTEEEECCCCCCCCCSEEEEEEECTTCCTTCCCCEEEECCCCCEECSSCCCCCEEEEECCCSSSCSSSEEEEEEEEEEECSSCCEEEETTTTCCTTEEECCCEECTTSCEEEEEEEEEECCCCSSSCCCEEEEECCCTEEECCCCCCC
+root DEBUG
+  ['GLU', 'VAL', 'GLN', 'LEU', 'LEU', 'GLU', 'SER', 'GLY', 'GLY', 'GLY', 'LEU', 'VAL', 'LYS', 'PRO', 'GLY', 'GLY', 'SER', 'LEU', 'ARG', 'LEU', 'SER', 'CYS', 'ALA', 'ALA', 'SER', 'GLY', 'PHE', 'THR', 'LEU', 'ILE', 'ASN', 'TYR', 'ARG', 'ASN', 'TRP', 'VAL', 'ARG', 'GLN', 'ALA', 'PRO', 'GLY', 'LYS', 'GLY', 'LEU', 'GLU', 'TRP', 'VAL', 'SER', 'SER', 'ILE', 'SER', 'SER', 'SER', 'SER', 'SER', 'TYR', 'ILE', 'HIS', 'TYR', 'ALA', 'ASP', 'SER', 'VAL', 'LYS', 'GLY', 'ARG', 'PHE', 'THR', 'ILE', 'SER', 'ARG', 'ASP', 'ASN', 'ALA', 'GLU', 'ASN', 'SER', 'LEU', 'TYR', 'LEU', 'GLN', 'ASN', 'SER', 'LEU', 'ARG', 'ALA', 'GLU', 'ASP', 'THR', 'ALA', 'VAL', 'TYR', 'TYR', 'CYS', 'VAL', 'ARG', 'GLU', 'GLY', 'PRO', 'ARG', 'ALA', 'THR', 'GLY', 'TYR', 'SER', 'ALA', 'ASP', 'VAL', 'PHE', 'ASP', 'ILE', 'TRP', 'GLY', 'GLN', 'GLY', 'THR', 'VAL', 'THR', 'VAL', 'SER', 'SER', 'ALA', 'SER', 'THR', 'LYS', 'GLY', 'PRO', 'SER', 'VAL', 'PHE', 'PRO', 'LEU', 'ALA', 'PRO', 'SER', 'SER', 'LYS', 'SER', 'THR', 'SER', 'GLY', 'GLY', 'THR', 'ALA', 'ALA', 'LEU', 'GLY', 'CYS', 'LEU', 'VAL', 'LYS', 'ASP', 'TYR', 'PHE', 'PRO', 'GLU', 'PRO', 'VAL', 'THR', 'VAL', 'SER', 'TRP', 'ASN', 'SER', 'GLY', 'ALA', 'LEU', 'THR', 'SER', 'GLY', 'VAL', 'HIS', 'THR', 'PHE', 'PRO', 'ALA', 'VAL', 'LEU', 'GLN', 'SER', 'SER', 'GLY', 'LEU', 'TYR', 'SER', 'LEU', 'SER', 'SER', 'VAL', 'VAL', 'THR', 'VAL', 'PRO', 'SER', 'SER', 'SER', 'LEU', 'GLY', 'THR', 'GLN', 'THR', 'TYR', 'ILE', 'CYS', 'ASN', 'VAL', 'ASN', 'HIS', 'LYS', 'PRO', 'SER', 'ASN', 'THR', 'LYS', 'VAL', 'ASP', 'LYS', 'LYS', 'VAL', 'GLU', 'PRO', 'LYS']
+root INFO
+  Created coarsegrained topology
+root DEBUG
+  CCCCEECSEEEEETTSCEEEEEECSSCCCCTTTCCCCEEEEEECTTSCCEEEEETTTEECTTCCTTEEEEEETTEEEEEESSCCSTTCEEEEEEECSSSSCEECCCEEEEEECCCCCCCCEEECCC3333TTTEEEEEEEEEEECSSCCEEEEEETTEECCSSEEEEECCCCTTTCCEEEEEEEEEE13332SCCCEEEEEECTTSSSCEEEEECC
+root DEBUG
+  ['GLU', 'LEU', 'VAL', 'THR', 'GLN', 'SER', 'PRO', 'ASP', 'SER', 'LEU', 'ALA', 'VAL', 'SER', 'LEU', 'GLY', 'GLU', 'ARG', 'ALA', 'THR', 'ILE', 'ASN', 'CYS', 'LYS', 'SER', 'SER', 'GLN', 'SER', 'VAL', 'LEU', 'TYR', 'SER', 'SER', 'ASN', 'ASN', 'LYS', 'SER', 'TYR', 'LEU', 'ALA', 'TRP', 'TYR', 'GLN', 'GLN', 'LYS', 'PRO', 'GLY', 'GLN', 'PRO', 'PRO', 'LYS', 'LEU', 'LEU', 'ILE', 'TYR', 'TRP', 'ALA', 'SER', 'THR', 'ARG', 'GLU', 'SER', 'GLY', 'VAL', 'PRO', 'ASP', 'ARG', 'PHE', 'SER', 'GLY', 'SER', 'GLY', 'SER', 'GLY', 'THR', 'ASP', 'PHE', 'THR', 'LEU', 'THR', 'ILE', 'SER', 'SER', 'LEU', 'GLN', 'ALA', 'GLU', 'ASP', 'VAL', 'ALA', 'VAL', 'TYR', 'TYR', 'CYS', 'GLN', 'GLN', 'TYR', 'TYR', 'SER', 'ALA', 'PRO', 'LEU', 'THR', 'PHE', 'GLY', 'GLY', 'GLY', 'THR', 'LYS', 'VAL', 'GLU', 'ILE', 'LYS', 'ARG', 'THR', 'VAL', 'ALA', 'ALA', 'PRO', 'SER', 'VAL', 'PHE', 'ILE', 'PHE', 'PRO', 'PRO', 'SER', 'ASP', 'GLU', 'GLN', 'LEU', 'LYS', 'SER', 'GLY', 'THR', 'ALA', 'SER', 'VAL', 'VAL', 'CYS', 'LEU', 'LEU', 'ASN', 'ASN', 'PHE', 'TYR', 'PRO', 'ARG', 'GLU', 'ALA', 'LYS', 'VAL', 'GLN', 'TRP', 'LYS', 'VAL', 'ASP', 'ASN', 'ALA', 'LEU', 'GLN', 'SER', 'GLY', 'ASN', 'SER', 'GLN', 'GLU', 'SER', 'VAL', 'THR', 'GLU', 'GLN', 'ASP', 'SER', 'LYS', 'ASP', 'SER', 'THR', 'TYR', 'SER', 'LEU', 'SER', 'SER', 'THR', 'LEU', 'THR', 'LEU', 'SER', 'LYS', 'ALA', 'ASP', 'TYR', 'GLU', 'LYS', 'HIS', 'LYS', 'VAL', 'TYR', 'ALA', 'CYS', 'GLU', 'VAL', 'THR', 'HIS', 'GLN', 'GLY', 'LEU', 'ARG', 'SER', 'PRO', 'VAL', 'THR', 'LYS', 'SER', 'PHE', 'ASN', 'ARG']
+root INFO
+  Created coarsegrained topology
+root DEBUG
+  CCEEEEECCCEECTTCCCCEEEEEESSCCCCCCCEEEECTTSCEEEEEEECTTSCSEEECCCCTTTCCEEEECCCTEEEECCCCCCCCCSEEEEEEECTTCCTTCCCCEEEECCCCCEECSCCCCCCEEEEECCCSSSCSSSEEEEEEEEEEECSSCCCCCCTTTTCCTTEEECCCEECTTSCEEEEEEEEEESCCCTTSCCCCCEEECCCTEEECCCCCCC
+root DEBUG
+  ['GLU', 'VAL', 'GLN', 'LEU', 'LEU', 'GLU', 'SER', 'GLY', 'GLY', 'GLY', 'LEU', 'VAL', 'LYS', 'PRO', 'GLY', 'GLY', 'SER', 'LEU', 'ARG', 'LEU', 'SER', 'CYS', 'ALA', 'ALA', 'SER', 'GLY', 'PHE', 'THR', 'LEU', 'ILE', 'ASN', 'TYR', 'ARG', 'ASN', 'TRP', 'VAL', 'ARG', 'GLN', 'ALA', 'PRO', 'GLY', 'LYS', 'GLY', 'LEU', 'GLU', 'TRP', 'VAL', 'SER', 'SER', 'ILE', 'SER', 'SER', 'SER', 'SER', 'SER', 'TYR', 'ILE', 'HIS', 'TYR', 'ALA', 'ASP', 'SER', 'VAL', 'LYS', 'GLY', 'ARG', 'PHE', 'THR', 'ILE', 'SER', 'ARG', 'ASP', 'ASN', 'ALA', 'GLU', 'ASN', 'SER', 'LEU', 'TYR', 'LEU', 'GLN', 'ASN', 'SER', 'LEU', 'ARG', 'ALA', 'GLU', 'ASP', 'THR', 'ALA', 'VAL', 'TYR', 'TYR', 'CYS', 'VAL', 'ARG', 'GLU', 'GLY', 'PRO', 'ARG', 'ALA', 'THR', 'GLY', 'TYR', 'SER', 'ALA', 'ASP', 'VAL', 'PHE', 'ASP', 'ILE', 'TRP', 'GLY', 'GLN', 'GLY', 'THR', 'VAL', 'THR', 'VAL', 'SER', 'SER', 'ALA', 'SER', 'THR', 'LYS', 'GLY', 'PRO', 'SER', 'VAL', 'PHE', 'PRO', 'LEU', 'ALA', 'PRO', 'SER', 'SER', 'LYS', 'SER', 'THR', 'SER', 'GLY', 'GLY', 'THR', 'ALA', 'ALA', 'LEU', 'GLY', 'CYS', 'LEU', 'VAL', 'LYS', 'ASP', 'TYR', 'PHE', 'PRO', 'GLU', 'PRO', 'VAL', 'THR', 'VAL', 'SER', 'TRP', 'ASN', 'SER', 'GLY', 'ALA', 'LEU', 'THR', 'SER', 'GLY', 'VAL', 'HIS', 'THR', 'PHE', 'PRO', 'ALA', 'VAL', 'LEU', 'GLN', 'SER', 'SER', 'GLY', 'LEU', 'TYR', 'SER', 'LEU', 'SER', 'SER', 'VAL', 'VAL', 'THR', 'VAL', 'PRO', 'SER', 'SER', 'SER', 'LEU', 'GLY', 'THR', 'GLN', 'THR', 'TYR', 'ILE', 'CYS', 'ASN', 'VAL', 'ASN', 'HIS', 'LYS', 'PRO', 'SER', 'ASN', 'THR', 'LYS', 'VAL', 'ASP', 'LYS', 'LYS', 'VAL', 'GLU', 'PRO', 'LYS']
+root INFO
+  Created coarsegrained topology
+root DEBUG
+  CCCCEECSEEEEETTSCEEEEEECSSCCCCTTTCCCCEEEEEECTTSCCEEEECTTSCCCTTCCTTEEEEEETTEEEEEESSCCCCCCEEEEEEECSSSSCEECCCEEEEEECCCCCCCCCCCCCC3333TTTEEEEEEEEEEECSSCCEEEEEETTEECCSSEEEEECCCCTTTCCEEEEEEEEEE13332SCCCEEEEEECTTSSSCEEEEECC
+root DEBUG
+  ['GLU', 'LEU', 'VAL', 'THR', 'GLN', 'SER', 'PRO', 'ASP', 'SER', 'LEU', 'ALA', 'VAL', 'SER', 'LEU', 'GLY', 'GLU', 'ARG', 'ALA', 'THR', 'ILE', 'ASN', 'CYS', 'LYS', 'SER', 'SER', 'GLN', 'SER', 'VAL', 'LEU', 'TYR', 'SER', 'SER', 'ASN', 'ASN', 'LYS', 'SER', 'TYR', 'LEU', 'ALA', 'TRP', 'TYR', 'GLN', 'GLN', 'LYS', 'PRO', 'GLY', 'GLN', 'PRO', 'PRO', 'LYS', 'LEU', 'LEU', 'ILE', 'TYR', 'TRP', 'ALA', 'SER', 'THR', 'ARG', 'GLU', 'SER', 'GLY', 'VAL', 'PRO', 'ASP', 'ARG', 'PHE', 'SER', 'GLY', 'SER', 'GLY', 'SER', 'GLY', 'THR', 'ASP', 'PHE', 'THR', 'LEU', 'THR', 'ILE', 'SER', 'SER', 'LEU', 'GLN', 'ALA', 'GLU', 'ASP', 'VAL', 'ALA', 'VAL', 'TYR', 'TYR', 'CYS', 'GLN', 'GLN', 'TYR', 'TYR', 'SER', 'ALA', 'PRO', 'LEU', 'THR', 'PHE', 'GLY', 'GLY', 'GLY', 'THR', 'LYS', 'VAL', 'GLU', 'ILE', 'LYS', 'ARG', 'THR', 'VAL', 'ALA', 'ALA', 'PRO', 'SER', 'VAL', 'PHE', 'ILE', 'PHE', 'PRO', 'PRO', 'SER', 'ASP', 'GLU', 'GLN', 'LEU', 'LYS', 'SER', 'GLY', 'THR', 'ALA', 'SER', 'VAL', 'VAL', 'CYS', 'LEU', 'LEU', 'ASN', 'ASN', 'PHE', 'TYR', 'PRO', 'ARG', 'GLU', 'ALA', 'LYS', 'VAL', 'GLN', 'TRP', 'LYS', 'VAL', 'ASP', 'ASN', 'ALA', 'LEU', 'GLN', 'SER', 'GLY', 'ASN', 'SER', 'GLN', 'GLU', 'SER', 'VAL', 'THR', 'GLU', 'GLN', 'ASP', 'SER', 'LYS', 'ASP', 'SER', 'THR', 'TYR', 'SER', 'LEU', 'SER', 'SER', 'THR', 'LEU', 'THR', 'LEU', 'SER', 'LYS', 'ALA', 'ASP', 'TYR', 'GLU', 'LYS', 'HIS', 'LYS', 'VAL', 'TYR', 'ALA', 'CYS', 'GLU', 'VAL', 'THR', 'HIS', 'GLN', 'GLY', 'LEU', 'ARG', 'SER', 'PRO', 'VAL', 'THR', 'LYS', 'SER', 'PHE', 'ASN', 'ARG']
+root INFO
+  Created coarsegrained topology
+root DEBUG
+  CCCCEEEEETTEEEEECSSSCCTTCCCCSCCCEEEEEEECCCCSCCCC13332TTEEEESSSCCCEEECSEECCEEEEEEEEEECSSSCCSSCCCCTTCCCCSCEEEEEEEEEECCCCSSEEEETTSCEEECSSEEESSCCTTCEEEEEEEEEEECCCCCCEEEEEEEESSSSSSCEEEECCCTTCEECCCSCCC1111HHHHHH2222TCCCSSSCCEEEECCCCSCCCEEECCC
+root DEBUG
+  ['ARG', 'SER', 'ILE', 'PRO', 'LEU', 'GLY', 'VAL', 'ILE', 'HIS', 'ASN', 'SER', 'VAL', 'LEU', 'GLN', 'VAL', 'SER', 'ASP', 'VAL', 'ASP', 'LYS', 'LEU', 'VAL', 'CYS', 'ARG', 'ASP', 'LYS', 'LEU', 'SER', 'SER', 'THR', 'ASN', 'GLN', 'LEU', 'ARG', 'SER', 'VAL', 'GLY', 'LEU', 'ASN', 'LEU', 'GLU', 'GLY', 'ASN', 'GLY', 'VAL', 'ALA', 'THR', 'ASP', 'VAL', 'PRO', 'SER', 'ALA', 'THR', 'LYS', 'ARG', 'TRP', 'GLY', 'PHE', 'ARG', 'SER', 'GLY', 'VAL', 'PRO', 'PRO', 'LYS', 'VAL', 'VAL', 'ASN', 'TYR', 'GLU', 'ALA', 'GLY', 'GLU', 'TRP', 'ALA', 'GLU', 'ASN', 'CYS', 'TYR', 'ASN', 'LEU', 'GLU', 'ILE', 'LYS', 'LYS', 'PRO', 'ASP', 'GLY', 'SER', 'GLU', 'CYS', 'LEU', 'PRO', 'ALA', 'ALA', 'PRO', 'ASP', 'GLY', 'ILE', 'ARG', 'GLY', 'PHE', 'PRO', 'ARG', 'CYS', 'ARG', 'TYR', 'VAL', 'HIS', 'LYS', 'VAL', 'SER', 'GLY', 'THR', 'GLY', 'PRO', 'CYS', 'ALA', 'GLY', 'ASP', 'PHE', 'ALA', 'PHE', 'HIS', 'LYS', 'GLU', 'GLY', 'ALA', 'PHE', 'PHE', 'LEU', 'TYR', 'ASP', 'ARG', 'LEU', 'ALA', 'SER', 'THR', 'VAL', 'ILE', 'TYR', 'ARG', 'GLY', 'THR', 'THR', 'PHE', 'ALA', 'GLU', 'GLY', 'VAL', 'VAL', 'ALA', 'PHE', 'LEU', 'ILE', 'LEU', 'PRO', 'GLN', 'ALA', 'TYR', 'SER', 'THR', 'THR', 'ILE', 'ARG', 'TYR', 'GLN', 'ALA', 'THR', 'GLY', 'PHE', 'GLY', 'THR', 'ASN', 'GLU', 'VAL', 'GLU', 'TYR', 'LEU', 'PHE', 'GLU', 'VAL', 'ASP', 'ASN', 'LEU', 'THR', 'TYR', 'VAL', 'GLN', 'LEU', 'GLU', 'SER', 'ARG', 'PHE', 'THR', 'PRO', 'GLN', 'PHE', 'LEU', 'LEU', 'GLN', 'LEU', 'ASN', 'GLU', 'THR', 'ILE', 'TYR', 'THR', 'SER', 'GLY', 'LYS', 'ARG', 'SER', 'ASN', 'THR', 'THR', 'GLY', 'LYS', 'LEU', 'ILE', 'TRP', 'LYS', 'VAL', 'ASN', 'ARG', 'LYS', 'ILE', 'ARG', 'SER', 'GLU', 'GLU', 'LEU', 'SER', 'PHE', 'THR', 'VAL']
+root INFO
+  Created coarsegrained topology
+root DEBUG
+  CCCCCCSSCCCCCEEEEEECCSSCSSTTTTSSSSSCCTTSSEEEEEECCCTT1111HHHHHHHHHHHHHH2222CCSSSCCT1111HHHH2222TSCC
+root DEBUG
+  ['GLU', 'ALA', 'ILE', 'VAL', 'ASN', 'ALA', 'GLN', 'PRO', 'LYS', 'CYS', 'ASN', 'PRO', 'ASN', 'LEU', 'HIS', 'TYR', 'TRP', 'THR', 'THR', 'GLN', 'ASP', 'GLU', 'GLY', 'ALA', 'ALA', 'ILE', 'GLY', 'LEU', 'ALA', 'TRP', 'ILE', 'PRO', 'TYR', 'PHE', 'GLY', 'PRO', 'ALA', 'ALA', 'GLU', 'GLY', 'ILE', 'TYR', 'THR', 'GLU', 'GLY', 'LEU', 'MET', 'HIS', 'ASN', 'GLN', 'ASP', 'GLY', 'LEU', 'ILE', 'CYS', 'GLY', 'LEU', 'ARG', 'GLN', 'LEU', 'ALA', 'ASN', 'GLU', 'THR', 'THR', 'GLN', 'ALA', 'LEU', 'GLN', 'LEU', 'PHE', 'LEU', 'ARG', 'ALA', 'THR', 'THR', 'GLU', 'LEU', 'ARG', 'THR', 'PHE', 'SER', 'ILE', 'LEU', 'ASN', 'ARG', 'LYS', 'ALA', 'ILE', 'ASP', 'PHE', 'LEU', 'LEU', 'GLN', 'ARG', 'TRP', 'GLY', 'GLY']
+root INFO
+  Created coarsegrained topology
+root DEBUG
+  CCCCEEEEETTEEEEECSSSCCSCSCCCCCCCEEEEEEECCCCSCCCC1113222EEEECSSCCCEEECSEECCEEEEEEEEEECSSSCCSSCCCCTTCCCCSCEEEEEEEEEECCCCSSEEEETTSCEEEETTEEESSCCTTCEEEEEEEEEEECCCCCCEEEEEEEESSSSSSCEEEEESSSSEEEECCSCCC1111HHHHHH2222CCCCSSSCEEEEECCCCCEEECC
+root DEBUG
+  ['ARG', 'SER', 'ILE', 'PRO', 'LEU', 'GLY', 'VAL', 'ILE', 'HIS', 'ASN', 'SER', 'VAL', 'LEU', 'GLN', 'VAL', 'SER', 'ASP', 'VAL', 'ASP', 'LYS', 'LEU', 'VAL', 'CYS', 'ARG', 'ASP', 'LYS', 'LEU', 'SER', 'SER', 'THR', 'ASN', 'GLN', 'LEU', 'ARG', 'SER', 'VAL', 'GLY', 'LEU', 'ASN', 'LEU', 'GLU', 'GLY', 'ASN', 'GLY', 'VAL', 'ALA', 'THR', 'ASP', 'VAL', 'PRO', 'SER', 'ALA', 'THR', 'LYS', 'ARG', 'TRP', 'GLY', 'PHE', 'ARG', 'SER', 'GLY', 'VAL', 'PRO', 'PRO', 'LYS', 'VAL', 'VAL', 'ASN', 'TYR', 'GLU', 'ALA', 'GLY', 'GLU', 'TRP', 'ALA', 'GLU', 'ASN', 'CYS', 'TYR', 'ASN', 'LEU', 'GLU', 'ILE', 'LYS', 'LYS', 'PRO', 'ASP', 'GLY', 'SER', 'GLU', 'CYS', 'LEU', 'PRO', 'ALA', 'ALA', 'PRO', 'ASP', 'GLY', 'ILE', 'ARG', 'GLY', 'PHE', 'PRO', 'ARG', 'CYS', 'ARG', 'TYR', 'VAL', 'HIS', 'LYS', 'VAL', 'SER', 'GLY', 'THR', 'GLY', 'PRO', 'CYS', 'ALA', 'GLY', 'ASP', 'PHE', 'ALA', 'PHE', 'HIS', 'LYS', 'GLU', 'GLY', 'ALA', 'PHE', 'PHE', 'LEU', 'TYR', 'ASP', 'ARG', 'LEU', 'ALA', 'SER', 'THR', 'VAL', 'ILE', 'TYR', 'ARG', 'GLY', 'THR', 'THR', 'PHE', 'ALA', 'GLU', 'GLY', 'VAL', 'VAL', 'ALA', 'PHE', 'LEU', 'ILE', 'LEU', 'PRO', 'GLN', 'ALA', 'TYR', 'SER', 'THR', 'THR', 'ILE', 'ARG', 'TYR', 'GLN', 'ALA', 'THR', 'GLY', 'PHE', 'GLY', 'THR', 'ASN', 'GLU', 'VAL', 'GLU', 'TYR', 'LEU', 'PHE', 'GLU', 'VAL', 'ASP', 'ASN', 'LEU', 'THR', 'TYR', 'VAL', 'GLN', 'LEU', 'GLU', 'SER', 'ARG', 'PHE', 'THR', 'PRO', 'GLN', 'PHE', 'LEU', 'LEU', 'GLN', 'LEU', 'ASN', 'GLU', 'THR', 'ILE', 'TYR', 'THR', 'SER', 'GLY', 'LYS', 'ARG', 'SER', 'ASN', 'THR', 'THR', 'GLY', 'LYS', 'LEU', 'ILE', 'TRP', 'LYS', 'VAL', 'ASN', 'ARG', 'SER', 'GLU', 'GLU', 'LEU', 'SER', 'PHE', 'THR']
+root INFO
+  Created coarsegrained topology
+root DEBUG
+  CCCCCSSCCCCCEECCCCCCCCSTTTTSTTSSCCTTSSCCCCEECCCTT1111HHHHHHHHHHHHHH2222CCSSSCCT1111HHHH2222TC
+root DEBUG
+  ['ALA', 'ILE', 'VAL', 'ASN', 'ALA', 'GLN', 'PRO', 'LYS', 'CYS', 'ASN', 'PRO', 'ASN', 'LEU', 'HIS', 'TYR', 'TRP', 'THR', 'THR', 'GLN', 'ASP', 'ALA', 'ALA', 'ILE', 'GLY', 'LEU', 'ALA', 'TRP', 'ILE', 'PRO', 'TYR', 'PHE', 'GLY', 'PRO', 'ALA', 'ALA', 'GLU', 'GLY', 'ILE', 'TYR', 'THR', 'GLU', 'GLY', 'LEU', 'MET', 'HIS', 'ASN', 'GLN', 'ASP', 'GLY', 'LEU', 'ILE', 'CYS', 'GLY', 'LEU', 'ARG', 'GLN', 'LEU', 'ALA', 'ASN', 'GLU', 'THR', 'THR', 'GLN', 'ALA', 'LEU', 'GLN', 'LEU', 'PHE', 'LEU', 'ARG', 'ALA', 'THR', 'THR', 'GLU', 'LEU', 'ARG', 'THR', 'PHE', 'SER', 'ILE', 'LEU', 'ASN', 'ARG', 'LYS', 'ALA', 'ILE', 'ASP', 'PHE', 'LEU', 'LEU', 'GLN', 'ARG', 'TRP']
+root INFO
+  Created coarsegrained topology
+root DEBUG
+  CCCCEEEEETTEEEEECSSSCCTTCCCCSCCCEEEEEEECCCCSCCCC13332TTEEEECSSCCCEEECSEECCCSCCEEEEEECTTSCCSSCCCCTTCCCCSCCSEEEEEEEECCCCSSEEEETTSCEEEETTEEESSCCTTCCCEEEEEEEEECCCCCCEEEEEEEESSSSSSCEEEEECSTTEEEECCSCCC1111HHHH2222TTCCCCCCCEEEEECCCCCEECC
+root DEBUG
+  ['ARG', 'SER', 'ILE', 'PRO', 'LEU', 'GLY', 'VAL', 'ILE', 'HIS', 'ASN', 'SER', 'VAL', 'LEU', 'GLN', 'VAL', 'SER', 'ASP', 'VAL', 'ASP', 'LYS', 'LEU', 'VAL', 'CYS', 'ARG', 'ASP', 'LYS', 'LEU', 'SER', 'SER', 'THR', 'ASN', 'GLN', 'LEU', 'ARG', 'SER', 'VAL', 'GLY', 'LEU', 'ASN', 'LEU', 'GLU', 'GLY', 'ASN', 'GLY', 'VAL', 'ALA', 'THR', 'ASP', 'VAL', 'PRO', 'SER', 'ALA', 'THR', 'LYS', 'ARG', 'TRP', 'GLY', 'PHE', 'ARG', 'SER', 'GLY', 'VAL', 'PRO', 'PRO', 'LYS', 'VAL', 'VAL', 'ASN', 'TYR', 'GLU', 'ALA', 'GLY', 'GLU', 'TRP', 'ALA', 'GLU', 'ASN', 'CYS', 'TYR', 'ASN', 'LEU', 'GLU', 'ILE', 'LYS', 'LYS', 'PRO', 'ASP', 'GLY', 'SER', 'GLU', 'CYS', 'LEU', 'PRO', 'ALA', 'ALA', 'PRO', 'ASP', 'GLY', 'ILE', 'ARG', 'GLY', 'PHE', 'PRO', 'ARG', 'CYS', 'ARG', 'TYR', 'VAL', 'HIS', 'LYS', 'VAL', 'SER', 'GLY', 'THR', 'GLY', 'PRO', 'CYS', 'ALA', 'GLY', 'ASP', 'PHE', 'ALA', 'PHE', 'HIS', 'LYS', 'GLU', 'GLY', 'ALA', 'PHE', 'PHE', 'LEU', 'TYR', 'ASP', 'ARG', 'LEU', 'ALA', 'SER', 'THR', 'VAL', 'ILE', 'TYR', 'ARG', 'GLY', 'THR', 'THR', 'PHE', 'ALA', 'GLU', 'GLY', 'VAL', 'VAL', 'ALA', 'PHE', 'LEU', 'ILE', 'LEU', 'PRO', 'GLN', 'ALA', 'TYR', 'SER', 'THR', 'THR', 'ILE', 'ARG', 'TYR', 'GLN', 'ALA', 'THR', 'GLY', 'PHE', 'GLY', 'THR', 'ASN', 'GLU', 'VAL', 'GLU', 'TYR', 'LEU', 'PHE', 'GLU', 'VAL', 'ASP', 'ASN', 'LEU', 'THR', 'TYR', 'VAL', 'GLN', 'LEU', 'GLU', 'SER', 'ARG', 'PHE', 'THR', 'PRO', 'GLN', 'PHE', 'LEU', 'LEU', 'GLN', 'LEU', 'ASN', 'GLU', 'THR', 'ILE', 'TYR', 'THR', 'SER', 'GLY', 'LYS', 'ARG', 'SER', 'ASN', 'THR', 'GLY', 'LYS', 'LEU', 'ILE', 'TRP', 'LYS', 'VAL', 'ASN', 'ARG', 'SER', 'GLU', 'GLU', 'LEU', 'SER', 'PHE']
+root INFO
+  Created coarsegrained topology
+root DEBUG
+  CCCCCCSSCCCCCEEEEEECCCCSTTTTSTTSCCCTTSSEEEEEECCCTT1111HHHHHHHHHHHHHH2222CCSSSCCTT1111HHH2222TTC
+root DEBUG
+  ['GLU', 'ALA', 'ILE', 'VAL', 'ASN', 'ALA', 'GLN', 'PRO', 'LYS', 'CYS', 'ASN', 'PRO', 'ASN', 'LEU', 'HIS', 'TYR', 'TRP', 'THR', 'THR', 'GLN', 'GLY', 'ALA', 'ALA', 'ILE', 'GLY', 'LEU', 'ALA', 'TRP', 'ILE', 'PRO', 'TYR', 'PHE', 'GLY', 'PRO', 'ALA', 'ALA', 'GLU', 'GLY', 'ILE', 'TYR', 'THR', 'GLU', 'GLY', 'LEU', 'MET', 'HIS', 'ASN', 'GLN', 'ASP', 'GLY', 'LEU', 'ILE', 'CYS', 'GLY', 'LEU', 'ARG', 'GLN', 'LEU', 'ALA', 'ASN', 'GLU', 'THR', 'THR', 'GLN', 'ALA', 'LEU', 'GLN', 'LEU', 'PHE', 'LEU', 'ARG', 'ALA', 'THR', 'THR', 'GLU', 'LEU', 'ARG', 'THR', 'PHE', 'SER', 'ILE', 'LEU', 'ASN', 'ARG', 'LYS', 'ALA', 'ILE', 'ASP', 'PHE', 'LEU', 'LEU', 'GLN', 'ARG', 'TRP', 'GLY']
+root INFO
+  Created coarsegrained topology
+root DEBUG
+  CCCCEEEEETTEEEEECSSSCCSSSCCCSTTSEEEEEEECCCCSCCCC13332TTEEECCSSCCCEEECSEECCEEEEEEEEEEETTEEESSCCCCTTCCCCSCEEEEEEEEEECCCCSSSEEETTSCEEEETTEEESCCCTTCCCEEEEEEEEECCCCCCCEEEEEEESSSSSSCEEEEECSTTCEEECCSCCC1111HHHHHH2222CCCCCCEECCCCCCCC
+root DEBUG
+  ['ARG', 'SER', 'ILE', 'PRO', 'LEU', 'GLY', 'VAL', 'ILE', 'HIS', 'ASN', 'SER', 'VAL', 'LEU', 'GLN', 'VAL', 'SER', 'ASP', 'VAL', 'ASP', 'LYS', 'LEU', 'VAL', 'CYS', 'ARG', 'ASP', 'LYS', 'LEU', 'SER', 'SER', 'THR', 'ASN', 'GLN', 'LEU', 'ARG', 'SER', 'VAL', 'GLY', 'LEU', 'ASN', 'LEU', 'GLU', 'GLY', 'ASN', 'GLY', 'VAL', 'ALA', 'THR', 'ASP', 'VAL', 'PRO', 'SER', 'ALA', 'THR', 'LYS', 'ARG', 'TRP', 'GLY', 'PHE', 'ARG', 'SER', 'GLY', 'VAL', 'PRO', 'PRO', 'LYS', 'VAL', 'VAL', 'ASN', 'TYR', 'GLU', 'ALA', 'GLY', 'GLU', 'TRP', 'ALA', 'GLU', 'ASN', 'CYS', 'TYR', 'ASN', 'LEU', 'GLU', 'ILE', 'LYS', 'LYS', 'PRO', 'ASP', 'GLY', 'SER', 'GLU', 'CYS', 'LEU', 'PRO', 'ALA', 'ALA', 'PRO', 'ASP', 'GLY', 'ILE', 'ARG', 'GLY', 'PHE', 'PRO', 'ARG', 'CYS', 'ARG', 'TYR', 'VAL', 'HIS', 'LYS', 'VAL', 'SER', 'GLY', 'THR', 'GLY', 'PRO', 'CYS', 'ALA', 'GLY', 'ASP', 'PHE', 'ALA', 'PHE', 'HIS', 'LYS', 'GLU', 'GLY', 'ALA', 'PHE', 'PHE', 'LEU', 'TYR', 'ASP', 'ARG', 'LEU', 'ALA', 'SER', 'THR', 'VAL', 'ILE', 'TYR', 'ARG', 'GLY', 'THR', 'THR', 'PHE', 'ALA', 'GLU', 'GLY', 'VAL', 'VAL', 'ALA', 'PHE', 'LEU', 'ILE', 'LEU', 'PRO', 'GLN', 'TYR', 'TYR', 'SER', 'THR', 'THR', 'ILE', 'ARG', 'TYR', 'GLN', 'ALA', 'THR', 'GLY', 'PHE', 'GLY', 'THR', 'ASN', 'GLU', 'VAL', 'GLU', 'TYR', 'LEU', 'PHE', 'GLU', 'VAL', 'ASP', 'ASN', 'LEU', 'THR', 'TYR', 'VAL', 'GLN', 'LEU', 'GLU', 'SER', 'ARG', 'PHE', 'THR', 'PRO', 'GLN', 'PHE', 'LEU', 'LEU', 'GLN', 'LEU', 'ASN', 'GLU', 'THR', 'ILE', 'TYR', 'THR', 'SER', 'GLY', 'LYS', 'ARG', 'SER', 'GLY', 'LYS', 'LEU', 'ILE', 'TRP', 'LYS', 'VAL', 'GLU', 'GLU', 'LEU', 'SER', 'PHE']
+root INFO
+  Created coarsegrained topology
+root DEBUG
+  CCCCCSSCCCCCEECCEECCCSTTTTSTTSSCCTTTSEECCEECCCTT1111HHHHHHHHHHHHHH2222CCSSSCCT1111HHHH2222TTC
+root DEBUG
+  ['ALA', 'ILE', 'VAL', 'ASN', 'ALA', 'GLN', 'PRO', 'LYS', 'CYS', 'ASN', 'PRO', 'ASN', 'LEU', 'HIS', 'TYR', 'TRP', 'THR', 'THR', 'GLN', 'ALA', 'ALA', 'ILE', 'GLY', 'LEU', 'ALA', 'TRP', 'ILE', 'PRO', 'TYR', 'PHE', 'GLY', 'PRO', 'ALA', 'ALA', 'GLU', 'GLY', 'ILE', 'TYR', 'THR', 'GLU', 'GLY', 'LEU', 'MET', 'HIS', 'ASN', 'GLN', 'ASP', 'GLY', 'LEU', 'ILE', 'CYS', 'GLY', 'LEU', 'ARG', 'GLN', 'LEU', 'ALA', 'ASN', 'GLU', 'THR', 'THR', 'GLN', 'ALA', 'LEU', 'GLN', 'LEU', 'PHE', 'LEU', 'ARG', 'ALA', 'THR', 'THR', 'GLU', 'LEU', 'ARG', 'THR', 'PHE', 'SER', 'ILE', 'LEU', 'ASN', 'ARG', 'LYS', 'ALA', 'ILE', 'ASP', 'PHE', 'LEU', 'LEU', 'GLN', 'ARG', 'TRP', 'GLY']
+root INFO
+  Created coarsegrained topology
+root INFO
+  Written 16 ITP files
+root INFO
+  Output contains 16 molecules:
+root INFO
+     1->  Protein_A (chain  A)
+root INFO
+     2->  Protein_B (chain  B)
+root INFO
+     3->  Protein_C (chain  C)
+root INFO
+     4->  Protein_D (chain  D)
+root INFO
+     5->  Protein_E (chain  E)
+root INFO
+     6->  Protein_F (chain  F)
+root INFO
+     7->  Protein_G (chain  G)
+root INFO
+     8->  Protein_H (chain  H)
+root INFO
+     9->  Protein_I (chain  I)
+root INFO
+    10->  Protein_J (chain  J)
+root INFO
+    11->  Protein_K (chain  K)
+root INFO
+    12->  Protein_L (chain  L)
+root INFO
+    13->  Protein_M (chain  M)
+root INFO
+    14->  Protein_N (chain  N)
+root INFO
+    15->  Protein_O (chain  O)
+root INFO
+    16->  Protein_P (chain  P)
+root INFO
+  Written topology files
+root INFO
+  Note: Cysteine bonds are 0.24 nm constraints, instead of the published 0.39nm/5000kJ/mol.

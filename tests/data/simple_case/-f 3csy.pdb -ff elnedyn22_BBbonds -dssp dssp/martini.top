@@ -1,0 +1,41 @@
+#include "martini.itp"
+
+#include "Protein_P.itp"
+#include "Protein_A.itp"
+#include "Protein_C.itp"
+#include "Protein_B.itp"
+#include "Protein_E.itp"
+#include "Protein_D.itp"
+#include "Protein_G.itp"
+#include "Protein_F.itp"
+#include "Protein_I.itp"
+#include "Protein_H.itp"
+#include "Protein_K.itp"
+#include "Protein_J.itp"
+#include "Protein_M.itp"
+#include "Protein_L.itp"
+#include "Protein_O.itp"
+#include "Protein_N.itp"
+
+[ system ]
+; name
+Martini system from 3csy.pdb
+
+[ molecules ]
+; name        number
+Protein_A 	 1
+Protein_B 	 1
+Protein_C 	 1
+Protein_D 	 1
+Protein_E 	 1
+Protein_F 	 1
+Protein_G 	 1
+Protein_H 	 1
+Protein_I 	 1
+Protein_J 	 1
+Protein_K 	 1
+Protein_L 	 1
+Protein_M 	 1
+Protein_N 	 1
+Protein_O 	 1
+Protein_P 	 1

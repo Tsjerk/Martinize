@@ -128,10 +128,16 @@ SIMPLE_TEST_CASES.extend([
     ('-f 2oar.pdb -merge A,B,C -merge D,E', '2oar'),
     ('-f 1ubq.gro -x 1ubq-cg.pdb', '1ubq-gro'),
     ('-f 1ubq.gro -x 1ubq-cg.pdb -dssp dssp', '1ubq-gro'),
+    ('-f 1ubq.pdb -ss CEEEEEETTSCEEEEECCTTSC1111HHHH2222CCCCCCEEEEETTEECCTTSCTCCCTCCTTCEEEEEECCSCC', '1ubq', '1ubq-explicit-ss-from-self'),
 ])
 SIMPLE_TEST_CASES.extend([
     ('-f {}.pdb -ff {}'.format(pdb, ff), pdb)
-    for pdf in PDB_LIST
+    for pdb in PDB_LIST
+    for ff in FF_LIST
+])
+SIMPLE_TEST_CASES.extend([
+    ('-f {}.pdb -ff {} -dssp dssp'.format(pdb, ff), pdb)
+    for pdb in PDB_LIST
     for ff in FF_LIST
 ])
 SIMPLE_TEST_CASES.extend([
