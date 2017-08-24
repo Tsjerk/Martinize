@@ -1,6 +1,6 @@
 ; MARTINI (martini22) Coarse Grained topology file for "Protein_A"
 ; Created by martinize.py version  
-; Using the following options:  -f 1ubq.pdb -ss CEEEEEETTSCEEEEECCTTSC1111HHHH2222CCCCCCEEEEETTEECCTTSCTCCCTCCTTCEEEEEECCSCC
+; Using the following options:  -f 1ubq.pdb -x cg.pdb -o cg.top -ss CEEEEEETTSCEEEEECCTTSC1111HHHH2222CCCCCCEEEEETTEECCTTSCTCCCTCCTTCEEEEEECCSCC
 ; Sequence:
 ; MQIFVKTLTGKTITLEVEPSDTIENVKAKIQDKEGIPPDQQRLIFAGKQLEDGRTLSDYNIQKESTLHLVLRLRGG
 ; Secondary Structure:

@@ -24,6 +24,8 @@ root INFO
   Secondary structure read from command-line:
 CEEEEEETTSCEEEEECCTTSC1111HHHH2222CCCCCCEEEEETTEECCTTSCTCCCTCCTTCEEEEEECCSCC
 root INFO
+  Writing coarse grained structure.
+root INFO
   (Average) Secondary structure has been determined (see head of .itp-file).
 root DEBUG
   CEEEEEETTSCEEEEECCTTSC1111HHHH2222CCCCCCEEEEETTEECCTTSCTCCCTCCTTCEEEEEECCSCC
