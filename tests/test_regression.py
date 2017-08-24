@@ -131,12 +131,12 @@ SIMPLE_TEST_CASES.extend([
     ('-f 1ubq.pdb -ss CEEEEEETTSCEEEEECCTTSC1111HHHH2222CCCCCCEEEEETTEECCTTSCTCCCTCCTTCEEEEEECCSCC', '1ubq', '1ubq-explicit-ss-from-self'),
 ])
 SIMPLE_TEST_CASES.extend([
-    ('-f {}.pdb -ff {}'.format(pdb, ff), pdb)
+    ('-f {}.pdb -ff {} -x cg.pdb -o cg.top'.format(pdb, ff), pdb)
     for pdb in PDB_LIST
     for ff in FF_LIST
 ])
 SIMPLE_TEST_CASES.extend([
-    ('-f {}.pdb -ff {} -dssp dssp'.format(pdb, ff), pdb)
+    ('-f {}.pdb -ff {} -dssp dssp -x cg.pdb -o cg.top'.format(pdb, ff), pdb)
     for pdb in PDB_LIST
     for ff in FF_LIST
 ])
