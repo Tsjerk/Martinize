@@ -656,7 +656,7 @@ class Chain:
             residue = [(atom[0], resname)+atom[2:] for atom in residue]
             if residue[0][1] in ("SOL", "HOH", "TIP"):
                 continue
-            if not residue[0][1] in mapping.CoarseGrained.mapping.keys():
+            if not residue[0][1] in self.options['ForceField'].mapping.keys():
                 logging.warning("Skipped unknown residue %s\n" % residue[0][1])
                 continue
             # Get the mapping for this residue
@@ -666,8 +666,9 @@ class Chain:
             # is inferred from the sequence. So this is the best place to raise
             # an error
             try:
-                beads, ids = mapping.map(residue, ca2bb=self.options['ForceField'].ca2bb)
-                beads      = zip(mapping.CoarseGrained.names[residue[0][1]], beads, ids)
+                beads, ids = mapping.map(residue, ff=self.options['ForceField'],
+                                         ca2bb=self.options['ForceField'].ca2bb)
+                beads      = zip(self.options['ForceField'].names[residue[0][1]], beads, ids)
                 if residue[0][1] in self.options['ForceField'].polar:
                     beads = add_dummy(beads, dist=0.14, n=2)
                 elif residue[0][1] in self.options['ForceField'].charged:
