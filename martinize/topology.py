@@ -673,7 +673,7 @@ class Topology:
 
             # All residue atoms
             counter = 0  # Counts over beads
-            for atype, aname in zip([bbb] + list(scatoms), mapper.CoarseGrained.residue_bead_names):
+            for atype, aname in zip([bbb] + list(scatoms), self.options['ForceField'].residue_bead_names):
                 if self.multiscale:
                     atype, aname = "v" + atype, "v" + aname
                 # If mass or charge diverse, we adopt it here.
@@ -928,7 +928,7 @@ class Topology:
                 counter = 0  # Counts over beads
                 # Need to tweak this to get all the backbone beads to the list with the side chain
                 bbbset = [bb3[count], bb3[count+1], bb3[count+2]]
-                for atype, aname in zip(bbbset+list(scatoms), mapper.CoarseGrained.residue_bead_names_dna):
+                for atype, aname in zip(bbbset+list(scatoms), self.options['ForceField'].residue_bead_names_dna):
                     if self.multiscale:
                         atype, aname = "v"+atype, "v"+aname
                     self.atoms.append((atid, atype, resi, resname, aname, atid,

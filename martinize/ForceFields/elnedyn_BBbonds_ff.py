@@ -10,7 +10,7 @@ class elnedyn(Forcefield):
     ff = True
     name = 'elnedyn_BBbonds'
 
-    def __init__(self):
+    def setup(self):
         '''The forcefield has been implemented with some changes compared to the published parameters:
         - Backbone-Backbone bonds are constraints in stead of strong bonds.
         - Trp has an extra constrain added to the sidechain
@@ -184,8 +184,6 @@ class elnedyn(Forcefield):
         # But Elnedyn has been parametrized with type 1.
         self.EBondType = 1
 
-        self.finish()
-        
     def messages(self):
         '''Prints any force-field specific logging messages.'''
         import logging

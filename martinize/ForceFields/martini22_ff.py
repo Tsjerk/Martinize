@@ -17,7 +17,8 @@ class martini22(Forcefield):
     ff = True
     # parameters are defined here for the following (protein) forcefields:
     name = 'martini22'
-    def __init__(self):
+
+    def setup(self):
 
         
         # Charged types:
@@ -188,8 +189,6 @@ class martini22(Forcefield):
         # Elastic networks bond shouldn't lead to exclusions (type 6) 
         # But Elnedyn has been parametrized with type 1.
         self.EBondType = 6
-        
-        self.finish()
         
     def messages(self):
         '''Prints any force-field specific logging messages.'''

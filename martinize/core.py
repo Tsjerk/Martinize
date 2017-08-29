@@ -283,7 +283,7 @@ def write_index(indexfile, chains, order):
     return
 
 
-def write_mapping_index(filename, atoms):
+def write_mapping_index(filename, atoms, ff):
     logging.info("Writing trajectory index file.")
     atid = 1
     outNDX = open(filename, "w")
@@ -295,14 +295,14 @@ def write_mapping_index(filename, atoms):
     for i_count, i in enumerate(IO.residues(atoms)): ## 'atoms' contains last frame read
         if i[0][1] in ("SOL", "HOH", "TIP"):
             continue
-        if not i[0][1] in mapping.CoarseGrained.mapping.keys():
+        if not i[0][1] in ff.mapping.keys():
             continue
         nra = 0
         names = [j[0] for j in i]
         # This gives out a list of atoms in residue, each tuple has other
         # stuff in it that's needed elsewhere so we just take the last
         # element which is the atom index (in that residue)
-        for j_count, j in enumerate(mapping.mapIndex(i)):
+        for j_count, j in enumerate(mapping.mapIndex(i, ff=ff, ca2bb=ff.ca2bb)):
             outNDX.write('[ Bead %i of residue %i ]\n' % (j_count+1, i_count+1))
             line = ''
             for k in j:
@@ -537,7 +537,7 @@ def main(options):
 
     # Write the index file for mapping AA trajectory if requested
     if options["mapping"]:
-        write_mapping_index(options["mapping"], atoms)
+        write_mapping_index(options["mapping"], atoms, ff=options['ForceField'])
 
     if options['outtop']:
         do_topology(options, chains, ssTotal, cysteines, merge)

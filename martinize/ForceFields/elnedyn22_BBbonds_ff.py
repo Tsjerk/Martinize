@@ -14,7 +14,7 @@ class elnedyn22(Forcefield):
     ff = True
     name = 'elnedyn22_BBbonds'
 
-    def __init__(self):
+    def setup(self):
         
         # Charged types:
         self.charges = {"Qd":1, "Qa":-1, "SQd":1, "SQa":-1, "RQd":1, "AQa":-1}                                                           #@#
@@ -187,8 +187,7 @@ class elnedyn22(Forcefield):
         # But Elnedyn has been parametrized with type 1.
         self.EBondType = 1
         
-	self.ss = secstruc
-        self.finish()
+        self.ss = secstruc
 
     def messages(self):
         '''Prints any force-field specific logging messages.'''
