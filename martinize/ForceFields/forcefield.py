@@ -1,4 +1,4 @@
-
+import json
 from .. import functions, secstruc
 from .. import mapping
 
@@ -196,3 +196,24 @@ class Forcefield(object):
 
     def messages(self):
         '''Prints any force-field specific logging messages.'''
+
+
+class JSONForceField(Forcefield):
+    name = None
+
+    def setup(self):
+        pass
+
+    def __init__(self, fpath):
+        self.set_mapping()
+        with open(fpath) as infile:
+            content = json.load(infile)
+        # JSON cannot handle tuples as keys, so 'special' has to be written
+        # as [["SC1","CYS"], ["SC1","CYS"], [0.24, null]] instea of
+        # {(("SC1","CYS"), ("SC1","CYS")): [0.24, null]}.
+        content['special'] = {
+            tuple([tuple(item) for item in bond[:2]]): bond[2]
+            for bond in content['special']
+        }
+        self.__dict__.update(content)
+        self.finish()

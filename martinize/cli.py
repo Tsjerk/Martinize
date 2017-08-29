@@ -29,7 +29,7 @@ from simopt import MULTI, MA
 from . import core
 
 from .converters import atom, atoms, Link
-from .ForceFields.forcefield import FORCE_FIELD_COLLECTION
+from .ForceFields.forcefield import FORCE_FIELD_COLLECTION, JSONForceField
 
 # Option list
 OPTIONS = simopt.Options([
@@ -82,9 +82,11 @@ def update_options(options):
 
     options["Version"] = ""
 
-    try:
+    if options['forcefield'].lower() in FORCE_FIELD_COLLECTION:
         options['ForceField'] = FORCE_FIELD_COLLECTION[options['forcefield'].lower()]()
-    except KeyError:
+    elif os.path.isfile(options['forcefield']):
+        options['ForceField'] = JSONForceField(options['forcefield'])
+    else:
         message = "Forcefield '{}' can not be loaded.".format(options['forcefield'])
         logging.error(message)
         raise MartinizeException(message)

@@ -150,6 +150,9 @@ SIMPLE_TEST_CASES.extend([
 SIMPLE_TEST_CASES.extend([
     ('-f {}.pdb -n index.idx'.format(pdb), pdb) for pdb in PDB_LIST
 ])
+SIMPLE_TEST_CASES.extend([
+    ('-f 2oar.pdb -x cg.pdb -ff martini22.json', 'json22'),
+])
 
 
 def _arguments_as_list(arguments):
