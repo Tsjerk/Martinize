@@ -100,7 +100,7 @@ class Forcefield(object):
             }
 
         # Generic names for side chain beads
-        self.residue_bead_names = functions.spl("BB SC1 SC2 SC3 SC4")
+        self.residue_bead_names = ["BB", ] + ["SC{:d}".format(i) for i in range(1, 255)]
         # Generic names for DNA beads
         self.residue_bead_names_dna = functions.spl("BB1 BB2 BB3 SC1 SC2 SC3 SC4")
 
@@ -111,7 +111,7 @@ class Forcefield(object):
             "POPG": "GLC PO4 GL1 GL2 C1A C2A C3A C4A C1B C2B D3B C4B C5B".split()
             }
         # Add default bead names for all amino acids
-        self.names.update([(i, ("BB", "SC1", "SC2", "SC3", "SC4")) for i in mapping.AA3])
+        self.names.update([(i, tuple(self.residue_bead_names)) for i in mapping.AA3])
 
         # Add the default bead names for all DNA nucleic acids
         self.names.update([(i, ("BB1", "BB2", "BB3", "SC1", "SC2", "SC3", "SC4")) for i in mapping.nucleic])
@@ -135,6 +135,13 @@ class Forcefield(object):
 
 
     def finish(self):
+        # Make mapping less painful to write. If a mapping for an residue
+        # in `self.mapping` if written as a list of string, rather than a
+        # list of list of string, then convert it to the expected format.
+        for residue, mapping in self.mapping.items():
+            new_mapping = [m if isinstance(m, (tuple, list)) else m.split()
+                           for m in mapping]
+            self.mapping[residue] = new_mapping
         print "A"
         ## BACKBONE BEAD TYPE ##                                                                    
         # Dictionary of default bead types (*D)                                                     
