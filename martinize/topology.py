@@ -26,7 +26,7 @@ import mapping as mapper
 
 
 # This is a generic class for Topology Bonded Type definitions
-class Bonded:
+class Bonded(object):
     # The init method is generic to the bonded types,
     # but may call the set method if atoms are given
     # as (ID, ResidueName, SecondaryStructure) tuples
@@ -161,6 +161,25 @@ class Vsite(Bonded):
         self.parameters = kwargs.get("parameters")
 
 
+class Vsiten(Vsite):
+    def set(self, atoms, **kwargs):
+        super(Vsiten, self).set(atoms, **kwargs)
+        self.type = 2
+
+    def __str__(self):
+        if not self.atoms:
+            return ""
+        s = ["%5d" % self.atoms[0], str(self.type)]
+        s.extend(["%5d" % i for i in self.atoms[1:]])
+        if self.comments:
+            s.append(';')
+            if type(self.comments) == str:
+                s.append(self.comments)
+            else:
+                s.extend([str(i) for i in self.comments])
+        return " ".join(s)
+
+
 # Similar to the preceding class
 class Exclusion(Bonded):
     def set(self, atoms, **kwargs):
@@ -220,6 +239,7 @@ class Topology:
         self.nrexcl      = 1
         self.atoms       = CategorizedList()
         self.vsites      = CategorizedList()
+        self.vsitesn     = CategorizedList()
         self.exclusions  = CategorizedList()
         self.bonds       = CategorizedList()
         self.angles      = CategorizedList()
@@ -286,7 +306,7 @@ class Topology:
             atom[2] += last[2]  # Update residue numbers
             atom[5] += last[5]  # Update charge group numbers
             self.atoms.append(tuple(atom))
-        for attrib in ["bonds", "vsites", "angles", "dihedrals", "impropers", "constraints", "posres"]:
+        for attrib in ["bonds", "vsites", "vsitesn", "angles", "dihedrals", "impropers", "constraints", "posres"]:
             getattr(self, attrib).extend([source + shift for source in getattr(other, attrib)])
         return self
 
@@ -334,6 +354,11 @@ class Topology:
         if vsites:
             out.append('\n[ virtual_sites2 ]')
             out.extend(vsites)
+
+        vsitesn = [str(i) for i in self.vsitesn]
+        if vsitesn:
+            out.append('\n[ virtual_sitesn ]')
+            out.extend(vsitesn)
 
         # Print out the exclusions only if they excist.
         exclusions = [str(i) for i in self.exclusions]
@@ -467,7 +492,7 @@ class Topology:
         # This will avoid errors for residues for which
         # these are not defined.
 
-        sc = [(self.options['ForceField'].sidechains[res]+5*[[]])[:5] for res in self.sequence]
+        sc = [(self.options['ForceField'].sidechains[res]+6*[[]])[:6] for res in self.sequence]
 
         # ID of the first atom/residue
         # The atom number and residue number follow from the last
@@ -596,11 +621,11 @@ class Topology:
         # AtomID AtomType ResidueID ResidueName AtomName ChargeGroup Charge ; Comments
         atid = startAtom
         for resi, resname, bbb, sidechn, ss in zip(resid, self.sequence, bb, sc, self.secstruc):
-            scatoms, bon_par, ang_par, dih_par, vsite_par = sidechn
+            scatoms, bon_par, ang_par, dih_par, vsite_par, vsiten_par = sidechn
 
             # Side chain bonded terms
             # Collect bond, angle and dihedral connectivity
-            bon_con, ang_con, dih_con, vsite_con = (self.options['ForceField'].connectivity[resname]+4*[[]])[:4]
+            bon_con, ang_con, dih_con, vsite_con, vsiten_con = (self.options['ForceField'].connectivity[resname]+5*[[]])[:5]
 
             # Side Chain Bonds/Constraints
             for atids, par in zip(bon_con, bon_par):
@@ -658,6 +683,18 @@ class Topology:
                     category   = "SC"))
                 # Shift the atom numbers
                 self.vsites[-1] += atid
+
+            for atids, par in zip(vsiten_con, vsiten_par):
+                self.vsitesn.append(Vsiten(
+                    options = self.options,
+                    atoms = atids,
+                    parameters = par,
+                    type = 2,
+                    comments = resname,
+                    category = "SC"
+                ))
+                # Shift the atom numbers
+                self.vsitesn[-1] += atid
 
             # Side Chain exclusions
             # The polarizable forcefield give problems with the charges in the sidechain,
