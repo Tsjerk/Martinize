@@ -449,7 +449,7 @@ class Topology:
 
     def fromAminoAcidSequence(self, sequence, secstruc=None, links=None,
                               breaks=None, mapping=None, rubber=False,
-                              multi=False):
+                              multi=False, cyclic=False):
         '''The sequence function can be used to generate the topology for
            a sequence :) either given as sequence or as chain'''
 
@@ -461,6 +461,7 @@ class Topology:
             chain         = sequence
             links         = chain.links
             breaks        = chain.breaks
+            cyclic        = chain.cyclic
             # If the mapping is not specified, the actual mapping is taken,
             # used to construct the coarse grained system from the atomistic one.
             # The function argument "mapping" could be used to use a default
@@ -523,13 +524,13 @@ class Topology:
         # This contains the information for deriving backbone bead types,
         # bb bond types, bbb/bbs angle types, and bbbb dihedral types and
         # Elnedyn BB-bondlength BBB-angles
-        seqss = zip(bbid, self.sequence, self.secstruc, positionCa)
+        seqss = list(zip(bbid, self.sequence, self.secstruc, positionCa))
 
         # Fetch the proper backbone beads
         bb = [self.options['ForceField'].bbGetBead(res, typ) for num, res, typ, Ca in seqss]
 
         # If termini need to be charged, change the bead types
-        if not self.options['neutraltermini']:
+        if not self.options['neutraltermini'] and not cyclic:
             bb[0]  = "Qd"
             bb[-1] = "Qa"
 
@@ -540,9 +541,11 @@ class Topology:
                 bb[i-1] = "Qa"
 
         # For backbone parameters, iterate over fragments, inferred from breaks
-        for i, j in zip([0]+breaks, breaks+[-1]):
+        fragments = list(zip([0]+breaks, breaks+[len(self.sequence)]))
+        for i, j in fragments:
             # Extract the fragment
-            frg = j == -1 and seqss[i:] or seqss[i:j]
+            frg = seqss[i:j]
+            fsc = sc[i:j]
 
             # Iterate over backbone bonds
             self.bonds.extend([Bond(pair, category="BB", options=self.options,) for pair in zip(frg, frg[1:])])
@@ -606,7 +609,7 @@ class Topology:
                         category   = "BBS"))
 
                 # Start from first residue: connects sidechain of second residue
-                for (ai, ni, si, ci), (aj, nj, sj, cj), s in zip(frg[0:], frg[1:], sc[1:]):
+                for (ai, ni, si, ci), (aj, nj, sj, cj), s in zip(frg[0:], frg[1:], fsc[1:]):
                     if s[0]:
                         self.angles.append(Angle(
                             options    = self.options,
@@ -615,6 +618,32 @@ class Topology:
                             type       = 2,
                             comments   = "%s(%s)-%s(%s) SBB" % (ni, si, nj, sj),
                             category   = "BBS"))
+        
+        if cyclic:
+            # a   c   e
+            #  \ / * / \
+            #   b   d   f
+            c = seqss[-1]
+            d = seqss[0]
+            self.bonds.append(Bond((c,d), category="BB", options=self.options, comment="Cyclic BB bond"))
+            if sc[0][0]:
+                self.angles.append(Angle(atoms=(c[0],d[0],d[0]+1), category="BBS", options=self.options,))
+            endfrag = fragments[-1][-1] - fragments[-1][0]
+            if endfrag > 1:
+                b = seqss[-2]
+                self.angles.append(Angle((b, c, d), category="BBB", options=self.options,))
+            startfrag = fragments[0][-1] - fragments[0][0]
+            if startfrag > 1:
+                e = seqss[1]
+                self.angles.append(Angle((c, d, e), category="BBB", options=self.options,))
+            if endfrag > 1 and startfrag > 1:
+                self.dihedrals.append(Dihedral((b, c, d, e), category="BBBB", options=self.options,))
+            if endfrag > 2 and startfrag > 1:
+                a = seqss[-3]
+                self.dihedrals.append(Dihedral((a, b, c, d), category="BBBB", options=self.options,))
+            if endfrag > 1 and startfrag > 2:
+                f = seqss[2]
+                self.dihedrals.append(Dihedral((c, d, e, f), category="BBBB", options=self.options,))
 
         # Now do the atom list, and take the sidechains along
         #

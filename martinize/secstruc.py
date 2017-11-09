@@ -85,6 +85,7 @@ patterns = {
 pattypes = {
     "H": functions.pat(".3. .33. .333. .3333. .13332. .113322. .1113222. .1111 2222.")                #@#
 }
+maxpatternlength = max([len(pat) for val in patterns.values() for pat in val])
 
 
 #----+----------+
@@ -143,9 +144,11 @@ def typesub(seq, patterns, types):
 # The following function translates a string encoding the secondary structure
 # to a string of corresponding Martini types, taking the origin of the
 # secondary structure into account, and replacing termini if requested.
-def ssClassification(ss, program="dssp"):
+def ssClassification(ss, program="dssp", cyclic=False):
     # Translate dssp/pymol/gmx ss to Martini ss
     ss  = ss.translate(sstt[program])
+    if cyclic:
+        ss = ss[-maxpatternlength:] + ss + ss[:maxpatternlength]
     # Separate the different secondary structure types
     sep = dict([(i, ss.translate(sstd[i])) for i in sstd.keys()])
     # Do type substitutions based on patterns
@@ -157,6 +160,9 @@ def ssClassification(ss, program="dssp"):
     # Sum characters back to get a full typed sequence
     typ = "".join([chr(sum(i)) for i in zip(*typ)])
     # Return both the actual as well as the fully typed sequence
+    if cyclic:
+        ss = ss[maxpatternlength:-maxpatternlength]
+        typ = typ[maxpatternlength:-maxpatternlength]
     return ss, typ
 
 

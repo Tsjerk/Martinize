@@ -277,16 +277,17 @@ def residueDistance2(r1, r2):
     return min([functions.distance2(i, j) for i in r1 for j in r2])
 
 
-def breaks(residuelist, selection=("N", "CA", "C"), cutoff=2.5):
+def breaks(residuelist, selection=("N", "CA", "C"), cutoff=2.5, cyclic=False):
     # Extract backbone atoms coordinates
     bb = [[atom[4:] for atom in residue if atom[0] in selection] for residue in residuelist]
     # Needed to remove waters residues from mixed residues.
     bb = [res for res in bb if res != []]
+    lb = len(bb)
 
     # We cannot rely on some standard order for the backbone atoms.
     # Therefore breaks are inferred from the minimal distance between
     # backbone atoms from adjacent residues.
-    return [i+1 for i in range(len(bb)-1) if residueDistance2(bb[i], bb[i+1]) > cutoff]
+    return [i+1 for i in range(lb - (not cyclic)) if residueDistance2(bb[i], bb[(i+1)%lb]) > cutoff]
 
 
 def contacts(atoms, cutoff=5):
@@ -431,6 +432,10 @@ class Chain:
         self.mapping    = []
         self.multiscale = multiscale
         self.options    = options
+        self.cyclic     = False
+
+        # Chain identifier; try to read from residue definition if no name is given
+        self.id         = name or residuelist and residuelist[0][0][3] or ""
 
         # Unknown residues
         self.unknowns   = "X" in self.seq
@@ -445,7 +450,15 @@ class Chain:
         # BREAKS: List of indices of residues where a new fragment starts
         # Only when polymeric (protein, DNA, RNA, ...)
         # For now, let's remove it for the Nucleic acids...
-        self.breaks     = self.type() in ("Protein", "Mixed") and breaks(self.residues) or []
+        self.breaks = []
+        if self.type() == "Protein":
+            self.breaks = breaks(self.residues, cyclic=True)
+            # breaks() can also check for cyclic bond, which is then added as last element
+            if len(self) > 1 and not (self.breaks and self.breaks[-1] == len(self)):
+                if self.breaks:
+                    self.breaks.pop()
+                self.cyclic = True
+                logging.info("Found cyclic chain ({})".format(self.id))
 
         # LINKS:  List of pairs of pairs of indices of linked residues/atoms
         # This list is used for cysteine bridges and peptide bonds involving side chains
@@ -455,9 +468,6 @@ class Chain:
         # For the coarse grained system, it needs to be checked which beads the respective
         # atoms fall in, and bonded terms need to be added there.
         self.links      = []
-
-        # Chain identifier; try to read from residue definition if no name is given
-        self.id         = name or residuelist and residuelist[0][0][3] or ""
 
         # Container for coarse grained beads
         self._cg        = None
@@ -524,6 +534,8 @@ class Chain:
         newchain.links      = [link for link in self.links if ch_sta < (link << 20) < ch_end]
         newchain.multiscale = self.multiscale
         newchain.natoms     = len(newchain.atoms())
+        if i == 0 and (j == None or j >= len(self)):
+            newchain.cyclic = self.cyclic
         newchain.type()
         # Return the chain slice
         return newchain
@@ -596,7 +608,7 @@ class Chain:
         else:
             self.ss = ss
         # Infer the Martini backbone secondary structure types
-        self.ssclass, self.sstypes = secstruc.ssClassification(self.ss, source)
+        self.ssclass, self.sstypes = secstruc.ssClassification(self.ss, source, self.cyclic)
 
     def dss(self, method=None, executable=None):
         # The method should take a list of atoms and return a
@@ -705,6 +717,8 @@ class Chain:
         bb = zip(bb, bb[1:]+[len(bb)])
         # Set the backbone CONECTs (check whether the distance is consistent with binding)
         conect = [(i, j) for i, j in bb[:-1] if functions.distance2(cg[i-1][4:7], cg[j-1][4:7]) < 14]
+        if self.cyclic:
+            conect.append((bb[0], bb[-1]))
         # Now add CONECTs for sidechains
         for i, j in bb:
             nsc = j-i-1
