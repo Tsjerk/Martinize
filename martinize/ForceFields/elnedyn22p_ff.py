@@ -1,6 +1,8 @@
 from .. import functions
 
 from .forcefield import Forcefield
+from ..functions import distance2, cos_angle
+from ..IO import d2r
 
 ################################
 ## 6 # FORCE FIELD PARAMETERS ##  -> @FF <-
@@ -190,6 +192,16 @@ class elnedyn22p(Forcefield):
         # Elastic networks bond shouldn't lead to exclusions (type 6) 
         # But Elnedyn has been parametrized with type 1.
         self.EBondType = 1
+
+    def bbGetBond(self,r,ca,ss):
+        import math
+        # The 150000 forceconstant gave an error message, turning to constraints would be better.
+        return ( math.sqrt(distance2(ca[0],ca[1]))/10., None   )
+    
+    def bbGetAngle(self,r,ca,ss):
+        import math
+        # Elnedyn takes angles from structure, with fc=40
+        return (math.acos(cos_angle([i-j for i,j in zip(ca[0],ca[1])],[i-j for i,j in zip(ca[2],ca[1])]))/d2r, 40)
 
     def messages(self):
         '''Prints any force-field specific logging messages.'''
